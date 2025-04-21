@@ -4,7 +4,7 @@ This is our final group project for the database course. We’re going to build 
 ### structure definitions
 ```
 Database_final_project/
-  index.html -> main page
+  ├── index.html -> main page
   ├── about/
     ├── index.html
   ├── contact/
