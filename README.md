@@ -2,7 +2,8 @@
 This is our final group project for the database course. We’re going to build a website for the Department of Computer Science and Information Engineering at Feng Chia University using HTML and SQL.
 
 ### structure definitions
-```- index.html -> main page 
+```
+- index.html -> main page 
 |- about/
   |- index.html
 |- contact/
