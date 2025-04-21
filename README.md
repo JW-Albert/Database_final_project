@@ -20,3 +20,9 @@ index.html -> main page
 - chairman 系主任
 - glory 榮譽特聘教授
 - lectures 講座教授
+- treaty 特約教授
+- engage 特聘教授
+- full_time 專任教授
+- part_time 兼任教授
+- retire 退休教授
+- admin 行政人員
