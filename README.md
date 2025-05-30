@@ -1,29 +1,90 @@
-# Database_final_project
-This is our final group project for the database course. We’re going to build a website for the Department of Computer Science and Information Engineering at Feng Chia University using HTML and SQL.
+# 逢甲大學資工系資料庫查詢系統
 
-### structure definitions
-```
-Database_final_project/
-  ├── index.html -> main page
-  ├── about/
-    ├── index.html
-  ├── contact/
-    ├── index.html
-  ├── members/
-    ├── index.html
-```
+這是一個為逢甲大學資訊工程學系開發的資料庫查詢系統，作為資料庫課程的期末專案。本系統使用 HTML、JavaScript、PHP 和 SQL 技術開發，提供多種資料查詢功能。
 
-### api definitions
-- / 主頁
-- about 系所簡介
-- contact 聯絡我們
-- members 系所成員
-- chairman 系主任
-- glory 榮譽特聘教授
-- lectures 講座教授
-- treaty 特約教授
-- engage 特聘教授
-- full_time 專任教授
-- part_time 兼任教授
-- retire 退休教授
-- admin 行政人員
+## 專案結構
+
+專案包含以下主要模組：
+
+### 1. 完整資料表查詢 (get_all)
+- 功能：查詢指定資料表的所有資料
+- 檔案：
+  - `get_all/main.php`：後端 API
+  - `get_all/index.html`：範例介面
+
+### 2. 欄位條件查詢 (get_col)
+- 功能：根據指定欄位和搜尋條件查詢資料
+- 檔案：
+  - `get_col/main.php`：後端 API
+  - `get_col/index.html`：範例介面
+
+### 3. 單列資料查詢 (get_row)
+- 功能：查詢符合特定欄位值的單一資料列
+- 檔案：
+  - `get_row/main.php`：後端 API
+  - `get_row/index.html`：範例介面
+
+## 系統需求
+
+- PHP 7.0 或更新版本
+- MySQL 資料庫
+- 支援 JavaScript 的網頁瀏覽器
+- 網頁伺服器（如 Apache 或 Nginx）
+
+## 安裝說明
+
+1. 將專案檔案複製到網頁伺服器的根目錄
+2. 修改各模組中的 `main.php` 檔案，設定正確的資料庫連接資訊：
+   ```php
+   $host = 'localhost';
+   $dbname = 'your_database_name';
+   $username = 'your_username';
+   $password = 'your_password';
+   ```
+3. 確保資料庫使用者具有適當的查詢權限
+
+## 使用說明
+
+### 完整資料表查詢
+1. 開啟 `get_all/index.html`
+2. 輸入要查詢的資料表名稱
+3. 點擊「查詢」按鈕
+4. 系統會顯示該資料表的所有資料
+
+### 欄位條件查詢
+1. 開啟 `get_col/index.html`
+2. 輸入資料表名稱
+3. 輸入要查詢的欄位名稱
+4. 輸入搜尋條件
+5. 點擊「查詢」按鈕
+6. 系統會顯示符合條件的所有資料
+
+### 單列資料查詢
+1. 開啟 `get_row/index.html`
+2. 輸入資料表名稱
+3. 輸入要查詢的欄位名稱
+4. 輸入精確的欄位值
+5. 點擊「查詢」按鈕
+6. 系統會顯示符合條件的單一資料列
+
+## 安全性說明
+
+- 所有資料庫查詢都使用 PDO 預處理語句，防止 SQL 注入攻擊
+- 輸入驗證確保資料表名稱和欄位名稱只包含合法字元
+- 使用 htmlspecialchars 函數防止 XSS 攻擊
+- 支援跨域請求（CORS）設定
+
+## 注意事項
+
+1. 資料表名稱和欄位名稱只能包含英文字母、數字和底線
+2. 確保資料庫連接資訊正確設定
+3. 建議在正式環境中設定適當的資料庫存取權限
+4. 定期備份資料庫資料
+
+## 開發團隊
+
+- 逢甲大學資訊工程學系資料庫課程專案小組
+
+## 授權說明
+
+本專案僅供教育目的使用，未經授權不得用於商業用途。

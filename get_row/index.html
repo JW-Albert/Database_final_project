@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>單列資料查詢</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .result-table th,
+        .result-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .result-table th {
+            background-color: #f2f2f2;
+            width: 30%;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>單列資料查詢</h1>
+        <div class="form-group">
+            <label for="tableName">資料表名稱：</label>
+            <input type="text" id="tableName" placeholder="請輸入資料表名稱">
+        </div>
+        <div class="form-group">
+            <label for="columnName">欄位名稱：</label>
+            <input type="text" id="columnName" placeholder="請輸入要查詢的欄位名稱">
+        </div>
+        <div class="form-group">
+            <label for="rowValue">欄位值：</label>
+            <input type="text" id="rowValue" placeholder="請輸入要查詢的欄位值">
+        </div>
+        <button onclick="fetchData()">查詢</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function fetchData() {
+            const tableName = document.getElementById('tableName').value;
+            const columnName = document.getElementById('columnName').value;
+            const rowValue = document.getElementById('rowValue').value;
+            const resultDiv = document.getElementById('result');
+
+            if (!tableName || !columnName || !rowValue) {
+                resultDiv.innerHTML = '<p class="error">請輸入所有必要欄位</p>';
+                return;
+            }
+
+            try {
+                const params = new URLSearchParams({
+                    table: tableName,
+                    column: columnName,
+                    value: rowValue
+                });
+
+                const response = await fetch(`main.php?${params.toString()}`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    // 建立表格顯示單列資料
+                    let tableHtml = '<table class="result-table">';
+
+                    // 加入資料行
+                    for (const [key, value] of Object.entries(data.data)) {
+                        tableHtml += `
+                            <tr>
+                                <th>${key}</th>
+                                <td>${value}</td>
+                            </tr>
+                        `;
+                    }
+
+                    tableHtml += '</table>';
+                    resultDiv.innerHTML = tableHtml;
+                } else {
+                    resultDiv.innerHTML = `<p class="error">錯誤: ${data.message}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">發生錯誤: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+
+</html>

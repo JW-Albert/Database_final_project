@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資料表查詢</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>資料表查詢</h1>
+    <div>
+        <input type="text" id="tableName" placeholder="請輸入資料表名稱">
+        <button onclick="fetchData()">查詢</button>
+    </div>
+    <div id="result"></div>
+
+    <script>
+        async function fetchData() {
+            const tableName = document.getElementById('tableName').value;
+            const resultDiv = document.getElementById('result');
+
+            if (!tableName) {
+                resultDiv.innerHTML = '<p class="error">請輸入資料表名稱</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`main.php?table=${encodeURIComponent(tableName)}`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    // 建立表格
+                    let tableHtml = '<table>';
+
+                    // 如果有資料，建立表頭
+                    if (data.data.length > 0) {
+                        tableHtml += '<tr>';
+                        Object.keys(data.data[0]).forEach(key => {
+                            tableHtml += `<th>${key}</th>`;
+                        });
+                        tableHtml += '</tr>';
+                    }
+
+                    // 加入資料行
+                    data.data.forEach(row => {
+                        tableHtml += '<tr>';
+                        Object.values(row).forEach(value => {
+                            tableHtml += `<td>${value}</td>`;
+                        });
+                        tableHtml += '</tr>';
+                    });
+
+                    tableHtml += '</table>';
+                    resultDiv.innerHTML = tableHtml;
+                } else {
+                    resultDiv.innerHTML = `<p class="error">錯誤: ${data.message}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">發生錯誤: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+
+</html>
