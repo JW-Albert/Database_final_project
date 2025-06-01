@@ -3,7 +3,7 @@ This is our final group project for the database course. We’re going to build 
 
 ### structure definitions
 ```
-  ├── index.html      首頁
+  /   index.html      首頁
   ├── about.html      系所簡介
   ├── contact.html    聯絡我們
   ├── members/                        系所職位分類
