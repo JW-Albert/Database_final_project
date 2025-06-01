@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body{
+        width: 30%;
+        margin: 60px auto;
+        border: 1px solid #ACD6FF;
+        border-radius: 10px;
+    }
+    h1{
+        text-align: center;
+    }
+    form{
+        width: 80%;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #CECEFF;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+    }
+    input{
+        margin: 10px auto;
+        width: 90%;
+        height: 30px;
+        align-items: center;
+        border: 1px solid black;
+        border-radius: 10px;
+    }
+    button{
+        width: auto;
+        height: auto;
+        padding: 10px;
+        font-size: larger;
+        border: 1px solid #ACD6FF;
+        border-radius: 10px;
+        background-color: #ACD6FF;
+    }
+    button:hover{
+        background-color: #CECEFF;
+        border: 1px solid #CECEFF;
+        cursor: pointer;
+    }
+    .error{
+        color: red;
+        text-align: center;
+        padding: 10px;
+    }
+</style>
+
+<body>
+    <h1>Admin</h1>
+    <form action="login.php" method="POST">
+        <label for="username">Username</label>
+        <br>
+        <input type="text" id="username" name="username" required>
+        <br><br>
+        <label for="password">Password</label>
+        <br>
+        <input type="password" id="password" name="password" required>
+        <br><br>
+        <div class="error">
+            <script>
+                const params = new URLSearchParams(window.location.search);
+                if (params.has("error")) {
+                    document.write(decodeURIComponent(params.get("error")));
+                }
+            </script>
+        </div>
+        <button type="submit">Login</button>
+    </form>
+</body>
+</html>
