@@ -3,14 +3,31 @@ This is our final group project for the database course. We’re going to build 
 
 ### structure definitions
 ```
-Database_final_project/
-  ├── index.html -> main page
-  ├── about/
-    ├── index.html
-  ├── contact/
-    ├── index.html
-  ├── members/
-    ├── index.html
+  ├── index.html      首頁
+  ├── about.html      系所簡介
+  ├── contact.html    聯絡我們
+  ├── members/                        系所職位分類
+  │   ├── index.html                  系所成員
+  │   ├── chairman.html               系主任
+  │   ├── honorary.html               榮譽特聘教授
+  │   ├── chair.html                  講座教授
+  │   ├── distinguished_chair.html    特約教授
+  │   ├── distinguished.html          特聘教授
+  │   ├── full_time.html              專任教授
+  │   ├── part_time.html              兼任教授
+  │   ├── staff.html                  行政人員
+  │   ├── retired.html                退休教授
+  │   └── faculties/    職員個人頁面
+  │       └── faculty01.html
+  ├── pics/                用到的圖片
+  │   ├── fcu_logo.svg     系徽
+  │   ├── iecs_logo.png    校徽
+  │   └── posters/         首頁廣告海報
+  │       ├── 1.jpg
+  │       ├── 2.jpg
+  │       └── 3.jpg
+  ├── admin/          管理後台
+  │   ├── index.html
 ```
 
 ### api definitions
