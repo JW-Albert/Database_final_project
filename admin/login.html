@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Login</title>
+    <style>
+        body {
+            width: 30%;
+            margin: 60px auto;
+            border: 1px solid #ACD6FF;
+            border-radius: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        form {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #CECEFF;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        input {
+            margin: 10px auto;
+            width: 90%;
+            height: 30px;
+            border: 1px solid black;
+            border-radius: 10px;
+        }
+
+        button {
+            padding: 10px;
+            font-size: larger;
+            border: 1px solid #ACD6FF;
+            border-radius: 10px;
+            background-color: #ACD6FF;
+        }
+
+        button:hover {
+            background-color: #CECEFF;
+            cursor: pointer;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin</h1>
+
+    <!-- 顯示錯誤訊息（透過 URL 參數） -->
+    <div class="error">
+        <script>
+            const params = new URLSearchParams(window.location.search);
+            if (params.has("error")) {
+                document.write(decodeURIComponent(params.get("error")));
+            }
+        </script>
+    </div>
+
+    <form method="POST" action="login.php">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Login</button>
+    </form>
+</body>
+</html>
