@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>刪除資料</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .field-group {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .remove-field {
+            background-color: #f44336;
+        }
+
+        .remove-field:hover {
+            background-color: #da190b;
+        }
+
+        .column-info {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .required {
+            color: red;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #666;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: #333;
+        }
+
+        .delete-button {
+            background-color: #f44336;
+        }
+
+        .delete-button:hover {
+            background-color: #da190b;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="index.html" class="back-link">← 返回主選單</a>
+    <h1>刪除資料</h1>
+
+    <div class="form-group">
+        <label for="tableName">資料表名稱：</label>
+        <input type="text" id="tableName" required>
+        <button onclick="loadTableColumns()">載入欄位</button>
+    </div>
+
+    <div id="fieldsContainer">
+        <!-- 動態欄位將在這裡生成 -->
+    </div>
+
+    <button onclick="addField()">新增條件</button>
+    <button onclick="submitDelete()" class="delete-button">刪除資料</button>
+
+    <script>
+        let tableColumns = [];
+        let selectedColumns = new Set();
+
+        async function loadTableColumns() {
+            const tableName = document.getElementById('tableName').value;
+            if (!tableName) {
+                alert('請輸入資料表名稱');
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost/get_ele/main.php?table=${encodeURIComponent(tableName)}`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    tableColumns = data.data.columns;
+                    selectedColumns.clear();
+                    document.getElementById('fieldsContainer').innerHTML = '';
+                    addField(); // 自動新增第一個欄位
+                } else {
+                    alert('載入欄位失敗：' + data.message);
+                }
+            } catch (error) {
+                alert('載入欄位時發生錯誤：' + error.message);
+            }
+        }
+
+        function updateAllColumnSelectors() {
+            const selects = document.querySelectorAll('.column-select');
+            const selectedValues = Array.from(selects).map(select => select.value);
+
+            selects.forEach(select => {
+                const currentValue = select.value;
+                select.innerHTML = '<option value="">請選擇欄位</option>';
+
+                tableColumns.forEach(column => {
+                    const option = document.createElement('option');
+                    option.value = column.name;
+                    option.textContent = column.name;
+
+                    if (selectedValues.includes(column.name) && column.name !== currentValue) {
+                        option.disabled = true;
+                    }
+
+                    if (column.name === currentValue) {
+                        option.selected = true;
+                    }
+
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        function addField() {
+            const container = document.getElementById('fieldsContainer');
+            const fieldGroup = document.createElement('div');
+            fieldGroup.className = 'field-group';
+
+            const columnSelect = document.createElement('select');
+            columnSelect.className = 'column-select';
+            columnSelect.onchange = function () {
+                updateAllColumnSelectors();
+                updateColumnInfo(this);
+            };
+
+            const operatorSelect = document.createElement('select');
+            operatorSelect.innerHTML = `
+                <option value="=">=</option>
+                <option value="!=">!=</option>
+                <option value=">">></option>
+                <option value="<"><</option>
+                <option value=">=">>=</option>
+                <option value="<="><=</option>
+                <option value="LIKE">LIKE</option>
+            `;
+
+            const valueInput = document.createElement('input');
+            valueInput.type = 'text';
+            valueInput.placeholder = '請輸入值';
+
+            const removeButton = document.createElement('button');
+            removeButton.textContent = '移除條件';
+            removeButton.className = 'remove-field';
+            removeButton.onclick = function () {
+                container.removeChild(fieldGroup);
+                updateAllColumnSelectors();
+            };
+
+            const columnInfo = document.createElement('div');
+            columnInfo.className = 'column-info';
+
+            fieldGroup.appendChild(columnSelect);
+            fieldGroup.appendChild(operatorSelect);
+            fieldGroup.appendChild(valueInput);
+            fieldGroup.appendChild(removeButton);
+            fieldGroup.appendChild(columnInfo);
+            container.appendChild(fieldGroup);
+
+            updateAllColumnSelectors();
+        }
+
+        function updateColumnInfo(select) {
+            const columnName = select.value;
+            const columnInfo = select.parentElement.querySelector('.column-info');
+            const column = tableColumns.find(col => col.name === columnName);
+
+            if (column) {
+                let info = [];
+                if (column.null === 'NO') {
+                    info.push('<span class="required">必填</span>');
+                }
+                if (column.default !== null) {
+                    info.push(`預設值: ${column.default}`);
+                }
+                if (column.extra) {
+                    info.push(`額外: ${column.extra}`);
+                }
+                columnInfo.innerHTML = info.join(' | ');
+            } else {
+                columnInfo.innerHTML = '';
+            }
+        }
+
+        async function submitDelete() {
+            const tableName = document.getElementById('tableName').value;
+            if (!tableName) {
+                alert('請輸入資料表名稱');
+                return;
+            }
+
+            const conditions = [];
+            const fields = document.querySelectorAll('.field-group');
+
+            fields.forEach(field => {
+                const column = field.querySelector('.column-select').value;
+                const operator = field.querySelector('select:nth-child(2)').value;
+                const value = field.querySelector('input').value;
+                if (column && value) {
+                    conditions.push({
+                        column: column,
+                        operator: operator,
+                        value: value
+                    });
+                }
+            });
+
+            if (conditions.length === 0) {
+                alert('請至少設定一個刪除條件');
+                return;
+            }
+
+            if (!confirm('確定要刪除符合條件的資料嗎？此操作無法復原！')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost/delete_data/main.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        table: tableName,
+                        conditions: conditions
+                    })
+                });
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    alert(`成功刪除 ${result.affected_rows} 筆資料！`);
+                    // 清空表單
+                    document.getElementById('tableName').value = '';
+                    document.getElementById('fieldsContainer').innerHTML = '';
+                    tableColumns = [];
+                    selectedColumns.clear();
+                } else {
+                    alert('刪除失敗：' + result.message);
+                }
+            } catch (error) {
+                alert('發生錯誤：' + error.message);
+            }
+        }
+    </script>
+</body>
+
+</html>
