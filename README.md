@@ -7,6 +7,7 @@ This is our final group project for the database course. We’re going to build 
   ├── about.html      系所簡介
   ├── contact.html    聯絡我們
   ├── members/                        系所職位分類
+  │   ├── pics/
   │   ├── index.html                  系所成員
   │   ├── chairman.html               系主任
   │   ├── honorary.html               榮譽特聘教授
