@@ -31,6 +31,11 @@
 │   └── main.php          # 欄位查詢處理程式
 ├── get_row/              # 單列資料查詢 API
 │   └── main.php          # 單列查詢處理程式
+├── admin/                # 管理者登入頁面
+│   └── login.html        # 管理者登入頁面
+│   └── login.php         # 登入驗證加跳轉
+│   └── passwd.env        # 隨便設的帳號密碼
+│   └── passwd.gitignore  # 不用理他
 └── .git/                 # Git 版本控制目錄
 ```
 
