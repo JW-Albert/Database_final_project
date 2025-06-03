@@ -8,7 +8,7 @@ $input_password = $_POST['password'] ?? '';
 
 if ($input_username === $valid_username && $input_password === $valid_password) {
     // 登入成功跳轉首頁
-    header("Location: ../index.html");
+    header("Location: /index.html");
     exit();
 } else {
     // 登入失敗

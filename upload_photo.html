@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body{
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    button{
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 30px 0px;
+    }
+    .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #666;
+        text-decoration: none;
+    }
+    input{
+        margin: 30px 0px;
+    }
+</style>
+<body>
+    <a href="index.html" class="back-link">← 返回主選單</a>
+    <h1>上傳照片</h1>
+    <form action="/upload_photo" method="post" enctype="multipart/form-data">
+        <label for="photo">選擇照片:</label>
+        <br>
+        <input type="file" id="photo" name="photo" accept="image/*" required>
+        <br>
+        <button type="submit">上傳</button>
+</body>
+</html>
