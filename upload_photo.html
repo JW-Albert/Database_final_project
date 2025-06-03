@@ -30,14 +30,26 @@
     input{
         margin: 30px 0px;
     }
+    select{
+        margin: 30px 0px;
+    }
 </style>
 <body>
     <a href="index.html" class="back-link">← 返回主選單</a>
     <h1>上傳照片</h1>
     <form action="/upload_photo" method="post" enctype="multipart/form-data">
-        <label for="photo">選擇照片:</label>
+        <label for="photo">選擇照片：</label>
         <br>
         <input type="file" id="photo" name="photo" accept="image/*" required>
+        <br>
+        <label for="dir" id="dir" name="dir">選擇要上傳的資料夾：</label>
+        <br>
+        <select id="dir" name="dir" required>
+            <option value="" disabled selected hidden>請選擇資料夾</option>
+            <option value="dir1">dir1</option>
+            <option value="dir2">dir2</option>
+            <option value="dir3">dir3</option>
+        </select>
         <br>
         <button type="submit">上傳</button>
 </body>
