@@ -6,37 +6,37 @@
 
 ```
 ├── index.html              # 主選單頁面
-├── add.html               # 新增資料頁面
-├── delete.html            # 刪除資料頁面
-├── update.html            # 修改資料頁面
-├── query.html             # 查詢資料頁面
-├── query_specific.html    # 特定查詢頁面
-├── get_row_example.html   # 單列查詢範例頁面
-├── get_col_example.html   # 欄位查詢範例頁面
-├── get_all_example.html   # 完整查詢範例頁面
+├── add.html                # 新增資料頁面
+├── delete.html             # 刪除資料頁面
+├── update.html             # 修改資料頁面
+├── query.html              # 查詢資料頁面
+├── query_specific.html     # 特定查詢頁面
+├── get_row_example.html    # 單列查詢範例頁面
+├── get_col_example.html    # 欄位查詢範例頁面
+├── get_all_example.html    # 完整查詢範例頁面
 ├── query_data_example.html # 排序查詢範例頁面
-├── add_data/             # 新增資料相關 API
-│   └── main.php          # 新增資料處理程式
-├── delete_data/          # 刪除資料相關 API
-│   └── main.php          # 刪除資料處理程式
-├── update_data/          # 修改資料相關 API
-│   └── main.php          # 修改資料處理程式
-├── query_data/           # 查詢資料相關 API
-│   └── main.php          # 查詢資料處理程式
-├── get_ele/              # 獲取資料表結構 API
-│   └── main.php          # 資料表結構處理程式
-├── get_all/              # 完整資料表查詢 API
-│   └── main.php          # 完整查詢處理程式
-├── get_col/              # 欄位條件查詢 API
-│   └── main.php          # 欄位查詢處理程式
-├── get_row/              # 單列資料查詢 API
-│   └── main.php          # 單列查詢處理程式
-├── admin/                # 管理者登入頁面
-│   └── login.html        # 管理者登入頁面
-│   └── login.php         # 登入驗證加跳轉
-│   └── passwd.env        # 隨便設的帳號密碼
-│   └── passwd.gitignore  # 不用理他
-└── .git/                 # Git 版本控制目錄
+├── login.html              # 管理者登入頁面
+├── add_data/               # 新增資料相關 API
+│   └── main.php            # 新增資料處理程式
+├── delete_data/            # 刪除資料相關 API
+│   └── main.php            # 刪除資料處理程式
+├── update_data/            # 修改資料相關 API
+│   └── main.php            # 修改資料處理程式
+├── query_data/             # 查詢資料相關 API
+│   └── main.php            # 查詢資料處理程式
+├── get_ele/                # 獲取資料表結構 API
+│   └── main.php            # 資料表結構處理程式
+├── get_all/                # 完整資料表查詢 API
+│   └── main.php            # 完整查詢處理程式
+├── get_col/                # 欄位條件查詢 API
+│   └── main.php            # 欄位查詢處理程式
+├── get_row/                # 單列資料查詢 API
+│   └── main.php            # 單列查詢處理程式
+├── admin/                  # 管理者登入頁面
+│   └── login.php           # 登入驗證加跳轉
+├── db_config               # 資料庫設定
+│   └── main.php            # 資料庫設定
+└── .git/                   # Git 版本控制目錄
 ```
 
 ## API 說明
