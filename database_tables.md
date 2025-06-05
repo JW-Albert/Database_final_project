@@ -10,7 +10,7 @@
 | email        | VARCHAR(100) | 信箱     | 否        |
 | password     | VARCHAR(50)  | 密碼     | 否        |
 | type         | VARCHAR(10)  | 類型     | 否        |
-| photo_url    | VARCHAR(300) | 圖片連結 | 否        |
+| photo        | VARCHAR(300) | 圖片名稱 | 否        |
 | website_url  | VARCHAR(300) | 個人網站 | 否        |
 
 ## 課程表 (Course)
@@ -204,7 +204,7 @@
 | password  | VARCHAR(50)  | 密碼     | 否        |
 | extension | INT(4)       | 分機     | 否        |
 | email     | VARCHAR(100) | 信箱     | 否        |
-| photo_url | VARCHAR(300) | 圖片連結 | 否        |
+| photo     | VARCHAR(300) | 圖片名稱 | 否        |
 
 ## 管理員表 (Admin)
 | 欄位名稱 | 資料類型    | 說明 | 是否必填  |
