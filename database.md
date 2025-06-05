@@ -271,14 +271,16 @@ CREATE TABLE Patent (
 ) COMMENT='核准專利表';
 ```
 
-## 資訊系表
+## 系表
 ```sql
-CREATE TABLE CSDepartment (
+CREATE TABLE Department (
     department_id CHAR(5) COMMENT '代號',
+    locat VARCHAR(100) COMMENT '地址',
+    office VARCHAR(100) COMMENT '系辦',
     phone_extension INT(12) COMMENT '電話',
     email VARCHAR(100) COMMENT '信箱',
     PRIMARY KEY(department_id)
-) COMMENT='資訊系表';
+) COMMENT='系表';
 ```
 
 ## 系所介紹表

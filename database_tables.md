@@ -174,10 +174,12 @@
 | category      | VARCHAR(100) | 類別     | 是        |
 | date          | VARCHAR(50)  | 日期     | 是        |
 
-## 資訊系表 (CSDepartment)
+## 系表 (Department)
 | 欄位名稱        | 資料類型     | 說明 | 是否必填  |
 | --------------- | ------------ | ---- | --------- |
 | department_id   | CHAR(5)      | 代號 | 是 (主鍵) |
+| locat           | VARCHAR(100) | 地址 | 否        |
+| office          | VARCHAR(100) | 系辦 | 否        |
 | phone_extension | INT(12)      | 電話 | 否        |
 | email           | VARCHAR(100) | 信箱 | 否        |
 

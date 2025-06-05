@@ -101,6 +101,40 @@ body {
     line-height: 1.6;
 }
 
+/* 聯絡資訊樣式 */
+.contact-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.info-item {
+    background-color: #f8f9fa;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.info-item:hover {
+    transform: translateY(-5px);
+}
+
+.info-item h3 {
+    color: #2863a2;
+    margin: 0 0 15px 0;
+    font-size: 1.2em;
+    border-bottom: 2px solid #2863a2;
+    padding-bottom: 8px;
+}
+
+.info-item p {
+    margin: 0;
+    color: #333;
+    line-height: 1.6;
+}
+
 .site-footer {
     background-color: #2863a2;
     color: white;
@@ -145,5 +179,9 @@ body {
 
     .footer-right p {
         white-space: normal;
+    }
+
+    .contact-info {
+        grid-template-columns: 1fr;
     }
 }
