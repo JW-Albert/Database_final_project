@@ -16,15 +16,15 @@
         <!-- 左側選單 -->
         <nav class="sidebar">
             <h2>系所成員</h2>
-            <a id="current" href="chairman.html">系主任</a>
-            <a href="honorary.html">榮譽特聘教授</a>
-            <a href="chair.html">講座教授</a>
-            <a href="distinguished_chair.html">特約教授</a>
-            <a href="distinguished.html">特聘教授</a>
-            <a href="full_time.html">專任教授</a>
-            <a href="part_time.html">兼任教授</a>
-            <a href="staff.html">行政人員</a>
-            <a href="retired.html">退休教授</a>
+            <a class="sidebar-link" id="current" data-href="chairman">系主任</a>
+            <a class="sidebar-link" data-href="honorary">榮譽特聘教授</a>
+            <a class="sidebar-link" data-href="chair">講座教授</a>
+            <a class="sidebar-link" data-href="distinguished_chair">特約教授</a>
+            <a class="sidebar-link" data-href="distinguished">特聘教授</a>
+            <a class="sidebar-link" data-href="full_time">專任教授</a>
+            <a class="sidebar-link" data-href="part_time">兼任教授</a>
+            <a class="sidebar-link" data-href="staff">行政人員</a>
+            <a class="sidebar-link" data-href="retired">退休教授</a>
         </nav>
         <!-- 右側成員卡片區 -->
         <section class="card-list">
@@ -141,6 +141,16 @@
                 }
             });
         });
+    </script>
+    <script>
+        // 動態補上 BASE_PATH + '/members/xxx' 給 sidebar 連結
+        (function () {
+            if (typeof BASE_PATH === 'undefined') return;
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                const page = link.getAttribute('data-href');
+                link.setAttribute('href', BASE_PATH + '/members/' + page);
+            });
+        })();
     </script>
 </body>
 
