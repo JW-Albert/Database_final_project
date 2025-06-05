@@ -4,11 +4,8 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST');
 header('Content-Type: application/json; charset=utf-8');
 
-// 資料庫連接設定
-$host = 'localhost';
-$dbname = 'your_database_name';
-$username = 'your_username';
-$password = 'your_password';
+require_once __DIR__ . '/../db_config/main.php';
+
 
 // 取得請求方法
 $method = $_SERVER['REQUEST_METHOD'];
@@ -66,11 +63,7 @@ if ($method === 'POST') {
             }
         }
 
-        // 建立資料庫連接
-        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-        
-        // 設定錯誤模式為例外
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
         
         // 建立WHERE子句
         $whereClauses = [];

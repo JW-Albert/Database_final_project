@@ -2,11 +2,8 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
-// 資料庫連接設定
-$host = 'localhost';
-$dbname = 'your_database';
-$username = 'your_username';
-$password = 'your_password';
+require_once __DIR__ . '/../db_config/main.php';
+
 
 // 檢查必要參數
 if (!isset($_GET['table']) || !isset($_GET['column'])) {
@@ -32,9 +29,6 @@ if (!preg_match('/^[a-zA-Z0-9_]+$/', $table)) {
 }
 
 try {
-    // 建立資料庫連接
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // 準備SQL語句
     if ($value !== null) {

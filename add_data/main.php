@@ -1,14 +1,13 @@
 <?php
+session_start(); // 必須加這行才能取得登入資訊
+
 // 設定允許跨域請求
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST');
 header('Content-Type: application/json; charset=utf-8');
 
-// 資料庫連接設定
-$host = 'localhost';
-$dbname = 'your_database_name';
-$username = 'your_username';
-$password = 'your_password';
+// 引入共用資料庫連線設定
+require_once __DIR__ . '/../db_config/main.php';
 
 // 取得請求方法
 $method = $_SERVER['REQUEST_METHOD'];
@@ -28,8 +27,21 @@ if ($method === 'POST') {
         exit;
     }
 
+    // 檢查是否有登入
+    if (!isset($_SESSION['user_id'])) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'User not logged in'
+        ]);
+        exit;
+    }
+    $loginUserId = $_SESSION['user_id'];
+
     $tableName = $data['table'];
     $insertData = $data['data'];
+
+    // 強制 user_id 為登入者
+    $insertData['user_id'] = $loginUserId;
 
     // 驗證資料表名稱（防止SQL注入）
     if (!preg_match('/^[a-zA-Z0-9_]+$/', $tableName)) {
@@ -66,12 +78,6 @@ if ($method === 'POST') {
             }
         }
 
-        // 建立資料庫連接
-        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-        
-        // 設定錯誤模式為例外
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        
         // 準備欄位名稱和值的陣列
         $columns = array_keys($insertData);
         $values = array_values($insertData);

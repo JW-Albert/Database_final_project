@@ -1,7 +1,13 @@
 <?php
-session_start(); // 啟用 session
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 require_once __DIR__ . '/../db_config/main.php';
+
+
+
+session_start(); // 啟用 session
+
 
 $input_username = $_POST['username'] ?? '';
 $input_password = $_POST['password'] ?? '';
