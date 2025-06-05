@@ -7,7 +7,7 @@
     <title>系所成員</title>
     <link rel="icon" href="/~D1210799/pics/iecs_logo.png" type="image/png" />
     <script src="/~D1210799/js/config.js"></script>
-    <link rel="stylesheet" href="/~D1210799/members/members.css">
+    <link rel="stylesheet" href="/~D1210799/members/index.css">
 </head>
 
 <body>
@@ -16,15 +16,15 @@
         <!-- 左側選單 -->
         <nav class="sidebar">
             <h2>系所成員</h2>
-            <a href="chairman">系主任</a>
-            <a href="honorary">榮譽特聘教授</a>
-            <a href="chair">講座教授</a>
-            <a href="distinguished_chair">特約教授</a>
-            <a href="distinguished">特聘教授</a>
-            <a href="full_time">專任教授</a>
-            <a href="part_time">兼任教授</a>
-            <a href="staff">行政人員</a>
-            <a href="retired">退休教授</a>
+            <a class="sidebar-link" data-href="chairman">系主任</a>
+            <a class="sidebar-link" data-href="honorary">榮譽特聘教授</a>
+            <a class="sidebar-link" data-href="chair">講座教授</a>
+            <a class="sidebar-link" data-href="distinguished_chair">特約教授</a>
+            <a class="sidebar-link" data-href="distinguished">特聘教授</a>
+            <a class="sidebar-link" data-href="full_time">專任教授</a>
+            <a class="sidebar-link" data-href="part_time">兼任教授</a>
+            <a class="sidebar-link" data-href="staff">行政人員</a>
+            <a class="sidebar-link" data-href="retired">退休教授</a>
         </nav>
         <!-- 右側成員卡片區，這裡示範放三排共九位成員卡 -->
         <section class="card-list" id="member-card-list">
@@ -115,6 +115,16 @@
             }
         }
         loadMembers();
+    </script>
+    <script>
+        // 動態補上 BASE_PATH + '/members/xxx' 給 sidebar 連結
+        (function () {
+            if (typeof BASE_PATH === 'undefined') return;
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                const page = link.getAttribute('data-href');
+                link.setAttribute('href', BASE_PATH + '/members/' + page);
+            });
+        })();
     </script>
 </body>
 
