@@ -5,7 +5,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>系所成員</title>
-    <link rel="icon" href="../pics/iecs_logo.png" type="image/png" />
+    <link id="dynamic-favicon" rel="icon" type="image/png">
+    <link rel="stylesheet" href="../header-footer.css">
+    <script src="../js/config.js"></script>
+    <link rel="stylesheet" href="../about/about.css">
     <style>
         body {
             margin: 0;
@@ -280,34 +283,9 @@
 </head>
 
 <body>
-    <!-- Header 區域 -->
-    <div class="header">
-        <a href="/" class="logo-title">
-            <img src="../pics/iecs_logo.png" alt="系徽" />
-            逢甲資訊工程學系
-        </a>
-        <div class="nav">
-            <a id="about-link" class="nav-item" href="/about">系所簡介</a>
-            <a id="contact-link" class="nav-item" href="/contact">聯絡我們</a>
-            <div class="members-container">
-                <a id="members-link" class="nav-item active" href="/members">系所成員</a>
-                <div class="dropdown">
-                    <a href="chairman.html">系主任</a>
-                    <a href="honorary.html">榮譽特聘教授</a>
-                    <a href="chair.html">講座教授</a>
-                    <a href="distinguished_chair.html">特約教授</a>
-                    <a href="distinguished.html">特聘教授</a>
-                    <a href="full_time.html">專任教授</a>
-                    <a href="part_time.html">兼任教授</a>
-                    <a href="staff.html">行政人員</a>
-                    <a href="retired.html">退休教授</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 中間內容 -->
-    <main class="content">
+    <div id="header-include"></div>
+    <div class="content" id="members-content">
+        <h1>系所成員</h1>
         <!-- 左側選單 -->
         <nav class="sidebar">
             <h2>系所成員</h2>
@@ -390,22 +368,27 @@
                 </div>
             </a>
         </section>
-    </main>
-
-    <!-- footer 不改 -->
-    <footer class="site-footer">
-        <div class="footer-left">
-            <img src="../pics/fcu_logo.svg" alt="系徽" />
-        </div>
-        <div class="footer-right">
-            <h2>聯絡我們</h2>
-            <p>地址：台中市西屯區逢大路127號（文華路100號）</p>
-            <p>系辦：逢甲大學 資訊電機館二樓（資電201）</p>
-            <p>電話：0424517250#3701</p>
-            <p>信箱：iecs@fcu.edu.tw</p>
-        </div>
-    </footer>
-
+    </div>
+    <div id="footer-include"></div>
+    <script>
+        function includeHTML(id, file) {
+            if (typeof BASE_PATH === 'undefined') return;
+            fetch(BASE_PATH + '/' + file).then(res => res.text()).then(html => {
+                document.getElementById(id).innerHTML = html;
+            });
+        }
+        includeHTML('header-include', 'header.html');
+        includeHTML('footer-include', 'footer.html');
+        // 動態設定 favicon
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof BASE_PATH !== 'undefined') {
+                var favicon = document.getElementById('dynamic-favicon');
+                if (favicon) {
+                    favicon.href = BASE_PATH + '/pics/iecs_logo.png';
+                }
+            }
+        });
+    </script>
     <script>
         const membersLink = document.getElementById('members-link');
         const navItems = document.querySelectorAll('.nav-item');
@@ -424,5 +407,3 @@
 </body>
 
 </html>
-
-

@@ -5,7 +5,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>聯絡我們</title>
-    <link rel="icon" href="../pics/iecs_logo.png" type="image/png" />
+    <link id="dynamic-favicon" rel="icon" type="image/png">
+    <link rel="stylesheet" href="/~D1210799/header-footer.css">
+    <script src="/~D1210799/js/config.js"></script>
+    <link rel="stylesheet" href="/~D1210799/about/about.css">
+    <link rel="stylesheet" href="/~D1210799/contact/contact.css">
     <style>
         body {
             margin: 0;
@@ -160,34 +164,8 @@
 </head>
 
 <body>
-    <!-- Header 區域 -->
-    <div class="header">
-        <a href="../index.html" class="logo-title">
-            <img src="../pics/iecs_logo.png" alt="系徽" />
-            逢甲資訊工程學系
-        </a>
-        <div class="nav">
-            <a class="nav-item" href="../about/index.html">系所簡介</a>
-            <a class="nav-item active" href="../contact/index.html" id="contact-link">聯絡我們</a>
-            <div class="members-container">
-                <a class="nav-item members" href="../members/index.html">系所成員</a>
-                <div class="dropdown">
-                    <a href="../members/chairman.html">系主任</a>
-                    <a href="../members/honorary.html">榮譽特聘教授</a>
-                    <a href="../members/chair.html">講座教授</a>
-                    <a href="../members/distinguished_chair.html">特約教授</a>
-                    <a href="../members/distinguished.html">特聘教授</a>
-                    <a href="../members/full_time.html">專任教授</a>
-                    <a href="../members/part_time.html">兼任教授</a>
-                    <a href="../members/staff.html">行政人員</a>
-                    <a href="../members/retired.html">退休教授</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- About 內容 -->
-    <div class="content">
+    <div id="header-include"></div>
+    <div class="content" id="contact-content">
         <h1>聯絡我們</h1>
         <p>聯絡我們</p>
         <p>聯絡我們</p>
@@ -203,26 +181,49 @@
         <p>聯絡我們</p>
         <p>聯絡我們</p>
     </div>
-
-    <!-- Footer 區域 -->
-    <footer class="site-footer">
-        <div class="footer-left">
-            <img src="../pics/fcu_logo.svg" alt="逢甲校徽" />
-        </div>
-        <div class="footer-right">
-            <h2>聯絡我們</h2>
-            <p>地址：台中市西屯區逢大路127號（文華路100號）</p>
-            <p>系辦：逢甲大學 資訊電機館二樓（資電201）</p>
-            <p>電話：0424517250#3701</p>
-            <p>信箱：iecs@fcu.edu.tw</p>
-        </div>
-    </footer>
-
+    <div id="footer-include"></div>
+    <script>
+        function fixBasePathForLinksAndImages(container) {
+            if (typeof BASE_PATH === 'undefined') return;
+            // 修正 a 標籤
+            container.querySelectorAll('a').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href.startsWith('/') && !href.startsWith(BASE_PATH)) {
+                    link.setAttribute('href', BASE_PATH + href);
+                }
+            });
+            // 修正 img 標籤
+            container.querySelectorAll('img').forEach(img => {
+                const src = img.getAttribute('src');
+                if (src && src.startsWith('/') && !src.startsWith(BASE_PATH)) {
+                    img.setAttribute('src', BASE_PATH + src);
+                }
+            });
+        }
+        function includeHTML(id, file) {
+            if (typeof BASE_PATH === 'undefined') return;
+            fetch(BASE_PATH + '/' + file).then(res => res.text()).then(html => {
+                const container = document.getElementById(id);
+                container.innerHTML = html;
+                fixBasePathForLinksAndImages(container);
+            });
+        }
+        includeHTML('header-include', 'header.html');
+        includeHTML('footer-include', 'footer.html');
+        // 動態設定 favicon
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof BASE_PATH !== 'undefined') {
+                var favicon = document.getElementById('dynamic-favicon');
+                if (favicon) {
+                    favicon.href = BASE_PATH + '/pics/iecs_logo.png';
+                }
+            }
+        });
+    </script>
     <!-- JavaScript 控制 active 狀態 -->
     <script>
         const contactLink = document.getElementById('contact-link');
         const navItems = document.querySelectorAll('.nav-item');
-
         navItems.forEach(item => {
             if (item !== contactLink) {
                 item.addEventListener('mouseenter', () => {
