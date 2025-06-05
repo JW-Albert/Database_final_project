@@ -157,6 +157,7 @@ main.content {
     flex-direction: column;
     text-decoration: none;
     color: #333;
+    height: 60%;
 }
 
 .card:hover {
