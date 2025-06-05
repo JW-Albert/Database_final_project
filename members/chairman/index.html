@@ -27,58 +27,8 @@
             <a class="sidebar-link" data-href="retired">退休教授</a>
         </nav>
         <!-- 右側成員卡片區 -->
-        <section class="card-list">
-            <h2 style="width: 100%; margin-bottom: 16px;">現任系主任</h2>
-            <a class="card" href="faculties/faculty01.html" title="John Doe">
-                <img src="pics/john_doe.jpg" alt="John Doe" />
-                <div class="card-content">
-                    <h3>John Doe</h3>
-                    <p>專任教授，研究領域包括人工智慧與機器學習。</p>
-                </div>
-            </a>
-            <h2 style="width: 100%; margin-bottom: 16px;">歷屆系主任</h2>
-            <a class="card" href="faculties/faculty02.html" title="John Doe">
-                <img src="pics/john_doe.jpg" alt="John Doe" />
-                <div class="card-content">
-                    <h3>John Doe</h3>
-                    <p>專任教授，研究領域包括人工智慧與機器學習。</p>
-                </div>
-            </a>
-            <a class="card" href="faculties/faculty03.html" title="Jane Smith">
-                <img src="pics/jane_smith.jpg" alt="Jane Smith" />
-                <div class="card-content">
-                    <h3>Jane Smith</h3>
-                    <p>專任教授，專長於軟體工程與系統分析。</p>
-                </div>
-            </a>
-            <a class="card" href="faculties/faculty04.html" title="Mike Lee">
-                <img src="pics/mike_lee.jpg" alt="Mike Lee" />
-                <div class="card-content">
-                    <h3>Mike Lee</h3>
-                    <p>兼任教授，專注於資料庫系統與資料探勘。</p>
-                </div>
-            </a>
-            <a class="card" href="faculties/faculty05.html" title="Lisa Wang">
-                <img src="pics/lisa_wang.jpg" alt="Lisa Wang" />
-                <div class="card-content">
-                    <h3>Lisa Wang</h3>
-                    <p>專任教授，致力於物聯網與感測器網路研究。</p>
-                </div>
-            </a>
-            <a class="card" href="faculties/faculty06.html" title="Eric Chang">
-                <img src="pics/eric_chang.jpg" alt="Eric Chang" />
-                <div class="card-content">
-                    <h3>Eric Chang</h3>
-                    <p>講座教授，專注於軟體架構與設計模式。</p>
-                </div>
-            </a>
-            <a class="card" href="faculties/faculty07.html" title="Susan Chen">
-                <img src="pics/susan_chen.jpg" alt="Susan Chen" />
-                <div class="card-content">
-                    <h3>Susan Chen</h3>
-                    <p>特聘教授，研究領域涵蓋大數據分析與雲端運算。</p>
-                </div>
-            </a>
+        <section class="card-list" id="head-card-list">
+            <!-- 卡片將由 JS 動態產生 -->
         </section>
     </main>
     <div id="footer-include"></div>
@@ -151,6 +101,56 @@
                 link.setAttribute('href', BASE_PATH + '/members/' + page);
             });
         })();
+    </script>
+    <script>
+        async function loadHeads() {
+            const list = document.getElementById('head-card-list');
+            list.innerHTML = '載入中...';
+            try {
+                const res = await fetch('/~D1210799/members/chairman/api.php');
+                const data = await res.json();
+                if (!data.success) throw new Error(data.message);
+                let html = '';
+                if (data.heads.length > 0) {
+                    // 現任系主任
+                    const current = data.heads[0];
+                    html += `<h2 style="width:100%;margin-bottom:16px;">現任系主任</h2>`;
+                    html += `
+                <a class="card" href="#" title="${current.name}">
+                    <img src="pics/${current.photo || 'default.png'}" alt="${current.name}" />
+                    <div class="card-content">
+                        <h3>${current.name}<span class="term">　第${current.term}屆</span></h3>
+                        ${current.type ? `<p>${current.type}</p>` : ''}
+                        ${current.extension ? `<p>分機：${current.extension}</p>` : ''}
+                        ${current.email ? `<p>信箱：${current.email}</p>` : ''}
+                    </div>
+                </a>`;
+                    // 歷屆系主任
+                    if (data.heads.length > 1) {
+                        html += `<h2 style="width:100%;margin-bottom:16px;">歷屆系主任</h2>`;
+                        for (let i = 1; i < data.heads.length; ++i) {
+                            const h = data.heads[i];
+                            html += `
+                        <a class="card" href="#" title="${h.name}">
+                            <img src="pics/${h.photo || 'default.png'}" alt="${h.name}" />
+                            <div class="card-content">
+                                <h3>${h.name}<span class="term">　第${h.term}屆</span></h3>
+                                ${h.type ? `<p>${h.type}</p>` : ''}
+                                ${h.extension ? `<p>分機：${h.extension}</p>` : ''}
+                                ${h.email ? `<p>信箱：${h.email}</p>` : ''}
+                            </div>
+                        </a>`;
+                        }
+                    }
+                } else {
+                    html = '查無資料';
+                }
+                list.innerHTML = html;
+            } catch (e) {
+                list.innerHTML = '載入失敗：' + e.message;
+            }
+        }
+        loadHeads();
     </script>
 </body>
 
