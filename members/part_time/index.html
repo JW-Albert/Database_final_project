@@ -5,322 +5,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>兼任教授</title>
+    <link rel="icon" href="/~D1210799/pics/iecs_logo.png" type="image/png" />
+    <script src="/~D1210799/js/config.js"></script>
     <link rel="icon" href="../pics/iecs_logo.png" type="image/png" />
-    <style>
-        body {
-            margin: 0;
-            padding: 0 150px;
-            font-family: Arial, sans-serif;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #ffffff;
-            padding: 10px 20px;
-        }
-
-        .logo-title {
-            display: flex;
-            align-items: center;
-            color: #2863a2;
-            font-weight: bold;
-            font-size: 20px;
-            text-decoration: none;
-        }
-
-        .logo-title img {
-            width: 50px;
-            height: 50px;
-            margin-right: 10px;
-        }
-
-        .nav {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .nav-item {
-            color: #545454;
-            text-decoration: none;
-            cursor: pointer;
-            padding: 16px 8px;
-        }
-
-        .nav-item:hover {
-            color: #2863a2;
-            border-bottom: 2px solid #2863a2;
-            padding-bottom: 14px;
-        }
-
-        .nav-item.active {
-            color: #2863a2;
-            border-bottom: 2px solid #2863a2;
-            padding-bottom: 14px;
-        }
-
-        .members-container {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .members-container:hover>.nav-item.members {
-            color: #2863a2;
-            border-bottom: 2px solid #2863a2;
-            padding-bottom: 14px;
-        }
-
-        .dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background-color: white;
-            border: 1px solid #ccc;
-            border-top: none;
-            display: none;
-            flex-direction: column;
-            min-width: 180px;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-        }
-
-        .dropdown a {
-            padding: 10px;
-            text-decoration: none;
-            color: #545454;
-            display: block;
-        }
-
-        .dropdown a:hover {
-            background-color: #f0f0f0;
-            color: #2863a2;
-        }
-
-        .members-container:hover>.dropdown {
-            display: flex;
-        }
-
-        main.content {
-            display: flex;
-            gap: 40px;
-            margin: 40px 0;
-            min-height: 500px;
-        }
-
-        /* 左側選單 */
-        .sidebar {
-            flex: 0 0 200px;
-            padding: 20px;
-            height: fit-content;
-        }
-
-        .sidebar h2 {
-            font-size: 18px;
-            margin-bottom: 16px;
-            color: #2863a2;
-        }
-
-        .sidebar a {
-            display: block;
-            padding: 8px 10px;
-            color: #545454;
-            text-decoration: none;
-            border-radius: 4px;
-            margin-bottom: 8px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .sidebar a:hover {
-            background-color: #2863a2;
-            color: white;
-        }
-
-        .sidebar a.active {
-            background-color: #2863a2;
-            color: white;
-            font-weight: bold;
-        }
-
-        /* 右側卡片區 */
-        .card-list {
-            flex: 1;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 24px;
-            justify-content: flex-start;
-        }
-
-        .card {
-            cursor: pointer;
-            width: calc((100% / 3) - 16px);
-            /* 一排三張，留間隙 */
-            background-color: white;
-            border-radius: 6px;
-            box-shadow: 0 3px 8px rgb(0 0 0 / 0.15);
-            transition: box-shadow 0.3s, transform 0.3s;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            text-decoration: none;
-            color: #333;
-        }
-
-        .card:hover {
-            box-shadow: 0 8px 20px rgb(0 0 0 / 0.25);
-            background-color: #2863a2;
-            transform: translateY(-5px);
-        }
-
-        .card:hover .card-content h3 {
-            color: white;
-            /* 人名變白色 */
-        }
-
-        .card:hover .card-content p {
-            color: #d0e4ff;
-            /* 副標文字變淺藍色（可選） */
-        }
-
-        .card img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-        }
-
-        .card-content {
-            padding: 14px 12px;
-            flex-grow: 1;
-        }
-
-        .card-content h3 {
-            margin: 0 0 8px 0;
-            font-size: 18px;
-            color: #2863a2;
-        }
-
-        .card-content p {
-            margin: 0;
-            font-size: 14px;
-            color: #555;
-            line-height: 1.4;
-            max-height: 56px;
-            /* 約4行 */
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* footer 基本樣式 */
-        .site-footer {
-            background-color: #2863a2;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 30px 150px;
-            font-size: 14px;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-top: 40px;
-            box-sizing: border-box;
-            width: 100vw;
-            /* 讓 footer 寬度是視窗寬度 */
-            margin-left: calc(-50vw + 50%);
-            /* 負的左右邊距，讓它從螢幕最左邊開始 */
-            margin-right: calc(-50vw + 50%);
-            box-sizing: border-box;
-        }
-
-        /* 左邊校徽 */
-        .footer-left img {
-            height: 70px;
-            width: auto;
-        }
-
-        /* 右邊文字 */
-        .footer-right p {
-            margin: 2px 0;
-            line-height: 1.5;
-            white-space: nowrap;
-        }
-
-        /* 手機或小螢幕調整，改為上下排列 */
-        @media (max-width: 900px) {
-            body {
-                padding: 0 20px;
-            }
-
-            main.content {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                height: auto;
-                margin-bottom: 30px;
-            }
-
-            .card-list {
-                justify-content: center;
-            }
-
-            .card {
-                width: calc(50% - 12px);
-            }
-        }
-
-        @media (max-width: 500px) {
-            .card {
-                width: 100%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/~D1210799/members/chair/index.css">
 </head>
 
 <body>
-    <!-- Header 區域 -->
-    <div class="header">
-        <a href="/" class="logo-title">
-            <img src="../pics/iecs_logo.png" alt="系徽" />
-            逢甲資訊工程學系
-        </a>
-        <div class="nav">
-            <a id="about-link" class="nav-item" href="/about">系所簡介</a>
-            <a id="contact-link" class="nav-item" href="/contact">聯絡我們</a>
-            <div class="members-container">
-                <a id="members-link" class="nav-item active" href="/members">系所成員</a>
-                <div class="dropdown">
-                    <a href="chairman.html">系主任</a>
-                    <a href="honorary.html">榮譽特聘教授</a>
-                    <a href="chair.html">講座教授</a>
-                    <a href="distinguished_chair.html">特約教授</a>
-                    <a href="distinguished.html">特聘教授</a>
-                    <a href="full_time.html">專任教授</a>
-                    <a href="part_time.html">兼任教授</a>
-                    <a href="staff.html">行政人員</a>
-                    <a href="retired.html">退休教授</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="header-include"></div>
 
     <!-- 中間內容 -->
     <main class="content">
-        <h1>講座教授</h1>
         <!-- 左側選單 -->
         <nav class="sidebar">
             <h2>系所成員</h2>
-            <a href="chairman.html">系主任</a>
-            <a href="honorary.html">榮譽特聘教授</a>
-            <a href="chair.html">講座教授</a>
-            <a href="distinguished_chair.html">特約教授</a>
-            <a href="distinguished.html">特聘教授</a>
-            <a href="full_time.html">專任教授</a>
-            <a id="current" href="part_time.html">兼任教授</a>
-            <a href="staff.html">行政人員</a>
-            <a href="retired.html">退休教授</a>
+            <a class="sidebar-link" data-href="chairman">系主任</a>
+            <a class="sidebar-link" data-href="honorary">榮譽特聘教授</a>
+            <a class="sidebar-link" data-href="chair">講座教授</a>
+            <a class="sidebar-link" data-href="distinguished_chair">特約教授</a>
+            <a class="sidebar-link" data-href="distinguished">特聘教授</a>
+            <a class="sidebar-link" data-href="full_time">專任教授</a>
+            <a id="current" class="sidebar-link" data-href="part_time">兼任教授</a>
+            <a class="sidebar-link" data-href="staff">行政人員</a>
+            <a class="sidebar-link" data-href="retired">退休教授</a>
         </nav>
 
         <!-- 右側成員卡片區 -->
@@ -371,21 +78,7 @@
             </a>
         </section>
     </main>
-
-    <!-- footer 不改 -->
-    <footer class="site-footer">
-        <div class="footer-left">
-            <img src="../pics/fcu_logo.svg" alt="系徽" />
-        </div>
-        <div class="footer-right">
-            <h2>聯絡我們</h2>
-            <p>地址：台中市西屯區逢大路127號（文華路100號）</p>
-            <p>系辦：逢甲大學 資訊電機館二樓（資電201）</p>
-            <p>電話：0424517250#3701</p>
-            <p>信箱：iecs@fcu.edu.tw</p>
-        </div>
-    </footer>
-
+    <div id="footer-include"></div>
     <script>
         const membersLink = document.getElementById('members-link');
         const navItems = document.querySelectorAll('.nav-item');
@@ -406,23 +99,60 @@
             const currentLink = document.getElementById('current');
             const sidebarLinks = sidebar.querySelectorAll('a');
 
-            // 初始時給兼任教授加上 active
+            // 初始時給講座教授加上 active
             currentLink.classList.add('active');
 
             sidebarLinks.forEach(link => {
                 if (link !== currentLink) {
-                    // 其他連結 hover 時移除兼任教授 active
+                    // 其他連結 hover 時移除講座教授 active
                     link.addEventListener('mouseenter', () => {
                         currentLink.classList.remove('active');
                     });
 
-                    // 其他連結離開時，還原兼任教授 active
+                    // 其他連結離開時，還原講座教授 active
                     link.addEventListener('mouseleave', () => {
                         currentLink.classList.add('active');
                     });
                 }
             });
         });
+    </script>
+    <script>
+        function fixBasePathForLinksAndImages(container) {
+            if (typeof BASE_PATH === 'undefined') return;
+            container.querySelectorAll('a').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href.startsWith('/') && !href.startsWith(BASE_PATH)) {
+                    link.setAttribute('href', BASE_PATH + href);
+                }
+            });
+            container.querySelectorAll('img').forEach(img => {
+                const src = img.getAttribute('src');
+                if (src && src.startsWith('/') && !src.startsWith(BASE_PATH)) {
+                    img.setAttribute('src', BASE_PATH + src);
+                }
+            });
+        }
+        function includeHTML(id, file) {
+            if (typeof BASE_PATH === 'undefined') return;
+            fetch(BASE_PATH + '/' + file).then(res => res.text()).then(html => {
+                const container = document.getElementById(id);
+                container.innerHTML = html;
+                fixBasePathForLinksAndImages(container);
+            });
+        }
+        includeHTML('header-include', 'header.html');
+        includeHTML('footer-include', 'footer.html');
+    </script>
+    <script>
+        // 動態補上 BASE_PATH + '/members/xxx' 給 sidebar 連結
+        (function () {
+            if (typeof BASE_PATH === 'undefined') return;
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                const page = link.getAttribute('data-href');
+                link.setAttribute('href', BASE_PATH + '/members/' + page);
+            });
+        })();
     </script>
 </body>
 
