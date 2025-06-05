@@ -310,7 +310,7 @@ CREATE TABLE Staff (
     password VARCHAR(50) COMMENT '密碼',
     extension INT(4) COMMENT '分機',
     email VARCHAR(100) COMMENT '信箱',
-    photo_url VARCHAR(300) COMMENT '圖片連結',
+    photo VARCHAR(300) COMMENT '圖片名稱',
     PRIMARY KEY(staff_id)
 ) COMMENT='行政人員表';
 ```

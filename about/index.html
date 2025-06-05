@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>系所簡介</title>
+    <link rel="icon" href="../pics/iecs_logo.png" type="image/png" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0 150px;
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ffffff;
+            padding: 10px 20px;
+        }
+
+        .logo-title {
+            display: flex;
+            align-items: center;
+            color: #2863a2;
+            font-weight: bold;
+            font-size: 20px;
+            text-decoration: none;
+        }
+
+        .logo-title img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #545454;
+            text-decoration: none;
+            cursor: pointer;
+            padding: 16px 8px;
+        }
+
+        .nav-item:hover {
+            color: #2863a2;
+            border-bottom: 2px solid #2863a2;
+            padding-bottom: 14px;
+        }
+
+        /* 目前頁面樣式 */
+        .nav-item.active {
+            color: #2863a2;
+            border-bottom: 2px solid #2863a2;
+            padding-bottom: 14px;
+        }
+
+        .members-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .members-container:hover>.nav-item.members {
+            color: #2863a2;
+            border-bottom: 2px solid #2863a2;
+            padding-bottom: 14px;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-top: none;
+            display: none;
+            flex-direction: column;
+            min-width: 180px;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+
+        .dropdown a {
+            padding: 10px;
+            text-decoration: none;
+            color: #545454;
+            display: block;
+        }
+
+        .dropdown a:hover {
+            background-color: #f0f0f0;
+            color: #2863a2;
+        }
+
+        .members-container:hover>.dropdown {
+            display: flex;
+        }
+
+        .content {
+            margin: 40px 0;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .site-footer {
+            background-color: #2863a2;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 150px;
+            font-size: 14px;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 40px;
+            box-sizing: border-box;
+            width: 100vw;
+            /* 讓 footer 寬度是視窗寬度 */
+            margin-left: calc(-50vw + 50%);
+            /* 負的左右邊距，讓它從螢幕最左邊開始 */
+            margin-right: calc(-50vw + 50%);
+            box-sizing: border-box;
+        }
+
+        .footer-left img {
+            height: 70px;
+            width: auto;
+        }
+
+        .footer-right p {
+            margin: 2px 0;
+            line-height: 1.5;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 0 20px;
+            }
+
+            .site-footer {
+                flex-direction: column;
+                padding: 20px 20px;
+                text-align: center;
+            }
+
+            .footer-right p {
+                white-space: normal;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header 區域 -->
+    <div class="header">
+        <a href="../index.html" class="logo-title">
+            <img src="../pics/iecs_logo.png" alt="系徽" />
+            逢甲資訊工程學系
+        </a>
+        <div class="nav">
+            <a class="nav-item active" href="../about/index.html" id="about-link">系所簡介</a>
+            <a class="nav-item" href="../contact/index.html">聯絡我們</a>
+            <div class="members-container">
+                <a class="nav-item members" href="../members/index.html">系所成員</a>
+                <div class="dropdown">
+                    <a href="../members/chairman.html">系主任</a>
+                    <a href="../members/honorary.html">榮譽特聘教授</a>
+                    <a href="../members/chair.html">講座教授</a>
+                    <a href="../members/distinguished_chair.html">特約教授</a>
+                    <a href="../members/distinguished.html">特聘教授</a>
+                    <a href="../members/full_time.html">專任教授</a>
+                    <a href="../members/part_time.html">兼任教授</a>
+                    <a href="../members/staff.html">行政人員</a>
+                    <a href="../members/retired.html">退休教授</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About 內容 -->
+    <div class="content">
+        <h1>系所簡介</h1>
+        <p>逢甲資訊系系所簡介</p>
+        <p>逢甲資訊系系所簡介</p>
+        <p>逢甲資訊系系所簡介</p>
+        <p>逢甲資訊系系所簡介</p>
+        <p>逢甲資訊系系所簡介</p>
+        <p>逢甲資訊系系所簡介</p>
+        <p>逢甲資訊系系所簡介</p>
+        <p>逢甲資訊系系所簡介</p>
+        <p>逢甲資訊系系所簡介</p>
+        <p>逢甲資訊系系所簡介</p>
+        <p>逢甲資訊系系所簡介</p>
+        <p>逢甲資訊系系所簡介</p>
+        <p>逢甲資訊系系所簡介</p>
+        <p>逢甲資訊系系所簡介</p>
+        <p>逢甲資訊系系所簡介</p>
+    </div>
+
+    <!-- Footer 區域 -->
+    <footer class="site-footer">
+        <div class="footer-left">
+            <img src="../pics/fcu_logo.svg" alt="逢甲校徽" />
+        </div>
+        <div class="footer-right">
+            <h2>聯絡我們</h2>
+            <p>地址：台中市西屯區逢大路127號（文華路100號）</p>
+            <p>系辦：逢甲大學 資訊電機館二樓（資電201）</p>
+            <p>電話：0424517250#3701</p>
+            <p>信箱：iecs@fcu.edu.tw</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript 控制 active 狀態 -->
+    <script>
+        const aboutLink = document.getElementById('about-link');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        navItems.forEach(item => {
+            if (item !== aboutLink) {
+                item.addEventListener('mouseenter', () => {
+                    aboutLink.classList.remove('active');
+                });
+                item.addEventListener('mouseleave', () => {
+                    aboutLink.classList.add('active');
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

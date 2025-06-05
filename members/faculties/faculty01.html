@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>逢甲大學資訊系系所簡介</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0 150px;
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ffffff;
+            padding: 10px 20px;
+        }
+
+        .logo-title {
+            display: flex;
+            align-items: center;
+            color: #2863a2;
+            font-weight: bold;
+            font-size: 20px;
+            text-decoration: none;
+        }
+
+        .logo-title img {
+            width: 70px;
+            height: 70px;
+            margin-right: 10px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #545454;
+            text-decoration: none;
+            cursor: pointer;
+            padding: 16px 8px;
+        }
+
+        .nav-item:hover {
+            color: #2863a2;
+            border-bottom: 2px solid #2863a2;
+            padding-bottom: 14px;
+        }
+
+        /* 目前頁面樣式 */
+        .nav-item.active {
+            color: #2863a2;
+            border-bottom: 2px solid #2863a2;
+            padding-bottom: 14px;
+        }
+
+        .members-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .members-container:hover>.nav-item.members {
+            color: #2863a2;
+            border-bottom: 2px solid #2863a2;
+            padding-bottom: 14px;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-top: none;
+            display: none;
+            flex-direction: column;
+            min-width: 180px;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+
+        .dropdown a {
+            padding: 10px;
+            text-decoration: none;
+            color: #545454;
+            display: block;
+        }
+
+        .dropdown a:hover {
+            background-color: #f0f0f0;
+            color: #2863a2;
+        }
+
+        .members-container:hover>.dropdown {
+            display: flex;
+        }
+
+        .content {
+            margin: 40px 0;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .site-footer {
+            background-color: #2863a2;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 80px;
+            font-size: 14px;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 40px;
+            box-sizing: border-box;
+        }
+
+        .footer-left img {
+            height: 70px;
+            width: auto;
+        }
+
+        .footer-right p {
+            margin: 2px 0;
+            line-height: 1.5;
+            white-space: nowrap;
+        }
+
+        .profile h1 {
+            color: #2863a2;
+            margin-bottom: 10px;
+        }
+
+        .profile h2 {
+            margin-top: 30px;
+            color: #333333;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        .profile ul,
+        .profile ol {
+            margin-left: 20px;
+            padding-left: 0;
+        }
+
+        .profile li {
+            margin-bottom: 5px;
+        }
+
+        .profile a {
+            color: #2863a2;
+            text-decoration: none;
+        }
+
+        .profile a:hover {
+            text-decoration: underline;
+        }
+
+        .profile img {
+            width: 180px;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-card {
+            background-color: #f7f9fc;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 40px;
+            border: 5px solid #2863a2;
+        }
+
+        .profile-header {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-photo {
+            width: 160px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .profile-name {
+            color: #2863a2;
+            font-size: 28px;
+            margin: 0 0 10px 0;
+        }
+
+        .profile-section {
+            margin-top: 25px;
+        }
+
+        .profile-section h2 {
+            color: #2863a2;
+            border-bottom: 2px solid #2863a2;
+            padding-bottom: 6px;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .profile-section ul,
+        .profile-section ol {
+            padding-left: 20px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .profile-section ul li,
+        .profile-section ol li {
+            margin-bottom: 6px;
+        }
+
+        a {
+            color: #2863a2;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .profile-card {
+                padding: 20px;
+            }
+
+            .profile-photo {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 0 20px;
+            }
+
+            .site-footer {
+                flex-direction: column;
+                padding: 20px 20px;
+                text-align: center;
+            }
+
+            .footer-right p {
+                white-space: normal;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header 區域 -->
+    <div class="header">
+        <a href="../../index.html" class="logo-title">
+            <img src="../../pics/iecs_logo.png" alt="系徽" />
+            逢甲資訊工程學系
+        </a>
+        <div class="nav">
+            <a class="nav-item" href="../../about.html">系所簡介</a>
+            <a class="nav-item" href="../../contact.html">聯絡我們</a>
+            <div class="members-container">
+                <a class="nav-item active" href="../../members.html" id="members-link">系所成員</a>
+                <div class="dropdown">
+                    <a href="../members/chairman.html">系主任</a>
+                    <a href="../members/honorary.html">榮譽特聘教授</a>
+                    <a href="../members/chair.html">講座教授</a>
+                    <a href="../members/distinguished_chair.html">特約教授</a>
+                    <a href="../members/distinguished.html">特聘教授</a>
+                    <a href="../members/full_time.html">專任教授</a>
+                    <a href="../members/part_time.html">兼任教授</a>
+                    <a href="../members/staff.html">行政人員</a>
+                    <a href="../members/retired.html">退休教授</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About 內容 -->
+    <div class="profile-card">
+        <div class="profile-header">
+            <img src="../../pics/professors/dmwang.jpg" alt="王大明照片" class="profile-photo" />
+            <div class="profile-info">
+                <h1 class="profile-name">王大明 教授</h1>
+                <p><strong>信箱：</strong><a href="mailto:dmwang@fcu.edu.tw">dmwang@fcu.edu.tw</a></p>
+                <p><strong>分機：</strong>3705</p>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <h2>課表</h2>
+            <ul>
+                <li>資工系統程式（星期一 10:10–12:00）</li>
+                <li>資料結構（星期三 14:10–16:00）</li>
+            </ul>
+        </div>
+
+        <div class="profile-section">
+            <h2>學歷</h2>
+            <ul>
+                <li>國立成功大學 資訊工程博士</li>
+                <li>國立中山大學 資訊工程碩士</li>
+            </ul>
+        </div>
+
+        <div class="profile-section">
+            <h2>專長</h2>
+            <ul>
+                <li>人工智慧</li>
+                <li>機器學習</li>
+                <li>資料探勘</li>
+            </ul>
+        </div>
+
+        <div class="profile-section">
+            <h2>校內經歷</h2>
+            <ul>
+                <li>逢甲大學資訊工程學系 系主任（2018–2022）</li>
+                <li>教務處 副教務長（2015–2017）</li>
+            </ul>
+        </div>
+
+        <div class="profile-section">
+            <h2>校外經歷</h2>
+            <ul>
+                <li>中華民國人工智慧學會 理事</li>
+                <li>Google Taiwan 訪問學者（2019）</li>
+            </ul>
+        </div>
+
+        <div class="profile-section">
+            <h2>論文</h2>
+            <ol>
+                <li>Wang, D. M., & Chen, Y. L. (2022). Deep Learning for Medical Diagnosis. <em>IEEE Transactions on
+                        AI</em>, 10(3), 45–56.</li>
+                <li>Wang, D. M. (2021). Hybrid Data Mining in Big Data Environment. <em>Journal of Data Science</em>,
+                    18(2), 123–134.</li>
+            </ol>
+        </div>
+
+        <div class="profile-section">
+            <h2>參與計畫</h2>
+            <ul>
+                <li>教育部高教深耕計畫（2020–2024）</li>
+                <li>國科會計畫：多模態醫療影像分析（2021–2023）</li>
+            </ul>
+        </div>
+    </div>
+
+
+
+    <!-- Footer 區域 -->
+    <footer class="site-footer">
+        <div class="footer-left">
+            <img src="../../pics/fcu_logo.svg" alt="逢甲校徽" />
+        </div>
+        <div class="footer-right">
+            <h2>聯絡我們</h2>
+            <p>地址：台中市西屯區逢大路127號（文華路100號）</p>
+            <p>系辦：逢甲大學 資訊電機館二樓（資電201）</p>
+            <p>電話：0424517250#3701</p>
+            <p>信箱：iecs@fcu.edu.tw</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript 控制 active 狀態 -->
+    <script>
+        const membersLink = document.getElementById('members-link');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        navItems.forEach(item => {
+            if (item !== membersLink) {
+                item.addEventListener('mouseenter', () => {
+                    membersLink.classList.remove('active');
+                });
+                item.addEventListener('mouseleave', () => {
+                    membersLink.classList.add('active');
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
