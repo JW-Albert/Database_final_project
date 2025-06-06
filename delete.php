@@ -5,14 +5,12 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>刪除資料 - 資料庫管理系統</title>
+    <title>刪除教授資料 - 資料庫管理系統</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -283,34 +281,38 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             margin-bottom: 0;
         }
 
+        .danger-area {
+            margin: 30px 0;
+        }
+
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
                 text-align: center;
             }
-            
+
             .header h1 {
                 font-size: 1.8rem;
             }
-            
+
             .main-card {
                 padding: 20px;
             }
-            
+
             .table-input-group {
                 flex-direction: column;
             }
-            
+
             .condition-row {
                 grid-template-columns: 1fr;
                 gap: 10px;
             }
-            
+
             .actions {
                 flex-direction: column;
                 align-items: stretch;
             }
-            
+
             .button {
                 justify-content: center;
                 margin-right: 0;
@@ -327,249 +329,59 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 返回主選單
             </a>
             <div class="header-content">
-                <h1><i class="fas fa-trash-alt"></i> 刪除資料</h1>
-                <p>安全地移除不需要的記錄</p>
+                <h1><i class="fas fa-trash-alt"></i> 刪除教授全部資料</h1>
+                <p>選擇教授後，將會刪除該教授在所有相關資料表的資料，請謹慎操作！</p>
             </div>
         </div>
-
-        <div class="warning-banner">
-            <i class="fas fa-exclamation-triangle"></i>
-            <div class="warning-content">
-                <h3>危險操作警告</h3>
-                <p>刪除資料是不可逆的操作，請謹慎設定條件並確認後再執行</p>
-            </div>
-        </div>
-
-        <div class="main-card">
+        <div class="main-card danger-area">
             <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-table"></i>
-                    資料表設定
-                </div>
-                <div class="table-input-group">
-                    <div class="form-group">
-                        <label for="tableName">資料表名稱：</label>
-                        <input type="text" id="tableName" placeholder="請輸入資料表名稱" required>
-                    </div>
-                    <button class="button" onclick="loadTableColumns()">
-                        <i class="fas fa-download"></i>
-                        載入欄位
-                    </button>
-                </div>
+                <label for="professorSelect">選擇教授：</label>
+                <select id="professorSelect"></select>
             </div>
-
-            <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-filter"></i>
-                    刪除條件設定
-                </div>
-                <div id="fieldsContainer" class="fields-container">
-                    <!-- 動態條件欄位將在這裡生成 -->
-                </div>
-                
-                <div class="actions">
-                    <button class="button secondary" onclick="addField()">
-                        <i class="fas fa-plus"></i>
-                        新增條件
-                    </button>
-                    <button class="button danger" onclick="submitDelete()">
-                        <i class="fas fa-trash"></i>
-                        執行刪除
-                    </button>
-                </div>
-            </div>
+            <button class="button danger" onclick="deleteProfessorAllData()">
+                <i class="fas fa-trash"></i>
+                刪除該教授所有資料
+            </button>
         </div>
     </div>
-
     <script>
-        let tableColumns = [];
-        let selectedColumns = new Set();
-
-        async function loadTableColumns() {
-            const tableName = document.getElementById('tableName').value;
-            if (!tableName) {
-                alert('請輸入資料表名稱');
-                return;
-            }
-
-            try {
-                const response = await fetch(`http://localhost/get_ele/main.php?table=${encodeURIComponent(tableName)}`);
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    tableColumns = data.data.columns;
-                    selectedColumns.clear();
-                    document.getElementById('fieldsContainer').innerHTML = '';
-                    addField(); // 自動新增第一個條件
-                } else {
-                    alert('載入欄位失敗：' + data.message);
-                }
-            } catch (error) {
-                alert('載入欄位時發生錯誤：' + error.message);
-            }
-        }
-
-        function updateAllColumnSelectors() {
-            const selects = document.querySelectorAll('.column-select');
-            const selectedValues = Array.from(selects).map(select => select.value);
-
-            selects.forEach(select => {
-                const currentValue = select.value;
-                select.innerHTML = '<option value="">請選擇欄位</option>';
-
-                tableColumns.forEach(column => {
-                    const option = document.createElement('option');
-                    option.value = column.name;
-                    option.textContent = column.name;
-
-                    if (selectedValues.includes(column.name) && column.name !== currentValue) {
-                        option.disabled = true;
-                    }
-
-                    if (column.name === currentValue) {
-                        option.selected = true;
-                    }
-
-                    select.appendChild(option);
-                });
+        // 載入教授名單
+        async function loadProfessors() {
+            const res = await fetch('get_professor_all_data/get_professors.php');
+            const data = await res.json();
+            const select = document.getElementById('professorSelect');
+            select.innerHTML = '';
+            data.forEach(prof => {
+                const opt = document.createElement('option');
+                opt.value = prof.professor_id;
+                opt.textContent = prof.name + ' (' + prof.professor_id + ')';
+                select.appendChild(opt);
             });
         }
 
-        function addField() {
-            const container = document.getElementById('fieldsContainer');
-            const fieldGroup = document.createElement('div');
-            fieldGroup.className = 'field-group';
-
-            const conditionRow = document.createElement('div');
-            conditionRow.className = 'condition-row';
-
-            const columnSelect = document.createElement('select');
-            columnSelect.className = 'column-select';
-            columnSelect.onchange = function () {
-                updateAllColumnSelectors();
-                updateColumnInfo(this);
-            };
-
-            const operatorSelect = document.createElement('select');
-            operatorSelect.innerHTML = `
-                <option value="=">=</option>
-                <option value="!=">!=</option>
-                <option value=">">></option>
-                <option value="<"><</option>
-                <option value=">=">>=</option>
-                <option value="<="><=</option>
-                <option value="LIKE">LIKE</option>
-            `;
-
-            const valueInput = document.createElement('input');
-            valueInput.type = 'text';
-            valueInput.placeholder = '請輸入值';
-
-            const removeButton = document.createElement('button');
-            removeButton.innerHTML = '<i class="fas fa-trash"></i> 移除';
-            removeButton.className = 'button danger';
-            removeButton.onclick = function () {
-                container.removeChild(fieldGroup);
-                updateAllColumnSelectors();
-            };
-
-            const columnInfo = document.createElement('div');
-            columnInfo.className = 'column-info';
-
-            conditionRow.appendChild(columnSelect);
-            conditionRow.appendChild(operatorSelect);
-            conditionRow.appendChild(valueInput);
-            conditionRow.appendChild(removeButton);
-
-            fieldGroup.appendChild(conditionRow);
-            fieldGroup.appendChild(columnInfo);
-            container.appendChild(fieldGroup);
-
-            updateAllColumnSelectors();
-        }
-
-        function updateColumnInfo(select) {
-            const columnName = select.value;
-            const columnInfo = select.parentElement.parentElement.querySelector('.column-info');
-            const column = tableColumns.find(col => col.name === columnName);
-
-            if (column) {
-                let info = [];
-                if (column.null === 'NO') {
-                    info.push('<span class="required">必填</span>');
-                }
-                if (column.default !== null) {
-                    info.push(`預設值: ${column.default}`);
-                }
-                if (column.extra) {
-                    info.push(`額外: ${column.extra}`);
-                }
-                columnInfo.innerHTML = info.join(' | ');
+        // 刪除教授所有資料
+        async function deleteProfessorAllData() {
+            const id = document.getElementById('professorSelect').value;
+            if (!id) {
+                alert('請先選擇教授');
+                return;
+            }
+            if (!confirm('確定要刪除該教授在所有資料表的所有資料嗎？此操作無法復原！')) return;
+            const res = await fetch('delete_professor_all_data.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ professor_id: id })
+            });
+            const result = await res.json();
+            if (result.status === 'success') {
+                alert('刪除成功！');
+                loadProfessors();
             } else {
-                columnInfo.innerHTML = '';
+                alert('刪除失敗：' + result.message);
             }
         }
 
-        async function submitDelete() {
-            const tableName = document.getElementById('tableName').value;
-            if (!tableName) {
-                alert('請輸入資料表名稱');
-                return;
-            }
-
-            const conditions = [];
-            const fields = document.querySelectorAll('.field-group');
-
-            fields.forEach(field => {
-                const conditionRow = field.querySelector('.condition-row');
-                const column = conditionRow.querySelector('.column-select').value;
-                const operator = conditionRow.querySelector('select:nth-child(2)').value;
-                const value = conditionRow.querySelector('input').value;
-                if (column && value) {
-                    conditions.push({
-                        column: column,
-                        operator: operator,
-                        value: value
-                    });
-                }
-            });
-
-            if (conditions.length === 0) {
-                alert('請至少設定一個刪除條件');
-                return;
-            }
-
-            if (!confirm('確定要刪除符合條件的資料嗎？此操作無法復原！')) {
-                return;
-            }
-
-            try {
-                const response = await fetch('http://localhost/delete_data/main.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        table: tableName,
-                        conditions: conditions
-                    })
-                });
-
-                const result = await response.json();
-                if (result.status === 'success') {
-                    alert(`成功刪除 ${result.affected_rows} 筆資料！`);
-                    // 清空表單
-                    document.getElementById('tableName').value = '';
-                    document.getElementById('fieldsContainer').innerHTML = '';
-                    tableColumns = [];
-                    selectedColumns.clear();
-                } else {
-                    alert('刪除失敗：' + result.message);
-                }
-            } catch (error) {
-                alert('發生錯誤：' + error.message);
-            }
-        }
+        window.onload = loadProfessors;
     </script>
 </body>
 
