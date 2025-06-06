@@ -115,7 +115,7 @@
             const list = document.getElementById('member-card-list');
             list.innerHTML = '載入中...';
             try {
-                const res = await fetch('/~D1210799/members/honorary/api.php');
+                const res = await fetch(BASE_PATH + '/members/honorary/api.php');
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message);
                 let html = '';
