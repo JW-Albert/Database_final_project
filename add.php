@@ -298,16 +298,15 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         <div class="main-card">
             <div class="form-section">
                 <div class="section-title">
-                    <i class="fas fa-table"></i>
-                    資料表設定
+                    <i class="fas fa-users-cog"></i>
+                    人員類型設定
                 </div>
                 <div class="table-input-group">
                     <div class="form-group">
-                        <label for="tableName">資料表名稱：</label>
+                        <label for="tableName">人員類型：</label>
                         <select id="tableName" required>
-                            <option value="">請選擇資料表</option>
+                            <option value="">請選擇人員類型</option>
                         </select>
-
                     </div>
                     <button class="button" onclick="loadTableColumns()">
                         <i class="fas fa-download"></i>
