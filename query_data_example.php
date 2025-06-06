@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: index.html");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 
@@ -102,7 +110,7 @@
 </head>
 
 <body>
-    <a href="index.html" class="back-link">← 返回主選單</a>
+    <a href="home_page.php" class="back-link">← 返回主選單</a>
     <h1>資料排序範例</h1>
 
     <div class="form-group">

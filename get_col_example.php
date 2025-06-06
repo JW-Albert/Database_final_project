@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: index.html");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 
@@ -274,6 +282,15 @@
                 height: 100px;
             }
         }
+
+        .back-link:hover {
+            color: #333;
+        }
+
+        .count {
+            margin-top: 10px;
+            color: #666;
+        }
     </style>
 </head>
 
@@ -398,6 +415,8 @@
 
         async function fetchData() {
             const tableName = document.getElementById('tableName').value;
+            const columnName = document.getElementById('columnName').value;
+            const value = document.getElementById('value').value;
             const resultDiv = document.getElementById('result');
 
             if (!tableName) {
@@ -413,7 +432,7 @@
             }
 
             try {
-                // 使用 get_all/main.php 獲取所有資料
+                // 先使用 get_all/main.php 獲取所有資料
                 const response = await fetch(`get_all/main.php?table=${encodeURIComponent(tableName)}`);
                 const data = await response.json();
 

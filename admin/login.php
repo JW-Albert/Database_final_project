@@ -21,8 +21,9 @@ try {
         // 登入成功，儲存登入資訊到 session
         $_SESSION['user_id'] = $user['id'];   
         $_SESSION['username'] = $user['username'];
+        $_SESSION['logged_in'] = true; 
 
-        header("Location: ../index.html");
+        header("Location: ../home_page.php");
 
 
         exit();

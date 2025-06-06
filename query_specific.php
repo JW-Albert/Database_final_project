@@ -1,10 +1,18 @@
+<?php
+session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: index.html");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>查詢資料 - 資料庫管理系統</title>
+    <title>查詢特定資料 - 資料庫管理系統</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -171,9 +179,17 @@
             box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
         }
 
+        .button.info {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        .button.info:hover {
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+        }
+
         .field-group {
-            background: rgba(102, 126, 234, 0.05);
-            border: 2px solid rgba(102, 126, 234, 0.1);
+            background: rgba(52, 152, 219, 0.05);
+            border: 2px solid rgba(52, 152, 219, 0.1);
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 16px;
@@ -181,7 +197,7 @@
         }
 
         .field-group:hover {
-            border-color: rgba(102, 126, 234, 0.2);
+            border-color: rgba(52, 152, 219, 0.2);
         }
 
         .condition-row {
@@ -217,17 +233,17 @@
         }
 
         .fields-container::-webkit-scrollbar-track {
-            background: rgba(102, 126, 234, 0.1);
+            background: rgba(52, 152, 219, 0.1);
             border-radius: 3px;
         }
 
         .fields-container::-webkit-scrollbar-thumb {
-            background: rgba(102, 126, 234, 0.3);
+            background: rgba(52, 152, 219, 0.3);
             border-radius: 3px;
         }
 
         .fields-container::-webkit-scrollbar-thumb:hover {
-            background: rgba(102, 126, 234, 0.5);
+            background: rgba(52, 152, 219, 0.5);
         }
 
         .actions {
@@ -236,7 +252,7 @@
             flex-wrap: wrap;
             align-items: center;
             padding-top: 20px;
-            border-top: 2px solid rgba(102, 126, 234, 0.1);
+            border-top: 2px solid rgba(52, 152, 219, 0.1);
         }
 
         .table-input-group {
@@ -261,7 +277,7 @@
         }
 
         .result-table th {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #3498db, #2980b9);
             color: white;
             padding: 15px;
             text-align: left;
@@ -270,15 +286,15 @@
 
         .result-table td {
             padding: 12px 15px;
-            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+            border-bottom: 1px solid rgba(52, 152, 219, 0.1);
         }
 
         .result-table tr:nth-child(even) {
-            background: rgba(102, 126, 234, 0.05);
+            background: rgba(52, 152, 219, 0.05);
         }
 
         .result-table tr:hover {
-            background: rgba(102, 126, 234, 0.1);
+            background: rgba(52, 152, 219, 0.1);
         }
 
         .no-results {
@@ -295,6 +311,21 @@
             font-size: 3rem;
             margin-bottom: 20px;
             color: #bdc3c7;
+        }
+
+        .result-count {
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 12px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .result-count i {
+            margin-right: 8px;
+            color: #3498db;
         }
 
         @media (max-width: 768px) {
@@ -345,13 +376,13 @@
 <body>
     <div class="container">
         <div class="header">
-            <a href="index.html" class="back-link">
+            <a href="home_page.php" class="back-link">
                 <i class="fas fa-arrow-left"></i>
                 返回主選單
             </a>
             <div class="header-content">
-                <h1><i class="fas fa-search"></i> 查詢資料</h1>
-                <p>快速搜尋和瀏覽所有數據記錄</p>
+                <h1><i class="fas fa-filter"></i> 查詢特定資料</h1>
+                <p>使用條件篩選查找特定的數據記錄</p>
             </div>
         </div>
 
@@ -375,15 +406,15 @@
 
             <div class="form-section">
                 <div class="section-title">
-                    <i class="fas fa-filter"></i>
-                    查詢條件設定
+                    <i class="fas fa-search-plus"></i>
+                    進階查詢條件設定
                 </div>
                 <div id="fieldsContainer" class="fields-container">
                     <!-- 動態條件欄位將在這裡生成 -->
                 </div>
                 
                 <div class="actions">
-                    <button class="button secondary" onclick="addField()">
+                    <button class="button info" onclick="addField()">
                         <i class="fas fa-plus"></i>
                         新增條件
                     </button>
@@ -478,11 +509,14 @@
                 <option value=">=">>=</option>
                 <option value="<="><=</option>
                 <option value="LIKE">LIKE</option>
+                <option value="IN">IN</option>
+                <option value="NOT IN">NOT IN</option>
+                <option value="BETWEEN">BETWEEN</option>
             `;
 
             const valueInput = document.createElement('input');
             valueInput.type = 'text';
-            valueInput.placeholder = '請輸入值';
+            valueInput.placeholder = '請輸入值 (多個值請用逗號分隔)';
 
             const removeButton = document.createElement('button');
             removeButton.innerHTML = '<i class="fas fa-trash"></i> 移除';
@@ -566,7 +600,16 @@
             });
             table.appendChild(tbody);
 
-            return table;
+            // 添加結果計數
+            const countDiv = document.createElement('div');
+            countDiv.className = 'result-count';
+            countDiv.innerHTML = `<i class="fas fa-database"></i>共找到 ${data.length} 筆資料`;
+
+            const container = document.createElement('div');
+            container.appendChild(table);
+            container.appendChild(countDiv);
+
+            return container;
         }
 
         async function submitQuery() {
@@ -584,7 +627,7 @@
                 const column = conditionRow.querySelector('.column-select').value;
                 const operator = conditionRow.querySelector('select:nth-child(2)').value;
                 const value = conditionRow.querySelector('input').value;
-                if (column) {
+                if (column && value) {
                     conditions.push({
                         column: column,
                         operator: operator,

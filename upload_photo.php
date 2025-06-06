@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: index.html");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 
@@ -309,7 +317,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <a href="index.html" class="back-link">
+            <a href="home_page.php" class="back-link">
                 <i class="fas fa-arrow-left"></i>
                 返回主選單
             </a>

@@ -1,10 +1,18 @@
+<?php
+session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: index.html");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>刪除資料 - 資料庫管理系統</title>
+    <title>新增資料 - 資料庫管理系統</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -78,31 +86,6 @@
             padding: 30px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
-        }
-
-        .warning-banner {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .warning-banner i {
-            font-size: 1.5rem;
-        }
-
-        .warning-content h3 {
-            font-size: 1.2rem;
-            margin-bottom: 5px;
-        }
-
-        .warning-content p {
-            font-size: 0.9rem;
-            opacity: 0.9;
         }
 
         .form-section {
@@ -197,8 +180,8 @@
         }
 
         .field-group {
-            background: rgba(231, 76, 60, 0.05);
-            border: 2px solid rgba(231, 76, 60, 0.2);
+            background: rgba(102, 126, 234, 0.05);
+            border: 2px solid rgba(102, 126, 234, 0.1);
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 16px;
@@ -206,15 +189,7 @@
         }
 
         .field-group:hover {
-            border-color: rgba(231, 76, 60, 0.3);
-        }
-
-        .condition-row {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr auto;
-            gap: 15px;
-            align-items: end;
-            margin-bottom: 15px;
+            border-color: rgba(102, 126, 234, 0.2);
         }
 
         .column-info {
@@ -242,17 +217,17 @@
         }
 
         .fields-container::-webkit-scrollbar-track {
-            background: rgba(231, 76, 60, 0.1);
+            background: rgba(102, 126, 234, 0.1);
             border-radius: 3px;
         }
 
         .fields-container::-webkit-scrollbar-thumb {
-            background: rgba(231, 76, 60, 0.3);
+            background: rgba(102, 126, 234, 0.3);
             border-radius: 3px;
         }
 
         .fields-container::-webkit-scrollbar-thumb:hover {
-            background: rgba(231, 76, 60, 0.5);
+            background: rgba(102, 126, 234, 0.5);
         }
 
         .actions {
@@ -261,7 +236,7 @@
             flex-wrap: wrap;
             align-items: center;
             padding-top: 20px;
-            border-top: 2px solid rgba(231, 76, 60, 0.1);
+            border-top: 2px solid rgba(102, 126, 234, 0.1);
         }
 
         .table-input-group {
@@ -293,11 +268,6 @@
                 flex-direction: column;
             }
             
-            .condition-row {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            
             .actions {
                 flex-direction: column;
                 align-items: stretch;
@@ -309,26 +279,19 @@
             }
         }
     </style>
+
 </head>
 
 <body>
     <div class="container">
         <div class="header">
-            <a href="index.html" class="back-link">
+            <a href="home_page.php" class="back-link">
                 <i class="fas fa-arrow-left"></i>
                 返回主選單
             </a>
             <div class="header-content">
-                <h1><i class="fas fa-trash-alt"></i> 刪除資料</h1>
-                <p>安全地移除不需要的記錄</p>
-            </div>
-        </div>
-
-        <div class="warning-banner">
-            <i class="fas fa-exclamation-triangle"></i>
-            <div class="warning-content">
-                <h3>危險操作警告</h3>
-                <p>刪除資料是不可逆的操作，請謹慎設定條件並確認後再執行</p>
+                <h1><i class="fas fa-plus-circle"></i> 新增資料</h1>
+                <p>向資料庫添加新的記錄</p>
             </div>
         </div>
 
@@ -341,7 +304,10 @@
                 <div class="table-input-group">
                     <div class="form-group">
                         <label for="tableName">資料表名稱：</label>
-                        <input type="text" id="tableName" placeholder="請輸入資料表名稱" required>
+                        <select id="tableName" required>
+                            <option value="">請選擇資料表</option>
+                        </select>
+
                     </div>
                     <button class="button" onclick="loadTableColumns()">
                         <i class="fas fa-download"></i>
@@ -352,47 +318,75 @@
 
             <div class="form-section">
                 <div class="section-title">
-                    <i class="fas fa-filter"></i>
-                    刪除條件設定
+                    <i class="fas fa-edit"></i>
+                    資料欄位
                 </div>
                 <div id="fieldsContainer" class="fields-container">
-                    <!-- 動態條件欄位將在這裡生成 -->
+                    <!-- 動態欄位將在這裡生成 -->
                 </div>
                 
                 <div class="actions">
-                    <button class="button secondary" onclick="addField()">
+                    <!-- <button class="button secondary" onclick="addField()">
                         <i class="fas fa-plus"></i>
-                        新增條件
-                    </button>
-                    <button class="button danger" onclick="submitDelete()">
-                        <i class="fas fa-trash"></i>
-                        執行刪除
+                        新增欄位
+                    </button> -->
+                    <button type="button" class="button success" onclick="submitData()">
+                        <i class="fas fa-save"></i>
+                        送出資料
                     </button>
                 </div>
             </div>
         </div>
     </div>
-
+    <script src="js/tableNameMap.js"></script>
     <script>
         let tableColumns = [];
         let selectedColumns = new Set();
 
+        window.onload = async function () {
+            try {
+                const response = await fetch('get_table/main.php');
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    const select = document.getElementById('tableName');
+                    result.tables.forEach(table => {
+                        const option = document.createElement('option');
+                        const label = tableNameMap[table] || table;
+                        option.value = table;
+                        option.textContent = `${label} (${table})`;
+                        select.appendChild(option);
+                    });
+                } else {
+                    alert('資料表載入失敗：' + result.message);
+                }
+            } catch (error) {
+                alert('發生錯誤：' + error.message);
+            }
+        }
+
+
         async function loadTableColumns() {
-            const tableName = document.getElementById('tableName').value;
-            if (!tableName) {
-                alert('請輸入資料表名稱');
+            const tableName = document.getElementById('tableName').value.trim(); 
+
+            console.log("要送出的 tableName：", tableName);
+
+
+            // ✅ 明確先 return 阻止錯誤請求
+            if (!tableName || !/^[a-zA-Z0-9_]+$/.test(tableName)) {
+                alert('請選擇有效的資料表');
                 return;
             }
 
             try {
-                const response = await fetch(`http://localhost/get_ele/main.php?table=${encodeURIComponent(tableName)}`);
+                const response = await fetch(`get_ele/main.php?table=${encodeURIComponent(tableName)}`);
                 const data = await response.json();
 
                 if (data.status === 'success') {
                     tableColumns = data.data.columns;
                     selectedColumns.clear();
                     document.getElementById('fieldsContainer').innerHTML = '';
-                    addField(); // 自動新增第一個條件
+                    tableColumns.forEach(col => addField(col.name)); // 自動載入所有欄位
                 } else {
                     alert('載入欄位失敗：' + data.message);
                 }
@@ -400,6 +394,7 @@
                 alert('載入欄位時發生錯誤：' + error.message);
             }
         }
+
 
         function updateAllColumnSelectors() {
             const selects = document.querySelectorAll('.column-select');
@@ -427,13 +422,10 @@
             });
         }
 
-        function addField() {
+        function addField(preselectedColumn = null) {
             const container = document.getElementById('fieldsContainer');
             const fieldGroup = document.createElement('div');
             fieldGroup.className = 'field-group';
-
-            const conditionRow = document.createElement('div');
-            conditionRow.className = 'condition-row';
 
             const columnSelect = document.createElement('select');
             columnSelect.className = 'column-select';
@@ -442,47 +434,38 @@
                 updateColumnInfo(this);
             };
 
-            const operatorSelect = document.createElement('select');
-            operatorSelect.innerHTML = `
-                <option value="=">=</option>
-                <option value="!=">!=</option>
-                <option value=">">></option>
-                <option value="<"><</option>
-                <option value=">=">>=</option>
-                <option value="<="><=</option>
-                <option value="LIKE">LIKE</option>
-            `;
-
             const valueInput = document.createElement('input');
             valueInput.type = 'text';
             valueInput.placeholder = '請輸入值';
 
-            const removeButton = document.createElement('button');
-            removeButton.innerHTML = '<i class="fas fa-trash"></i> 移除';
-            removeButton.className = 'button danger';
-            removeButton.onclick = function () {
-                container.removeChild(fieldGroup);
-                updateAllColumnSelectors();
-            };
+            // const removeButton = document.createElement('button');
+            // removeButton.innerHTML = '<i class="fas fa-trash"></i> 移除欄位';
+            // removeButton.className = 'button danger';
+            // removeButton.onclick = function () {
+            //     container.removeChild(fieldGroup);
+            //     updateAllColumnSelectors();
+            // };
 
             const columnInfo = document.createElement('div');
             columnInfo.className = 'column-info';
 
-            conditionRow.appendChild(columnSelect);
-            conditionRow.appendChild(operatorSelect);
-            conditionRow.appendChild(valueInput);
-            conditionRow.appendChild(removeButton);
-
-            fieldGroup.appendChild(conditionRow);
+            fieldGroup.appendChild(columnSelect);
+            fieldGroup.appendChild(valueInput);
+            // fieldGroup.appendChild(removeButton);
             fieldGroup.appendChild(columnInfo);
             container.appendChild(fieldGroup);
 
             updateAllColumnSelectors();
+
+            if (preselectedColumn) {
+                columnSelect.value = preselectedColumn;
+                updateColumnInfo(columnSelect);
+            }
         }
 
         function updateColumnInfo(select) {
             const columnName = select.value;
-            const columnInfo = select.parentElement.parentElement.querySelector('.column-info');
+            const columnInfo = select.parentElement.querySelector('.column-info');
             const column = tableColumns.find(col => col.name === columnName);
 
             if (column) {
@@ -502,61 +485,49 @@
             }
         }
 
-        async function submitDelete() {
+        async function submitData() {
+            console.log("submitData() 被呼叫了");
             const tableName = document.getElementById('tableName').value;
             if (!tableName) {
                 alert('請輸入資料表名稱');
                 return;
             }
 
-            const conditions = [];
+            const data = {};
             const fields = document.querySelectorAll('.field-group');
 
             fields.forEach(field => {
-                const conditionRow = field.querySelector('.condition-row');
-                const column = conditionRow.querySelector('.column-select').value;
-                const operator = conditionRow.querySelector('select:nth-child(2)').value;
-                const value = conditionRow.querySelector('input').value;
-                if (column && value) {
-                    conditions.push({
-                        column: column,
-                        operator: operator,
-                        value: value
-                    });
+                const column = field.querySelector('.column-select').value;
+                const value = field.querySelector('input').value;
+                if (column) {
+                    data[column] = value === '' ? null : value;
                 }
+
             });
 
-            if (conditions.length === 0) {
-                alert('請至少設定一個刪除條件');
-                return;
-            }
-
-            if (!confirm('確定要刪除符合條件的資料嗎？此操作無法復原！')) {
-                return;
-            }
-
             try {
-                const response = await fetch('http://localhost/delete_data/main.php', {
+                const response = await fetch('/~D1249429/add_data/main.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'include',
                     body: JSON.stringify({
                         table: tableName,
-                        conditions: conditions
+                        data: data
                     })
                 });
 
                 const result = await response.json();
                 if (result.status === 'success') {
-                    alert(`成功刪除 ${result.affected_rows} 筆資料！`);
+                    alert('資料新增成功！');
                     // 清空表單
                     document.getElementById('tableName').value = '';
                     document.getElementById('fieldsContainer').innerHTML = '';
                     tableColumns = [];
                     selectedColumns.clear();
                 } else {
-                    alert('刪除失敗：' + result.message);
+                    alert('新增失敗：' + result.message);
                 }
             } catch (error) {
                 alert('發生錯誤：' + error.message);
