@@ -431,47 +431,27 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             const fieldGroup = document.createElement('div');
             fieldGroup.className = 'field-group';
 
-            const columnSelect = document.createElement('select');
-            columnSelect.className = 'column-select';
-            columnSelect.onchange = function () {
-                updateAllColumnSelectors();
-                updateColumnInfo(this);
-            };
+            // 直接顯示欄位名稱，不用下拉選單
+            const columnLabel = document.createElement('label');
+            columnLabel.textContent = preselectedColumn;
+            columnLabel.style.fontWeight = 'bold';
+            columnLabel.style.marginBottom = '6px';
 
             const valueInput = document.createElement('input');
             valueInput.type = 'text';
             valueInput.placeholder = '請輸入值';
-
-            // const removeButton = document.createElement('button');
-            // removeButton.innerHTML = '<i class="fas fa-trash"></i> 移除欄位';
-            // removeButton.className = 'button danger';
-            // removeButton.onclick = function () {
-            //     container.removeChild(fieldGroup);
-            //     updateAllColumnSelectors();
-            // };
+            valueInput.name = preselectedColumn;
 
             const columnInfo = document.createElement('div');
             columnInfo.className = 'column-info';
 
-            fieldGroup.appendChild(columnSelect);
+            fieldGroup.appendChild(columnLabel);
             fieldGroup.appendChild(valueInput);
-            // fieldGroup.appendChild(removeButton);
             fieldGroup.appendChild(columnInfo);
             container.appendChild(fieldGroup);
 
-            updateAllColumnSelectors();
-
-            if (preselectedColumn) {
-                columnSelect.value = preselectedColumn;
-                updateColumnInfo(columnSelect);
-            }
-        }
-
-        function updateColumnInfo(select) {
-            const columnName = select.value;
-            const columnInfo = select.parentElement.querySelector('.column-info');
-            const column = tableColumns.find(col => col.name === columnName);
-
+            // 顯示欄位資訊
+            const column = tableColumns.find(col => col.name === preselectedColumn);
             if (column) {
                 let info = [];
                 if (column.null === 'NO') {
