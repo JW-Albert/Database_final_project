@@ -13,7 +13,7 @@ $input_username = $_POST['username'] ?? '';
 $input_password = $_POST['password'] ?? '';
 
 try {
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
+    $stmt = $pdo->prepare("SELECT * FROM User WHERE username = ? AND password = ?");
     $stmt->execute([$input_username, $input_password]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -22,7 +22,9 @@ try {
         $_SESSION['user_id'] = $user['id'];   
         $_SESSION['username'] = $user['username'];
 
-        header("Location: /index.html");
+        header("Location: ../index.html");
+
+
         exit();
     } else {
         $error_msg = urlencode("帳號或密碼錯誤，請重新輸入！");

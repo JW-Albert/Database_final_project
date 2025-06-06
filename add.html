@@ -339,7 +339,7 @@
             }
 
             try {
-                const response = await fetch(`http://localhost/get_ele/main.php?table=${encodeURIComponent(tableName)}`);
+                const response = await fetch(`/get_ele/main.php?table=${encodeURIComponent(tableName)}`);
                 const data = await response.json();
 
                 if (data.status === 'success') {
@@ -458,7 +458,7 @@
             });
 
             try {
-                const response = await fetch('http://localhost/add_data/main.php', {
+                const response = await fetch('/add_data/main.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

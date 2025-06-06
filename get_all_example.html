@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>查詢所有資料範例</title>
+    <title>查詢所有資料</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -90,12 +90,20 @@
             margin-top: 10px;
             color: #666;
         }
+        .bio-cell {
+            height: 200px;
+            width: 200px;
+            overflow-y: auto;
+            display: block;
+            white-space: pre-wrap; 
+        }
+
     </style>
 </head>
 
 <body>
     <a href="index.html" class="back-link">← 返回主選單</a>
-    <h1>查詢所有資料範例</h1>
+    <h1>查詢資料</h1>
 
     <div class="form-group">
         <label for="tableName">資料表名稱：</label>
@@ -107,6 +115,18 @@
     <div id="result" class="result"></div>
 
     <script>
+        const columnNameMap = {
+            professor_id: "教師編號",
+            name: "姓名",
+            bio: "簡介",
+            extension: "分機",
+            email: "電子郵件",
+            type: "職稱",
+            photo: "照片",
+            website_url: "個人網站",
+            retire: "狀態"
+            // password 不需要加
+        };
         async function fetchData() {
             const tableName = document.getElementById('tableName').value;
             const resultDiv = document.getElementById('result');
@@ -128,25 +148,37 @@
                     }
 
                     let tableHtml = '<h3>查詢結果：</h3>';
-                    tableHtml += '<table>';
+                    tableHtml += '<div style="overflow-x: auto;"><table>';
 
                     // 建立表頭
                     tableHtml += '<tr>';
                     Object.keys(data.data[0]).forEach(key => {
-                        tableHtml += `<th>${key}</th>`;
+                        if (key !== 'password') {
+                            const displayName = columnNameMap[key] || key; // 若沒對應就顯示原欄位名
+                            tableHtml += `<th>${displayName}</th>`;
+                        }
                     });
                     tableHtml += '</tr>';
 
                     // 加入資料行
                     data.data.forEach(row => {
                         tableHtml += '<tr>';
-                        Object.values(row).forEach(value => {
-                            tableHtml += `<td>${value}</td>`;
+                        Object.entries(row).forEach(([key, value], index) => {
+                            if (key !== 'password') {
+                                if (key === 'bio') {
+                                    tableHtml += `<td class="bio-cell">${value}</td>`;
+                                } else if(key == 'retire'){
+                                    const status = value == 1 ? '退休' : '在職';
+                                    tableHtml += `<td>${status}</td>`;
+                                } else {
+                                    tableHtml += `<td>${value}</td>`;
+                                }
+                            }
                         });
                         tableHtml += '</tr>';
                     });
 
-                    tableHtml += '</table>';
+                    tableHtml += '</table></div>';
                     tableHtml += `<p class="count">共找到 ${data.data.length} 筆資料</p>`;
                     resultDiv.innerHTML = tableHtml;
                 } else {
