@@ -5,7 +5,6 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 
@@ -289,39 +288,75 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             gap: 30px;
         }
 
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+        }
+
+        table.data-table th,
+        table.data-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        table.data-table th {
+            background: #f5f6fa;
+            font-weight: bold;
+            color: #333;
+        }
+
+        table.data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        table.data-table input {
+            width: 95%;
+            padding: 4px 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+            background: #fafbfc;
+        }
+
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
                 text-align: center;
             }
-            
+
             .header h1 {
                 font-size: 1.8rem;
             }
-            
+
             .main-card {
                 padding: 20px;
             }
-            
+
             .table-input-group {
                 flex-direction: column;
             }
-            
+
             .condition-row,
             .value-row {
                 grid-template-columns: 1fr;
                 gap: 10px;
             }
-            
+
             .two-column-layout {
                 grid-template-columns: 1fr;
             }
-            
+
             .actions {
                 flex-direction: column;
                 align-items: stretch;
             }
-            
+
             .button {
                 justify-content: center;
                 margin-right: 0;
@@ -338,320 +373,116 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 返回主選單
             </a>
             <div class="header-content">
-                <h1><i class="fas fa-edit"></i> 修改資料</h1>
-                <p>更新現有記錄的內容，保持數據的準確性</p>
+                <h1><i class="fas fa-edit"></i> 修改教授相關資料</h1>
+                <p>選擇教授並直接編輯所有相關資料，儲存後會同步更新所有資料表</p>
             </div>
         </div>
-
         <div class="main-card">
+            <!-- 教授選擇區塊 -->
             <div class="form-section">
                 <div class="section-title">
-                    <i class="fas fa-table"></i>
-                    資料表設定
+                    <i class="fas fa-user"></i>
+                    教授資料設定
                 </div>
-                <div class="table-input-group">
-                    <div class="form-group">
-                        <label for="tableName">資料表名稱：</label>
-                        <input type="text" id="tableName" placeholder="請輸入資料表名稱" required>
-                    </div>
-                    <button class="button" onclick="loadTableColumns()">
-                        <i class="fas fa-download"></i>
-                        載入欄位
-                    </button>
+                <div class="form-group">
+                    <label for="professorSelect">選擇教授：</label>
+                    <select id="professorSelect"></select>
                 </div>
-            </div>
-
-            <div class="two-column-layout">
-                <div class="form-section">
-                    <div class="section-title">
-                        <i class="fas fa-filter"></i>
-                        設定條件
-                    </div>
-                    <div id="conditionsContainer" class="fields-container">
-                        <!-- 條件欄位將在這裡生成 -->
-                    </div>
-                    <button class="button warning" onclick="addCondition()">
-                        <i class="fas fa-plus"></i>
-                        新增條件
-                    </button>
-                </div>
-
-                <div class="form-section">
-                    <div class="section-title">
-                        <i class="fas fa-sync-alt"></i>
-                        設定更新值
-                    </div>
-                    <div id="valuesContainer" class="fields-container">
-                        <!-- 更新值欄位將在這裡生成 -->
-                    </div>
-                    <button class="button secondary" onclick="addValue()">
-                        <i class="fas fa-plus"></i>
-                        新增欄位
-                    </button>
-                </div>
-            </div>
-
-            <div class="actions">
-                <button class="button success" onclick="submitUpdate()">
+                <button class="button" onclick="loadProfessorData()">
+                    <i class="fas fa-download"></i>
+                    載入資料
+                </button>
+                <div id="professorData"></div>
+                <div id="relatedTables"></div>
+                <button class="button success" onclick="submitAllUpdates()">
                     <i class="fas fa-save"></i>
-                    執行更新
+                    儲存所有修改
                 </button>
             </div>
         </div>
     </div>
-
     <script>
-        let tableColumns = [];
-        let selectedColumns = new Set();
-
-        async function loadTableColumns() {
-            const tableName = document.getElementById('tableName').value;
-            if (!tableName) {
-                alert('請輸入資料表名稱');
-                return;
-            }
-
-            try {
-                const response = await fetch(`http://localhost/get_ele/main.php?table=${encodeURIComponent(tableName)}`);
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    tableColumns = data.data.columns;
-                    selectedColumns.clear();
-                    document.getElementById('conditionsContainer').innerHTML = '';
-                    document.getElementById('valuesContainer').innerHTML = '';
-                    addCondition(); // 自動新增第一個條件
-                    addValue(); // 自動新增第一個更新值
-                } else {
-                    alert('載入欄位失敗：' + data.message);
-                }
-            } catch (error) {
-                alert('載入欄位時發生錯誤：' + error.message);
-            }
+        // 取得所有教授
+        async function loadProfessors() {
+            const res = await fetch('get_professor_all_data/get_professors.php');
+            const data = await res.json();
+            const select = document.getElementById('professorSelect');
+            select.innerHTML = '';
+            data.forEach(prof => {
+                const opt = document.createElement('option');
+                opt.value = prof.professor_id;
+                opt.textContent = prof.name + ' (' + prof.professor_id + ')';
+                select.appendChild(opt);
+            });
         }
 
-        function updateAllColumnSelectors() {
-            const selects = document.querySelectorAll('.column-select');
-            const selectedValues = Array.from(selects).map(select => select.value);
+        // 載入該教授所有資料
+        async function loadProfessorData() {
+            const id = document.getElementById('professorSelect').value;
+            const res = await fetch('get_professor_all_data/get_professor_all_data.php?id=' + encodeURIComponent(id));
+            const data = await res.json();
 
-            selects.forEach(select => {
-                const currentValue = select.value;
-                select.innerHTML = '<option value="">請選擇欄位</option>';
+            // 顯示主表
+            document.getElementById('professorData').innerHTML = renderTable('Professor', data.Professor);
 
-                tableColumns.forEach(column => {
-                    const option = document.createElement('option');
-                    option.value = column.name;
-                    option.textContent = column.name;
+            // 顯示所有相關表
+            let html = '';
+            for (const table in data) {
+                if (table !== 'Professor') {
+                    html += `<h3>${table}</h3>` + renderTable(table, data[table]);
+                }
+            }
+            document.getElementById('relatedTables').innerHTML = html;
+        }
 
-                    if (selectedValues.includes(column.name) && column.name !== currentValue) {
-                        option.disabled = true;
-                    }
-
-                    if (column.name === currentValue) {
-                        option.selected = true;
-                    }
-
-                    select.appendChild(option);
+        // 渲染可編輯表格
+        function renderTable(table, rows) {
+            if (!rows || rows.length === 0) return '<div style="color:#888;margin-bottom:16px;">無資料</div>';
+            // 取得欄位 comment 對應表
+            const tableMeta = window.tableMeta || {};
+            let html = `<table class="data-table"><thead><tr>`;
+            Object.keys(rows[0]).forEach(col => {
+                const comment = (tableMeta[table] && tableMeta[table][col]) ? tableMeta[table][col] : col;
+                html += `<th>${comment}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+            rows.forEach((row, idx) => {
+                html += '<tr>';
+                Object.entries(row).forEach(([col, val]) => {
+                    html += `<td><input data-table="${table}" data-row="${idx}" data-col="${col}" value="${val ?? ''}"></td>`;
                 });
+                html += '</tr>';
             });
+            html += '</tbody></table>';
+            return html;
         }
 
-        function addCondition() {
-            const container = document.getElementById('conditionsContainer');
-            const fieldGroup = document.createElement('div');
-            fieldGroup.className = 'field-group condition-field-group';
-
-            const conditionRow = document.createElement('div');
-            conditionRow.className = 'condition-row';
-
-            const columnSelect = document.createElement('select');
-            columnSelect.className = 'column-select';
-            columnSelect.onchange = function () {
-                updateAllColumnSelectors();
-                updateColumnInfo(this);
-            };
-
-            const operatorSelect = document.createElement('select');
-            operatorSelect.innerHTML = `
-                <option value="=">=</option>
-                <option value="!=">!=</option>
-                <option value=">">></option>
-                <option value="<"><</option>
-                <option value=">=">>=</option>
-                <option value="<="><=</option>
-                <option value="LIKE">LIKE</option>
-            `;
-
-            const valueInput = document.createElement('input');
-            valueInput.type = 'text';
-            valueInput.placeholder = '請輸入值';
-
-            const removeButton = document.createElement('button');
-            removeButton.innerHTML = '<i class="fas fa-trash"></i> 移除';
-            removeButton.className = 'button danger';
-            removeButton.onclick = function () {
-                container.removeChild(fieldGroup);
-                updateAllColumnSelectors();
-            };
-
-            const columnInfo = document.createElement('div');
-            columnInfo.className = 'column-info';
-
-            conditionRow.appendChild(columnSelect);
-            conditionRow.appendChild(operatorSelect);
-            conditionRow.appendChild(valueInput);
-            conditionRow.appendChild(removeButton);
-
-            fieldGroup.appendChild(conditionRow);
-            fieldGroup.appendChild(columnInfo);
-            container.appendChild(fieldGroup);
-
-            updateAllColumnSelectors();
-        }
-
-        function addValue() {
-            const container = document.getElementById('valuesContainer');
-            const fieldGroup = document.createElement('div');
-            fieldGroup.className = 'field-group';
-
-            const valueRow = document.createElement('div');
-            valueRow.className = 'value-row';
-
-            const columnSelect = document.createElement('select');
-            columnSelect.className = 'column-select';
-            columnSelect.onchange = function () {
-                updateAllColumnSelectors();
-                updateColumnInfo(this);
-            };
-
-            const valueInput = document.createElement('input');
-            valueInput.type = 'text';
-            valueInput.placeholder = '請輸入新值';
-
-            const removeButton = document.createElement('button');
-            removeButton.innerHTML = '<i class="fas fa-trash"></i> 移除';
-            removeButton.className = 'button danger';
-            removeButton.onclick = function () {
-                container.removeChild(fieldGroup);
-                updateAllColumnSelectors();
-            };
-
-            const columnInfo = document.createElement('div');
-            columnInfo.className = 'column-info';
-
-            valueRow.appendChild(columnSelect);
-            valueRow.appendChild(valueInput);
-            valueRow.appendChild(removeButton);
-
-            fieldGroup.appendChild(valueRow);
-            fieldGroup.appendChild(columnInfo);
-            container.appendChild(fieldGroup);
-
-            updateAllColumnSelectors();
-        }
-
-        function updateColumnInfo(select) {
-            const columnName = select.value;
-            const columnInfo = select.parentElement.parentElement.querySelector('.column-info');
-            const column = tableColumns.find(col => col.name === columnName);
-
-            if (column) {
-                let info = [];
-                if (column.null === 'NO') {
-                    info.push('<span class="required">必填</span>');
-                }
-                if (column.default !== null) {
-                    info.push(`預設值: ${column.default}`);
-                }
-                if (column.extra) {
-                    info.push(`額外: ${column.extra}`);
-                }
-                columnInfo.innerHTML = info.join(' | ');
-            } else {
-                columnInfo.innerHTML = '';
-            }
-        }
-
-        async function submitUpdate() {
-            const tableName = document.getElementById('tableName').value;
-            if (!tableName) {
-                alert('請輸入資料表名稱');
-                return;
-            }
-
-            const conditions = [];
-            const conditionFields = document.querySelectorAll('#conditionsContainer .field-group');
-
-            conditionFields.forEach(field => {
-                const conditionRow = field.querySelector('.condition-row');
-                const column = conditionRow.querySelector('.column-select').value;
-                const operator = conditionRow.querySelector('select:nth-child(2)').value;
-                const value = conditionRow.querySelector('input').value;
-                if (column && value) {
-                    conditions.push({
-                        column: column,
-                        operator: operator,
-                        value: value
-                    });
-                }
+        // 收集所有欄位並送出
+        async function submitAllUpdates() {
+            const inputs = document.querySelectorAll('input[data-table]');
+            const updates = {};
+            inputs.forEach(input => {
+                const table = input.dataset.table;
+                const row = input.dataset.row;
+                const col = input.dataset.col;
+                updates[table] = updates[table] || [];
+                updates[table][row] = updates[table][row] || {};
+                updates[table][row][col] = input.value;
             });
-
-            if (conditions.length === 0) {
-                alert('請至少設定一個條件');
-                return;
-            }
-
-            const values = {};
-            const valueFields = document.querySelectorAll('#valuesContainer .field-group');
-
-            valueFields.forEach(field => {
-                const valueRow = field.querySelector('.value-row');
-                const column = valueRow.querySelector('.column-select').value;
-                const value = valueRow.querySelector('input').value;
-                if (column) {
-                    values[column] = value;
-                }
+            // POST 給後端
+            const res = await fetch('update_professor_all_data/update_professor_all_data.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(updates)
             });
-
-            if (Object.keys(values).length === 0) {
-                alert('請至少設定一個要更新的欄位');
-                return;
-            }
-
-            if (!confirm('確定要更新符合條件的資料嗎？')) {
-                return;
-            }
-
-            try {
-                const response = await fetch('http://localhost/update_data/main.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        table: tableName,
-                        conditions: conditions,
-                        values: values
-                    })
-                });
-
-                const result = await response.json();
-                if (result.status === 'success') {
-                    alert(`成功更新 ${result.affected_rows} 筆資料！`);
-                    // 清空表單
-                    document.getElementById('tableName').value = '';
-                    document.getElementById('conditionsContainer').innerHTML = '';
-                    document.getElementById('valuesContainer').innerHTML = '';
-                    tableColumns = [];
-                    selectedColumns.clear();
-                } else {
-                    alert('更新失敗：' + result.message);
-                }
-            } catch (error) {
-                alert('發生錯誤：' + error.message);
-            }
+            const result = await res.json();
+            alert(result.message);
         }
+
+        // 頁面載入時先載入教授選項
+        window.onload = function() {
+            loadProfessors();
+        };
     </script>
 </body>
-
 </html>
