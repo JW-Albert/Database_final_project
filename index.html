@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>資料庫管理系統</title>
+    <title>管理員登入 - 資料庫管理系統</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -18,209 +18,251 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header {
+        .login-container {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
+            padding: 40px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
             text-align: center;
         }
 
-        .header h1 {
-            color: #2c3e50;
-            font-size: 2.5rem;
-            font-weight: 600;
-            margin-bottom: 10px;
+        .login-header {
+            margin-bottom: 30px;
         }
 
-        .header p {
-            color: #7f8c8d;
-            font-size: 1.1rem;
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 30px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .card-icon {
-            width: 60px;
-            height: 60px;
+        .login-icon {
+            width: 80px;
+            height: 80px;
             background: linear-gradient(135deg, #667eea, #764ba2);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
-            font-size: 24px;
+            margin: 0 auto 20px;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-icon i {
+            font-size: 2rem;
             color: white;
         }
 
-        .card-title {
-            font-size: 1.4rem;
-            font-weight: 600;
+        .login-title {
             color: #2c3e50;
+            font-size: 2rem;
+            font-weight: 600;
             margin-bottom: 8px;
         }
 
-        .card-description {
+        .login-subtitle {
             color: #7f8c8d;
-            font-size: 0.95rem;
-            line-height: 1.5;
+            font-size: 1rem;
         }
 
-        .stats {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 20px;
-            margin-top: 30px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
         }
 
-        .stats-title {
+        label {
+            display: block;
+            margin-bottom: 8px;
             color: #2c3e50;
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 15px;
+            font-weight: 500;
+            font-size: 0.95rem;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
+        .input-container {
+            position: relative;
         }
 
-        .stat-item {
-            text-align: center;
-            padding: 15px;
-            background: rgba(102, 126, 234, 0.1);
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 16px 12px 45px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
             border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
         }
 
-        .stat-number {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #667eea;
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: rgba(255, 255, 255, 1);
         }
 
-        .stat-label {
-            font-size: 0.85rem;
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
             color: #7f8c8d;
-            margin-top: 5px;
+            font-size: 1rem;
         }
 
-        @media (max-width: 768px) {
-            .dashboard {
-                grid-template-columns: 1fr;
+        .button {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .error {
+            background: rgba(231, 76, 60, 0.1);
+            border: 2px solid rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .error i {
+            font-size: 1rem;
+        }
+
+        .back-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+
+        .back-link a:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+                margin: 10px;
             }
             
-            .header h1 {
-                font-size: 2rem;
+            .login-title {
+                font-size: 1.5rem;
             }
             
-            .card {
-                padding: 20px;
+            .login-icon {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .login-icon i {
+                font-size: 1.5rem;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <h1><i class="fas fa-database"></i> 資料庫管理系統</h1>
-            <p>現代化的數據管理平台，提供完整的CRUD操作功能</p>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="login-icon">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <h1 class="login-title">管理員登入</h1>
+            <p class="login-subtitle">請輸入您的帳號以存取系統</p>
         </div>
 
-        <div class="dashboard">
-            <a href="add.html" class="card">
-                <div class="card-icon">
-                    <i class="fas fa-plus"></i>
-                </div>
-                <div class="card-title">新增資料</div>
-                <div class="card-description">添加新的記錄到資料庫中，支援多種數據格式輸入</div>
-            </a>
+        <!-- 顯示錯誤訊息（透過 URL 參數） -->
+        <div class="error" id="errorMessage" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="errorText"></span>
+        </div>
 
-            <a href="delete.html" class="card">
-                <div class="card-icon">
-                    <i class="fas fa-trash-alt"></i>
+        <form method="POST" action="admin/login.php">
+            <div class="form-group">
+                <label for="username">使用者名稱</label>
+                <div class="input-container">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="username" name="username" placeholder="請輸入使用者名稱" required>
                 </div>
-                <div class="card-title">刪除資料</div>
-                <div class="card-description">安全地移除不需要的記錄，支援批量刪除操作</div>
-            </a>
+            </div>
 
-            <a href="update.html" class="card">
-                <div class="card-icon">
-                    <i class="fas fa-edit"></i>
+            <div class="form-group">
+                <label for="password">密碼</label>
+                <div class="input-container">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" name="password" placeholder="請輸入密碼" required>
                 </div>
-                <div class="card-title">修改資料</div>
-                <div class="card-description">更新現有記錄的內容，保持數據的準確性</div>
-            </a>
+            </div>
 
-            <a href="query.html" class="card">
-                <div class="card-icon">
-                    <i class="fas fa-search"></i>
-                </div>
-                <div class="card-title">查詢資料</div>
-                <div class="card-description">快速搜尋和瀏覽所有數據記錄</div>
-            </a>
+            <button type="submit" class="button">
+                <i class="fas fa-sign-in-alt"></i>
+                登入系統
+            </button>
+        </form>
 
-            <a href="query_specific.html" class="card">
-                <div class="card-icon">
-                    <i class="fas fa-filter"></i>
-                </div>
-                <div class="card-title">查詢特定資料</div>
-                <div class="card-description">使用條件篩選查找特定的數據記錄</div>
-            </a>
-
-            <a href="upload_photo.html" class="card">
-                <div class="card-icon">
-                    <i class="fas fa-upload"></i>
-                </div>
-                <div class="card-title">上傳照片</div>
-                <div class="card-description">管理和上傳圖片文件到系統中</div>
+        <div class="back-link">
+            <a href="home_page.html">
+                <i class="fas fa-arrow-left"></i>
+                返回首頁
             </a>
         </div>
     </div>
+
+    <script>
+        // 檢查並顯示錯誤訊息
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("error")) {
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = decodeURIComponent(params.get("error"));
+            errorMessage.style.display = 'flex';
+        }
+
+        // 表單提交時添加載入效果
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const button = document.querySelector('.button');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 登入中...';
+            button.disabled = true;
+        });
+    </script>
 </body>
 
 </html>
