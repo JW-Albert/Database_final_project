@@ -1,7 +1,15 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
 body {
     margin: 0;
     padding: 0 150px;
     font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .header {
@@ -22,8 +30,8 @@ body {
 }
 
 .logo-title img {
-    width: 70px;
-    height: 70px;
+    width: 50px;
+    height: 50px;
     margin-right: 10px;
 }
 
@@ -46,7 +54,6 @@ body {
     padding-bottom: 14px;
 }
 
-/* 目前頁面樣式 */
 .nav-item.active {
     color: #2863a2;
     border-bottom: 2px solid #2863a2;
@@ -94,136 +101,148 @@ body {
 .members-container:hover>.dropdown {
     display: flex;
 }
-
-.content {
+main.content {
+    display: flex;
+    gap: 40px;
     margin: 40px 0;
+    min-height: 500px;
+    flex: 1 0 auto;
+}
+
+#footer-include {
+    flex-shrink: 0;
+}
+
+/* 左側選單 */
+.sidebar {
+    flex: 0 0 200px;
+    padding: 20px;
+    height: fit-content;
+}
+
+.sidebar h2 {
     font-size: 18px;
-    line-height: 1.6;
-}
-
-.profile h1 {
+    margin-bottom: 16px;
     color: #2863a2;
-    margin-bottom: 10px;
 }
 
-.profile h2 {
-    margin-top: 30px;
-    color: #333333;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 5px;
-}
-
-.profile ul,
-.profile ol {
-    margin-left: 20px;
-    padding-left: 0;
-}
-
-.profile li {
-    margin-bottom: 5px;
-}
-
-.profile a {
-    color: #2863a2;
+.sidebar a {
+    display: block;
+    padding: 8px 10px;
+    color: #545454;
     text-decoration: none;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-.profile a:hover {
-    text-decoration: underline;
+.sidebar a:hover {
+    background-color: #2863a2;
+    color: white;
 }
 
-.profile img {
-    width: 180px;
-    border-radius: 8px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+.sidebar a.active {
+    background-color: #2863a2;
+    color: white;
+    font-weight: bold;
 }
 
-.profile-card {
-    background-color: #f7f9fc;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    margin-bottom: 40px;
-    border: 5px solid #2863a2;
-}
-
-.profile-header {
+/* 右側卡片區 */
+.card-list {
+    flex: 1;
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
-    align-items: center;
-    margin-bottom: 20px;
+    gap: 24px;
+    justify-content: flex-start;
 }
 
-.profile-photo {
-    width: 160px;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.profile-info {
-    flex: 1;
-    min-width: 200px;
-}
-
-.profile-name {
-    color: #2863a2;
-    font-size: 28px;
-    margin: 0 0 10px 0;
-}
-
-.profile-section {
-    margin-top: 25px;
-}
-
-.profile-section h2 {
-    color: #2863a2;
-    border-bottom: 2px solid #2863a2;
-    padding-bottom: 6px;
-    margin-bottom: 10px;
-    font-size: 20px;
-}
-
-.profile-section ul,
-.profile-section ol {
-    padding-left: 20px;
-    line-height: 1.6;
-    margin: 0;
-}
-
-.profile-section ul li,
-.profile-section ol li {
-    margin-bottom: 6px;
-}
-
-a {
-    color: #2863a2;
+.card {
+    cursor: pointer;
+    width: calc((100% / 3) - 16px);
+    /* 一排三張 */
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 3px 8px rgb(0 0 0 / 0.15);
+    transition: box-shadow 0.3s, transform 0.3s;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     text-decoration: none;
+    color: #333;
+    height: 60%;
 }
 
-a:hover {
-    text-decoration: underline;
+.card:hover {
+    box-shadow: 0 8px 20px rgb(0 0 0 / 0.25);
+    background-color: #2863a2;
+    transform: translateY(-5px);
 }
 
-@media (max-width: 768px) {
-    .profile-card {
-        padding: 20px;
-    }
-
-    .profile-photo {
-        width: 100%;
-        max-width: 300px;
-    }
-
-    .profile-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+.card:hover .card-content h3 {
+    color: white;
+    /* 人名變白色 */
 }
 
-@media (max-width: 600px) {
+.card:hover .card-content p {
+    color: #d0e4ff;
+    /* 副標文字變淺藍色 */
+}
+
+.card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 14px 12px;
+    flex-grow: 1;
+}
+
+.card-content h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    color: #2863a2;
+}
+
+.card-content p {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.4;
+    max-height: 56px;
+    /* 約4行 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 手機或小螢幕調整，改為上下排列 */
+@media (max-width: 900px) {
     body {
         padding: 0 20px;
+    }
+
+    main.content {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        margin-bottom: 30px;
+    }
+
+    .card-list {
+        justify-content: center;
+    }
+
+    .card {
+        width: calc(50% - 12px);
+    }
+}
+
+@media (max-width: 500px) {
+    .card {
+        width: 100%;
     }
 }
