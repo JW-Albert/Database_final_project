@@ -345,17 +345,21 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 
         window.onload = async function () {
             try {
+                // 只允許這三個資料表
+                const allowedTables = ['Professor', 'Admin', 'Staff'];
                 const response = await fetch('get_table/main.php');
                 const result = await response.json();
 
                 if (result.status === 'success') {
                     const select = document.getElementById('tableName');
                     result.tables.forEach(table => {
-                        const option = document.createElement('option');
-                        const label = tableNameMap[table] || table;
-                        option.value = table;
-                        option.textContent = `${label} (${table})`;
-                        select.appendChild(option);
+                        if (allowedTables.includes(table)) {
+                            const option = document.createElement('option');
+                            const label = tableNameMap[table] || table;
+                            option.value = table;
+                            option.textContent = `${label} (${table})`;
+                            select.appendChild(option);
+                        }
                     });
                 } else {
                     alert('資料表載入失敗：' + result.message);
