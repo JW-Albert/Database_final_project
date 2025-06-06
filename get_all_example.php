@@ -382,6 +382,13 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                         } else if (key === 'retire') {
                             const status = value == 1 ? '退休' : '在職';
                             tableHtml += `<td>${status}</td>`;
+                        } else if (key === 'photo') {
+                            if (value) {
+                                // value 可以是有照片就顯示
+                                tableHtml += `<td><img src="get_photo/get_professor_photo.php?id=${row['professor_id']}" alt="照片" style="max-width:80px;max-height:80px;border-radius:8px;"></td>`;
+                            } else {
+                                tableHtml += `<td>無照片</td>`;
+                            }
                         } else {
                             tableHtml += `<td>${value || ''}</td>`;
                         }

@@ -322,26 +322,21 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 返回主選單
             </a>
             <div class="header-content">
-                <h1><i class="fas fa-upload"></i> 上傳照片</h1>
-                <p>管理和上傳圖片文件到系統中</p>
+                <h1><i class="fas fa-upload"></i> 上傳教師照片</h1>
+                <p>請選擇教授編號並上傳照片，照片將儲存於資料庫</p>
             </div>
         </div>
 
         <div class="main-card">
-            <form action="/upload_photo" method="post" enctype="multipart/form-data" id="uploadForm">
+            <form action="upload_photo/upload_photo_to_blob.php" method="post" enctype="multipart/form-data" id="uploadForm">
                 <div class="form-section">
                     <div class="section-title">
-                        <i class="fas fa-folder"></i>
-                        選擇目標資料夾
+                        <i class="fas fa-id-badge"></i>
+                        教師編號
                     </div>
                     <div class="form-group">
-                        <label for="dir">資料夾位置：</label>
-                        <select id="dir" name="dir" required>
-                            <option value="" disabled selected hidden>請選擇資料夾</option>
-                            <option value="dir1">dir1</option>
-                            <option value="dir2">dir2</option>
-                            <option value="dir3">dir3</option>
-                        </select>
+                        <label for="professor_id">教授編號：</label>
+                        <input type="text" id="professor_id" name="professor_id" required placeholder="請輸入教授編號">
                     </div>
                 </div>
 
@@ -392,7 +387,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         const progressBar = document.getElementById('progressBar');
         const progressFill = document.getElementById('progressFill');
         const uploadStatus = document.getElementById('uploadStatus');
-        const dirSelect = document.getElementById('dir');
+        const professorIdInput = document.getElementById('professor_id');
 
         // 拖拽上傳功能
         uploadArea.addEventListener('dragover', (e) => {
@@ -443,11 +438,11 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         // 檢查上傳按鈕狀態
         function updateUploadButton() {
             const hasFile = photoInput.files.length > 0;
-            const hasDir = dirSelect.value !== '';
-            uploadBtn.disabled = !(hasFile && hasDir);
+            const hasId = professorIdInput.value.trim() !== '';
+            uploadBtn.disabled = !(hasFile && hasId);
         }
 
-        dirSelect.addEventListener('change', updateUploadButton);
+        professorIdInput.addEventListener('input', updateUploadButton);
 
         // 格式化檔案大小
         function formatFileSize(bytes) {
@@ -473,8 +468,8 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         uploadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            if (!photoInput.files[0] || !dirSelect.value) {
-                showStatus('請選擇檔案和資料夾', 'error');
+            if (!photoInput.files[0] || !professorIdInput.value.trim()) {
+                showStatus('請選擇檔案和教授編號', 'error');
                 return;
             }
 
@@ -485,7 +480,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             uploadBtn.disabled = true;
             
             try {
-                const response = await fetch('/upload_photo', {
+                const response = await fetch('upload_photo/upload_photo_to_blob.php', {
                     method: 'POST',
                     body: formData
                 });
@@ -501,7 +496,8 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                     }
                 }, 100);
 
-                if (response.ok) {
+                const result = await response.json();
+                if (response.ok && result.status === 'success') {
                     showStatus('檔案上傳成功！', 'success');
                     // 重置表單
                     setTimeout(() => {
@@ -512,7 +508,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                         updateUploadButton();
                     }, 2000);
                 } else {
-                    throw new Error('上傳失敗');
+                    throw new Error(result.message || '上傳失敗');
                 }
             } catch (error) {
                 showStatus('上傳失敗：' + error.message, 'error');
