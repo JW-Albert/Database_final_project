@@ -1,4 +1,4 @@
-# FCU CSIE Department Website - 0.5.5
+# FCU CSIE Department Website - 0.5.6
 
 This is the official website for the Department of Computer Science and Information Engineering at Feng Chia University.
 
