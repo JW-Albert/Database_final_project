@@ -180,7 +180,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         </div>
 
         <div class="dashboard">
-            <a href="add.html" class="card">
+            <a href="add.php" class="card">
                 <div class="card-icon">
                     <i class="fas fa-plus"></i>
                 </div>
@@ -188,7 +188,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 <div class="card-description">添加新的記錄到資料庫中，支援多種數據格式輸入</div>
             </a>
 
-            <a href="delete.html" class="card">
+            <a href="delete.php" class="card">
                 <div class="card-icon">
                     <i class="fas fa-trash-alt"></i>
                 </div>
@@ -196,7 +196,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 <div class="card-description">安全地移除不需要的記錄，支援批量刪除操作</div>
             </a>
 
-            <a href="update.html" class="card">
+            <a href="update.php" class="card">
                 <div class="card-icon">
                     <i class="fas fa-edit"></i>
                 </div>
@@ -204,7 +204,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 <div class="card-description">更新現有記錄的內容，保持數據的準確性</div>
             </a>
 
-            <a href="query.html" class="card">
+            <a href="query.php" class="card">
                 <div class="card-icon">
                     <i class="fas fa-search"></i>
                 </div>
@@ -212,7 +212,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 <div class="card-description">快速搜尋和瀏覽所有數據記錄</div>
             </a>
 
-            <a href="query_specific.html" class="card">
+            <a href="query_specific.php" class="card">
                 <div class="card-icon">
                     <i class="fas fa-filter"></i>
                 </div>
@@ -220,7 +220,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 <div class="card-description">使用條件篩選查找特定的數據記錄</div>
             </a>
 
-            <a href="upload_photo.html" class="card">
+            <a href="upload_photo.php" class="card">
                 <div class="card-icon">
                     <i class="fas fa-upload"></i>
                 </div>
