@@ -101,31 +101,6 @@ body {
     line-height: 1.6;
 }
 
-.site-footer {
-    background-color: #2863a2;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 25px 80px;
-    font-size: 14px;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-top: 40px;
-    box-sizing: border-box;
-}
-
-.footer-left img {
-    height: 70px;
-    width: auto;
-}
-
-.footer-right p {
-    margin: 2px 0;
-    line-height: 1.5;
-    white-space: nowrap;
-}
-
 .profile h1 {
     color: #2863a2;
     margin-bottom: 10px;
@@ -250,15 +225,5 @@ a:hover {
 @media (max-width: 600px) {
     body {
         padding: 0 20px;
-    }
-
-    .site-footer {
-        flex-direction: column;
-        padding: 20px 20px;
-        text-align: center;
-    }
-
-    .footer-right p {
-        white-space: normal;
     }
 }
