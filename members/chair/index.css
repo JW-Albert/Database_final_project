@@ -93,12 +93,12 @@ body {
 .members-container:hover>.dropdown {
     display: flex;
 }
-
 main.content {
     display: flex;
     gap: 40px;
     margin: 40px 0;
     min-height: 500px;
+    padding-bottom: 120px;
 }
 
 /* 左側選單 */
