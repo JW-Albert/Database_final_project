@@ -7,7 +7,6 @@
     <title>榮譽特聘教授</title>
     <link rel="icon" href="/~D1210799/pics/iecs_logo.png" type="image/png" />
     <script src="/~D1210799/js/config.js"></script>
-    <link rel="icon" href="../pics/iecs_logo.png" type="image/png" />
     <link rel="stylesheet" href="/~D1210799/members/chair/index.css">
 </head>
 
@@ -31,7 +30,7 @@
         </nav>
 
         <!-- 右側成員卡片區 -->
-        <section class="card-list" id="honorary-card-list">
+        <section class="card-list" id="member-card-list">
             <!-- 卡片將由 JS 動態產生 -->
         </section>
     </main>
@@ -112,33 +111,33 @@
         })();
     </script>
     <script>
-        async function loadHonorary() {
-            const list = document.getElementById('honorary-card-list');
+        async function loadMembers() {
+            const list = document.getElementById('member-card-list');
             list.innerHTML = '載入中...';
             try {
                 const res = await fetch('/~D1210799/members/honorary/api.php');
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message);
                 let html = '';
-                data.honorary.forEach(prof => {
+                // 教授卡片
+                data.professors.forEach(prof => {
                     html += `
-                <a class="card" href="#" title="${prof.name}">
-                    <img src="pics/${prof.photo || 'default.jpg'}" alt="${prof.name}" />
-                    <div class="card-content">
-                        <h3>${prof.name}</h3>
-                        ${prof.type ? `<p>${prof.type}</p>` : ''}
-                        ${prof.extension ? `<p>分機：${prof.extension}</p>` : ''}
-                        ${prof.email ? `<p>信箱：${prof.email}</p>` : ''}
-                        ${prof.bio ? `<p>${prof.bio}</p>` : ''}
-                    </div>
-                </a>`;
+                    <a class="card" href="#" title="${prof.name}">
+                        <img src="pics/${prof.photo || 'default.jpg'}" alt="${prof.name}" />
+                        <div class="card-content">
+                            <h3>${prof.name}</h3>
+                            ${prof.type ? `<p>${prof.type}</p>` : ''}
+                            ${(prof.expertise && prof.expertise.length) ? `<p>專長：${prof.expertise.join('、')}</p>` : ''}
+                            ${prof.email ? `<p>信箱：${prof.email}</p>` : ''}
+                        </div>
+                    </a>`;
                 });
-                list.innerHTML = html || '查無資料';
+                list.innerHTML = html;
             } catch (e) {
                 list.innerHTML = '載入失敗：' + e.message;
             }
         }
-        loadHonorary();
+        loadMembers();
     </script>
 </body>
 

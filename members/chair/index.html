@@ -7,7 +7,6 @@
     <title>講座教授</title>
     <link rel="icon" href="/~D1210799/pics/iecs_logo.png" type="image/png" />
     <script src="/~D1210799/js/config.js"></script>
-    <link rel="icon" href="../pics/iecs_logo.png" type="image/png" />
     <link rel="stylesheet" href="/~D1210799/members/chair/index.css">
 </head>
 
@@ -31,8 +30,8 @@
         </nav>
 
         <!-- 右側成員卡片區 -->
-        <section class="card-list" id="chair-card-list">
-            <h2 style="width: 100%; margin-bottom: 16px;">講座教授</h2>
+        <section class="card-list" id="member-card-list">
+            <h2 style="width: 100%; margin-bottom: 16px;"></h2>
             <!-- 卡片將由 JS 動態產生 -->
         </section>
     </main>
@@ -113,17 +112,16 @@
         })();
     </script>
     <script>
-        async function loadChairProfessors() {
-            const list = document.getElementById('chair-card-list');
+        async function loadMembers() {
+            const list = document.getElementById('member-card-list');
             list.innerHTML = '載入中...';
             try {
-                const res = await fetch(BASE_PATH + '/members/api.php');
+                const res = await fetch('/~D1210799/members/chair/api.php');
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message);
                 let html = '';
-                data.professors.filter(prof =>
-                    prof.type === '何宜武先生學術講座' || prof.type === '講座教授'
-                ).forEach(prof => {
+                // 教授卡片
+                data.professors.forEach(prof => {
                     html += `
                     <a class="card" href="#" title="${prof.name}">
                         <img src="pics/${prof.photo || 'default.jpg'}" alt="${prof.name}" />
@@ -135,12 +133,12 @@
                         </div>
                     </a>`;
                 });
-                list.innerHTML = html || '查無資料';
+                list.innerHTML = html;
             } catch (e) {
                 list.innerHTML = '載入失敗：' + e.message;
             }
         }
-        loadChairProfessors();
+        loadMembers();
     </script>
 </body>
 

@@ -7,7 +7,7 @@ try {
     $pdo = getDBConnection();
 
     // 取得所有教授
-    $stmt = $pdo->query("SELECT professor_id, name, type, email, photo FROM Professor WHERE type = '榮譽特聘教授'");
+    $stmt = $pdo->query("SELECT professor_id, name, type, email, photo FROM Professor WHERE type = '何宜武先生學術講座' OR type = '講座教授' OR type = '特聘講座' OR type = '副教授' OR type = '助理教授' OR type = '教授'");
     $professors = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // 取得所有專長

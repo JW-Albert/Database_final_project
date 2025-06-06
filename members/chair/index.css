@@ -142,7 +142,6 @@ main.content {
     flex-wrap: wrap;
     gap: 24px;
     justify-content: flex-start;
-    align-items: stretch;
 }
 
 .card {

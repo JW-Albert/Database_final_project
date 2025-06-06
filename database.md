@@ -12,6 +12,7 @@ CREATE TABLE Professor (
     type VARCHAR(10) COMMENT '類型',
     photo_url VARCHAR(300) COMMENT '圖片連結',
     website_url VARCHAR(300) COMMENT '個人網站',
+    retire VARCHAR(4) COMMENT '退休',
     PRIMARY KEY(professor_id)
 ) COMMENT='教授資料表';
 ```
