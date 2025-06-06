@@ -5,7 +5,7 @@
 ## 專案結構
 
 ```
-├── index.html              # 主選單頁面
+├── index.html              # 登入頁面
 ├── add.html                # 新增資料頁面
 ├── delete.html             # 刪除資料頁面
 ├── update.html             # 修改資料頁面
@@ -15,7 +15,7 @@
 ├── get_col_example.html    # 欄位查詢範例頁面
 ├── get_all_example.html    # 完整查詢範例頁面
 ├── query_data_example.html # 排序查詢範例頁面
-├── login.html              # 管理者登入頁面
+├── home_page.html          # 主頁面
 ├── add_data/               # 新增資料相關 API
 │   └── main.php            # 新增資料處理程式
 ├── delete_data/            # 刪除資料相關 API

@@ -376,7 +376,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 <body>
     <div class="container">
         <div class="header">
-            <a href="index.html" class="back-link">
+            <a href="home_page.html" class="back-link">
                 <i class="fas fa-arrow-left"></i>
                 返回主選單
             </a>

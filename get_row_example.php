@@ -97,7 +97,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 </head>
 
 <body>
-    <a href="index.html" class="back-link">← 返回主選單</a>
+    <a href="home_page.html" class="back-link">← 返回主選單</a>
     <h1>單列資料查詢範例</h1>
 
     <div class="form-group">
