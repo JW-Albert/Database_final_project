@@ -1,10 +1,18 @@
+<?php
+session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: index.html");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>查詢特定資料 - 資料庫管理系統</title>
+    <title>修改資料 - 資料庫管理系統</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -21,7 +29,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
@@ -171,17 +179,17 @@
             box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
         }
 
-        .button.info {
-            background: linear-gradient(135deg, #3498db, #2980b9);
+        .button.warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
         }
 
-        .button.info:hover {
-            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+        .button.warning:hover {
+            box-shadow: 0 8px 20px rgba(243, 156, 18, 0.3);
         }
 
         .field-group {
-            background: rgba(52, 152, 219, 0.05);
-            border: 2px solid rgba(52, 152, 219, 0.1);
+            background: rgba(102, 126, 234, 0.05);
+            border: 2px solid rgba(102, 126, 234, 0.1);
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 16px;
@@ -189,12 +197,29 @@
         }
 
         .field-group:hover {
-            border-color: rgba(52, 152, 219, 0.2);
+            border-color: rgba(102, 126, 234, 0.2);
+        }
+
+        .condition-field-group {
+            background: rgba(243, 156, 18, 0.05);
+            border: 2px solid rgba(243, 156, 18, 0.1);
+        }
+
+        .condition-field-group:hover {
+            border-color: rgba(243, 156, 18, 0.2);
         }
 
         .condition-row {
             display: grid;
             grid-template-columns: 1fr auto 1fr auto;
+            gap: 15px;
+            align-items: end;
+            margin-bottom: 15px;
+        }
+
+        .value-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
             gap: 15px;
             align-items: end;
             margin-bottom: 15px;
@@ -225,17 +250,17 @@
         }
 
         .fields-container::-webkit-scrollbar-track {
-            background: rgba(52, 152, 219, 0.1);
+            background: rgba(102, 126, 234, 0.1);
             border-radius: 3px;
         }
 
         .fields-container::-webkit-scrollbar-thumb {
-            background: rgba(52, 152, 219, 0.3);
+            background: rgba(102, 126, 234, 0.3);
             border-radius: 3px;
         }
 
         .fields-container::-webkit-scrollbar-thumb:hover {
-            background: rgba(52, 152, 219, 0.5);
+            background: rgba(102, 126, 234, 0.5);
         }
 
         .actions {
@@ -244,7 +269,7 @@
             flex-wrap: wrap;
             align-items: center;
             padding-top: 20px;
-            border-top: 2px solid rgba(52, 152, 219, 0.1);
+            border-top: 2px solid rgba(102, 126, 234, 0.1);
         }
 
         .table-input-group {
@@ -258,66 +283,10 @@
             margin-bottom: 0;
         }
 
-        .result-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .result-table th {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-        }
-
-        .result-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid rgba(52, 152, 219, 0.1);
-        }
-
-        .result-table tr:nth-child(even) {
-            background: rgba(52, 152, 219, 0.05);
-        }
-
-        .result-table tr:hover {
-            background: rgba(52, 152, 219, 0.1);
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: #7f8c8d;
-            font-size: 1.1rem;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 16px;
-            margin-top: 20px;
-        }
-
-        .no-results i {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: #bdc3c7;
-        }
-
-        .result-count {
-            text-align: center;
-            margin-top: 15px;
-            padding: 10px;
-            background: rgba(52, 152, 219, 0.1);
-            border-radius: 12px;
-            color: #2c3e50;
-            font-weight: 500;
-        }
-
-        .result-count i {
-            margin-right: 8px;
-            color: #3498db;
+        .two-column-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
         }
 
         @media (max-width: 768px) {
@@ -338,9 +307,14 @@
                 flex-direction: column;
             }
             
-            .condition-row {
+            .condition-row,
+            .value-row {
                 grid-template-columns: 1fr;
                 gap: 10px;
+            }
+            
+            .two-column-layout {
+                grid-template-columns: 1fr;
             }
             
             .actions {
@@ -351,15 +325,6 @@
             .button {
                 justify-content: center;
                 margin-right: 0;
-            }
-
-            .result-table {
-                font-size: 0.9rem;
-            }
-
-            .result-table th,
-            .result-table td {
-                padding: 10px 8px;
             }
         }
     </style>
@@ -373,8 +338,8 @@
                 返回主選單
             </a>
             <div class="header-content">
-                <h1><i class="fas fa-filter"></i> 查詢特定資料</h1>
-                <p>使用條件篩選查找特定的數據記錄</p>
+                <h1><i class="fas fa-edit"></i> 修改資料</h1>
+                <p>更新現有記錄的內容，保持數據的準確性</p>
             </div>
         </div>
 
@@ -396,30 +361,42 @@
                 </div>
             </div>
 
-            <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-search-plus"></i>
-                    進階查詢條件設定
-                </div>
-                <div id="fieldsContainer" class="fields-container">
-                    <!-- 動態條件欄位將在這裡生成 -->
-                </div>
-                
-                <div class="actions">
-                    <button class="button info" onclick="addField()">
+            <div class="two-column-layout">
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-filter"></i>
+                        設定條件
+                    </div>
+                    <div id="conditionsContainer" class="fields-container">
+                        <!-- 條件欄位將在這裡生成 -->
+                    </div>
+                    <button class="button warning" onclick="addCondition()">
                         <i class="fas fa-plus"></i>
                         新增條件
                     </button>
-                    <button class="button success" onclick="submitQuery()">
-                        <i class="fas fa-search"></i>
-                        執行查詢
+                </div>
+
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-sync-alt"></i>
+                        設定更新值
+                    </div>
+                    <div id="valuesContainer" class="fields-container">
+                        <!-- 更新值欄位將在這裡生成 -->
+                    </div>
+                    <button class="button secondary" onclick="addValue()">
+                        <i class="fas fa-plus"></i>
+                        新增欄位
                     </button>
                 </div>
             </div>
-        </div>
 
-        <div id="resultContainer">
-            <!-- 查詢結果將在這裡顯示 -->
+            <div class="actions">
+                <button class="button success" onclick="submitUpdate()">
+                    <i class="fas fa-save"></i>
+                    執行更新
+                </button>
+            </div>
         </div>
     </div>
 
@@ -441,8 +418,10 @@
                 if (data.status === 'success') {
                     tableColumns = data.data.columns;
                     selectedColumns.clear();
-                    document.getElementById('fieldsContainer').innerHTML = '';
-                    addField(); // 自動新增第一個條件
+                    document.getElementById('conditionsContainer').innerHTML = '';
+                    document.getElementById('valuesContainer').innerHTML = '';
+                    addCondition(); // 自動新增第一個條件
+                    addValue(); // 自動新增第一個更新值
                 } else {
                     alert('載入欄位失敗：' + data.message);
                 }
@@ -477,10 +456,10 @@
             });
         }
 
-        function addField() {
-            const container = document.getElementById('fieldsContainer');
+        function addCondition() {
+            const container = document.getElementById('conditionsContainer');
             const fieldGroup = document.createElement('div');
-            fieldGroup.className = 'field-group';
+            fieldGroup.className = 'field-group condition-field-group';
 
             const conditionRow = document.createElement('div');
             conditionRow.className = 'condition-row';
@@ -501,14 +480,11 @@
                 <option value=">=">>=</option>
                 <option value="<="><=</option>
                 <option value="LIKE">LIKE</option>
-                <option value="IN">IN</option>
-                <option value="NOT IN">NOT IN</option>
-                <option value="BETWEEN">BETWEEN</option>
             `;
 
             const valueInput = document.createElement('input');
             valueInput.type = 'text';
-            valueInput.placeholder = '請輸入值 (多個值請用逗號分隔)';
+            valueInput.placeholder = '請輸入值';
 
             const removeButton = document.createElement('button');
             removeButton.innerHTML = '<i class="fas fa-trash"></i> 移除';
@@ -527,6 +503,47 @@
             conditionRow.appendChild(removeButton);
 
             fieldGroup.appendChild(conditionRow);
+            fieldGroup.appendChild(columnInfo);
+            container.appendChild(fieldGroup);
+
+            updateAllColumnSelectors();
+        }
+
+        function addValue() {
+            const container = document.getElementById('valuesContainer');
+            const fieldGroup = document.createElement('div');
+            fieldGroup.className = 'field-group';
+
+            const valueRow = document.createElement('div');
+            valueRow.className = 'value-row';
+
+            const columnSelect = document.createElement('select');
+            columnSelect.className = 'column-select';
+            columnSelect.onchange = function () {
+                updateAllColumnSelectors();
+                updateColumnInfo(this);
+            };
+
+            const valueInput = document.createElement('input');
+            valueInput.type = 'text';
+            valueInput.placeholder = '請輸入新值';
+
+            const removeButton = document.createElement('button');
+            removeButton.innerHTML = '<i class="fas fa-trash"></i> 移除';
+            removeButton.className = 'button danger';
+            removeButton.onclick = function () {
+                container.removeChild(fieldGroup);
+                updateAllColumnSelectors();
+            };
+
+            const columnInfo = document.createElement('div');
+            columnInfo.className = 'column-info';
+
+            valueRow.appendChild(columnSelect);
+            valueRow.appendChild(valueInput);
+            valueRow.appendChild(removeButton);
+
+            fieldGroup.appendChild(valueRow);
             fieldGroup.appendChild(columnInfo);
             container.appendChild(fieldGroup);
 
@@ -555,56 +572,7 @@
             }
         }
 
-        function createTable(data) {
-            if (!data || data.length === 0) {
-                return `
-                    <div class="no-results">
-                        <i class="fas fa-search"></i>
-                        <div>沒有符合條件的資料</div>
-                    </div>
-                `;
-            }
-
-            const table = document.createElement('table');
-            table.className = 'result-table';
-
-            // 建立表頭
-            const thead = document.createElement('thead');
-            const headerRow = document.createElement('tr');
-            Object.keys(data[0]).forEach(key => {
-                const th = document.createElement('th');
-                th.textContent = key;
-                headerRow.appendChild(th);
-            });
-            thead.appendChild(headerRow);
-            table.appendChild(thead);
-
-            // 建立表格內容
-            const tbody = document.createElement('tbody');
-            data.forEach(row => {
-                const tr = document.createElement('tr');
-                Object.values(row).forEach(value => {
-                    const td = document.createElement('td');
-                    td.textContent = value;
-                    tr.appendChild(td);
-                });
-                tbody.appendChild(tr);
-            });
-            table.appendChild(tbody);
-
-            // 添加結果計數
-            const countDiv = document.createElement('div');
-            countDiv.className = 'result-count';
-            countDiv.innerHTML = `<i class="fas fa-database"></i>共找到 ${data.length} 筆資料`;
-
-            const container = document.createElement('div');
-            container.appendChild(table);
-            container.appendChild(countDiv);
-
-            return container;
-        }
-
-        async function submitQuery() {
+        async function submitUpdate() {
             const tableName = document.getElementById('tableName').value;
             if (!tableName) {
                 alert('請輸入資料表名稱');
@@ -612,9 +580,9 @@
             }
 
             const conditions = [];
-            const fields = document.querySelectorAll('.field-group');
+            const conditionFields = document.querySelectorAll('#conditionsContainer .field-group');
 
-            fields.forEach(field => {
+            conditionFields.forEach(field => {
                 const conditionRow = field.querySelector('.condition-row');
                 const column = conditionRow.querySelector('.column-select').value;
                 const operator = conditionRow.querySelector('select:nth-child(2)').value;
@@ -628,29 +596,56 @@
                 }
             });
 
+            if (conditions.length === 0) {
+                alert('請至少設定一個條件');
+                return;
+            }
+
+            const values = {};
+            const valueFields = document.querySelectorAll('#valuesContainer .field-group');
+
+            valueFields.forEach(field => {
+                const valueRow = field.querySelector('.value-row');
+                const column = valueRow.querySelector('.column-select').value;
+                const value = valueRow.querySelector('input').value;
+                if (column) {
+                    values[column] = value;
+                }
+            });
+
+            if (Object.keys(values).length === 0) {
+                alert('請至少設定一個要更新的欄位');
+                return;
+            }
+
+            if (!confirm('確定要更新符合條件的資料嗎？')) {
+                return;
+            }
+
             try {
-                const response = await fetch('http://localhost/query_data/main.php', {
+                const response = await fetch('http://localhost/update_data/main.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         table: tableName,
-                        conditions: conditions
+                        conditions: conditions,
+                        values: values
                     })
                 });
 
                 const result = await response.json();
                 if (result.status === 'success') {
-                    const resultContainer = document.getElementById('resultContainer');
-                    if (result.data && result.data.length > 0) {
-                        resultContainer.innerHTML = '';
-                        resultContainer.appendChild(createTable(result.data));
-                    } else {
-                        resultContainer.innerHTML = createTable([]);
-                    }
+                    alert(`成功更新 ${result.affected_rows} 筆資料！`);
+                    // 清空表單
+                    document.getElementById('tableName').value = '';
+                    document.getElementById('conditionsContainer').innerHTML = '';
+                    document.getElementById('valuesContainer').innerHTML = '';
+                    tableColumns = [];
+                    selectedColumns.clear();
                 } else {
-                    alert('查詢失敗：' + result.message);
+                    alert('更新失敗：' + result.message);
                 }
             } catch (error) {
                 alert('發生錯誤：' + error.message);

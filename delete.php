@@ -1,10 +1,18 @@
+<?php
+session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: index.html");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>查詢資料 - 資料庫管理系統</title>
+    <title>刪除資料 - 資料庫管理系統</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -21,7 +29,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
@@ -78,6 +86,31 @@
             padding: 30px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
+        }
+
+        .warning-banner {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .warning-banner i {
+            font-size: 1.5rem;
+        }
+
+        .warning-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .warning-content p {
+            font-size: 0.9rem;
+            opacity: 0.9;
         }
 
         .form-section {
@@ -172,8 +205,8 @@
         }
 
         .field-group {
-            background: rgba(102, 126, 234, 0.05);
-            border: 2px solid rgba(102, 126, 234, 0.1);
+            background: rgba(231, 76, 60, 0.05);
+            border: 2px solid rgba(231, 76, 60, 0.2);
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 16px;
@@ -181,7 +214,7 @@
         }
 
         .field-group:hover {
-            border-color: rgba(102, 126, 234, 0.2);
+            border-color: rgba(231, 76, 60, 0.3);
         }
 
         .condition-row {
@@ -217,17 +250,17 @@
         }
 
         .fields-container::-webkit-scrollbar-track {
-            background: rgba(102, 126, 234, 0.1);
+            background: rgba(231, 76, 60, 0.1);
             border-radius: 3px;
         }
 
         .fields-container::-webkit-scrollbar-thumb {
-            background: rgba(102, 126, 234, 0.3);
+            background: rgba(231, 76, 60, 0.3);
             border-radius: 3px;
         }
 
         .fields-container::-webkit-scrollbar-thumb:hover {
-            background: rgba(102, 126, 234, 0.5);
+            background: rgba(231, 76, 60, 0.5);
         }
 
         .actions {
@@ -236,7 +269,7 @@
             flex-wrap: wrap;
             align-items: center;
             padding-top: 20px;
-            border-top: 2px solid rgba(102, 126, 234, 0.1);
+            border-top: 2px solid rgba(231, 76, 60, 0.1);
         }
 
         .table-input-group {
@@ -248,53 +281,6 @@
         .table-input-group .form-group {
             flex: 1;
             margin-bottom: 0;
-        }
-
-        .result-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .result-table th {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-        }
-
-        .result-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
-        }
-
-        .result-table tr:nth-child(even) {
-            background: rgba(102, 126, 234, 0.05);
-        }
-
-        .result-table tr:hover {
-            background: rgba(102, 126, 234, 0.1);
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: #7f8c8d;
-            font-size: 1.1rem;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 16px;
-            margin-top: 20px;
-        }
-
-        .no-results i {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: #bdc3c7;
         }
 
         @media (max-width: 768px) {
@@ -329,15 +315,6 @@
                 justify-content: center;
                 margin-right: 0;
             }
-
-            .result-table {
-                font-size: 0.9rem;
-            }
-
-            .result-table th,
-            .result-table td {
-                padding: 10px 8px;
-            }
         }
     </style>
 </head>
@@ -350,8 +327,16 @@
                 返回主選單
             </a>
             <div class="header-content">
-                <h1><i class="fas fa-search"></i> 查詢資料</h1>
-                <p>快速搜尋和瀏覽所有數據記錄</p>
+                <h1><i class="fas fa-trash-alt"></i> 刪除資料</h1>
+                <p>安全地移除不需要的記錄</p>
+            </div>
+        </div>
+
+        <div class="warning-banner">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div class="warning-content">
+                <h3>危險操作警告</h3>
+                <p>刪除資料是不可逆的操作，請謹慎設定條件並確認後再執行</p>
             </div>
         </div>
 
@@ -376,7 +361,7 @@
             <div class="form-section">
                 <div class="section-title">
                     <i class="fas fa-filter"></i>
-                    查詢條件設定
+                    刪除條件設定
                 </div>
                 <div id="fieldsContainer" class="fields-container">
                     <!-- 動態條件欄位將在這裡生成 -->
@@ -387,16 +372,12 @@
                         <i class="fas fa-plus"></i>
                         新增條件
                     </button>
-                    <button class="button success" onclick="submitQuery()">
-                        <i class="fas fa-search"></i>
-                        執行查詢
+                    <button class="button danger" onclick="submitDelete()">
+                        <i class="fas fa-trash"></i>
+                        執行刪除
                     </button>
                 </div>
             </div>
-        </div>
-
-        <div id="resultContainer">
-            <!-- 查詢結果將在這裡顯示 -->
         </div>
     </div>
 
@@ -529,47 +510,7 @@
             }
         }
 
-        function createTable(data) {
-            if (!data || data.length === 0) {
-                return `
-                    <div class="no-results">
-                        <i class="fas fa-search"></i>
-                        <div>沒有符合條件的資料</div>
-                    </div>
-                `;
-            }
-
-            const table = document.createElement('table');
-            table.className = 'result-table';
-
-            // 建立表頭
-            const thead = document.createElement('thead');
-            const headerRow = document.createElement('tr');
-            Object.keys(data[0]).forEach(key => {
-                const th = document.createElement('th');
-                th.textContent = key;
-                headerRow.appendChild(th);
-            });
-            thead.appendChild(headerRow);
-            table.appendChild(thead);
-
-            // 建立表格內容
-            const tbody = document.createElement('tbody');
-            data.forEach(row => {
-                const tr = document.createElement('tr');
-                Object.values(row).forEach(value => {
-                    const td = document.createElement('td');
-                    td.textContent = value;
-                    tr.appendChild(td);
-                });
-                tbody.appendChild(tr);
-            });
-            table.appendChild(tbody);
-
-            return table;
-        }
-
-        async function submitQuery() {
+        async function submitDelete() {
             const tableName = document.getElementById('tableName').value;
             if (!tableName) {
                 alert('請輸入資料表名稱');
@@ -584,7 +525,7 @@
                 const column = conditionRow.querySelector('.column-select').value;
                 const operator = conditionRow.querySelector('select:nth-child(2)').value;
                 const value = conditionRow.querySelector('input').value;
-                if (column) {
+                if (column && value) {
                     conditions.push({
                         column: column,
                         operator: operator,
@@ -593,8 +534,17 @@
                 }
             });
 
+            if (conditions.length === 0) {
+                alert('請至少設定一個刪除條件');
+                return;
+            }
+
+            if (!confirm('確定要刪除符合條件的資料嗎？此操作無法復原！')) {
+                return;
+            }
+
             try {
-                const response = await fetch('http://localhost/query_data/main.php', {
+                const response = await fetch('http://localhost/delete_data/main.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -607,15 +557,14 @@
 
                 const result = await response.json();
                 if (result.status === 'success') {
-                    const resultContainer = document.getElementById('resultContainer');
-                    if (result.data && result.data.length > 0) {
-                        resultContainer.innerHTML = '';
-                        resultContainer.appendChild(createTable(result.data));
-                    } else {
-                        resultContainer.innerHTML = createTable([]);
-                    }
+                    alert(`成功刪除 ${result.affected_rows} 筆資料！`);
+                    // 清空表單
+                    document.getElementById('tableName').value = '';
+                    document.getElementById('fieldsContainer').innerHTML = '';
+                    tableColumns = [];
+                    selectedColumns.clear();
                 } else {
-                    alert('查詢失敗：' + result.message);
+                    alert('刪除失敗：' + result.message);
                 }
             } catch (error) {
                 alert('發生錯誤：' + error.message);
