@@ -8,6 +8,7 @@
     <link rel="icon" href="/~D1210799/pics/iecs_logo.png" type="image/png" />
     <script src="/~D1210799/js/config.js"></script>
     <link rel="stylesheet" href="/~D1210799/members/chair/index.css">
+    <link rel="stylesheet" href="/~D1210799/header-footer.css">
 </head>
 
 <body>
@@ -154,7 +155,7 @@
             const list = document.getElementById('member-card-list');
             list.innerHTML = '載入中...';
             try {
-                const res = await fetch(BATH_PATH + '/members/full_time/api.php');
+                const res = await fetch(BASE_PATH + '/members/full_time/api.php');
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message);
                 let html = '';
