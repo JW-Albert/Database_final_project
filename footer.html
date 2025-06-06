@@ -1,12 +1,42 @@
 <footer class="site-footer">
     <div class="footer-left">
-        <img src="/pics/fcu_logo.svg" alt="逢甲校徽" />
+        <img id="footer-logo" src="/pics/fcu_logo.svg" alt="逢甲校徽" />
     </div>
     <div class="footer-right">
         <h2>聯絡我們</h2>
-        <p>地址：台中市西屯區逢大路127號（文華路100號）</p>
-        <p>系辦：逢甲大學 資訊電機館二樓（資電201）</p>
-        <p>電話：0424517250#3701</p>
-        <p>信箱：iecs@fcu.edu.tw</p>
+        <div class="contact-info">
+            <p id="footer-address">載入中...</p>
+            <p id="footer-office">載入中...</p>
+            <p id="footer-phone">載入中...</p>
+            <p id="footer-email">載入中...</p>
+        </div>
+        <script>
+            // 載入系所聯絡資訊
+            fetch(BASE_PATH + '/api/department.php?id=D001')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const dept = data.data;
+                        document.getElementById('footer-address').textContent = `地址：${dept.locat || '無資料'}`;
+                        document.getElementById('footer-office').textContent = `系辦：${dept.office || '無資料'}`;
+                        document.getElementById('footer-phone').textContent = `電話：${dept.phone_extension || '無資料'}`;
+                        document.getElementById('footer-email').textContent = `信箱：${dept.email || '無資料'}`;
+                    } else {
+                        throw new Error(data.message || 'Failed to load department info');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading department info:', error);
+                    document.getElementById('footer-address').textContent = '地址：載入失敗';
+                    document.getElementById('footer-office').textContent = '系辦：載入失敗';
+                    document.getElementById('footer-phone').textContent = '電話：載入失敗';
+                    document.getElementById('footer-email').textContent = '信箱：載入失敗';
+                });
+        </script>
     </div>
 </footer>

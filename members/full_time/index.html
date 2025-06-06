@@ -75,6 +75,43 @@
         });
     </script>
     <script>
+        function loadDepartmentInfo() {
+            fetch(BASE_PATH + '/api/department.php?id=D001')
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const dept = data.data;
+                        document.getElementById('footer-address').textContent = `地址：${dept.locat || '無資料'}`;
+                        document.getElementById('footer-office').textContent = `系辦：${dept.office || '無資料'}`;
+                        document.getElementById('footer-phone').textContent = `電話：${dept.phone_extension || '無資料'}`;
+                        document.getElementById('footer-email').textContent = `信箱：${dept.email || '無資料'}`;
+                    } else {
+                        throw new Error(data.message || 'Failed to load department info');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading department info:', error);
+                    document.getElementById('footer-address').textContent = '地址：載入失敗';
+                    document.getElementById('footer-office').textContent = '系辦：載入失敗';
+                    document.getElementById('footer-phone').textContent = '電話：載入失敗';
+                    document.getElementById('footer-email').textContent = '信箱：載入失敗';
+                });
+        }
+        function includeHTML(id, file, callback) {
+            if (typeof BASE_PATH === 'undefined') return;
+            fetch(BASE_PATH + '/' + file).then(res => res.text()).then(html => {
+                const container = document.getElementById(id);
+                container.innerHTML = html;
+                fixBasePathForLinksAndImages(container);
+                if (typeof callback === 'function') callback();
+            });
+        }
+        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
+    </script>
+    <script>
         function fixBasePathForLinksAndImages(container) {
             if (typeof BASE_PATH === 'undefined') return;
             container.querySelectorAll('a').forEach(link => {
@@ -90,16 +127,17 @@
                 }
             });
         }
-        function includeHTML(id, file) {
+        function includeHTML(id, file, callback) {
             if (typeof BASE_PATH === 'undefined') return;
             fetch(BASE_PATH + '/' + file).then(res => res.text()).then(html => {
                 const container = document.getElementById(id);
                 container.innerHTML = html;
                 fixBasePathForLinksAndImages(container);
+                if (typeof callback === 'function') callback();
             });
         }
         includeHTML('header-include', 'header.html');
-        includeHTML('footer-include', 'footer.html');
+        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
     </script>
     <script>
         // 動態補上 BASE_PATH + '/members/xxx' 給 sidebar 連結
@@ -140,6 +178,7 @@
         }
         loadMembers();
     </script>
+
 </body>
 
 </html>

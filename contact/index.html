@@ -8,7 +8,6 @@
     <link id="dynamic-favicon" rel="icon" type="image/png">
     <link rel="stylesheet" href="/~D1210799/header-footer.css">
     <script src="/~D1210799/js/config.js"></script>
-    <link rel="stylesheet" href="/~D1210799/about/index.css">
     <link rel="stylesheet" href="/~D1210799/contact/index.css">
 </head>
 
@@ -39,14 +38,12 @@
     <script>
         function fixBasePathForLinksAndImages(container) {
             if (typeof BASE_PATH === 'undefined') return;
-            // 修正 a 標籤
             container.querySelectorAll('a').forEach(link => {
                 const href = link.getAttribute('href');
                 if (href && href.startsWith('/') && !href.startsWith(BASE_PATH)) {
                     link.setAttribute('href', BASE_PATH + href);
                 }
             });
-            // 修正 img 標籤
             container.querySelectorAll('img').forEach(img => {
                 const src = img.getAttribute('src');
                 if (src && src.startsWith('/') && !src.startsWith(BASE_PATH)) {
@@ -54,53 +51,64 @@
                 }
             });
         }
-
-        function includeHTML(id, file) {
+        function includeHTML(id, file, callback) {
             if (typeof BASE_PATH === 'undefined') return;
             fetch(BASE_PATH + '/' + file).then(res => res.text()).then(html => {
                 const container = document.getElementById(id);
                 container.innerHTML = html;
                 fixBasePathForLinksAndImages(container);
+                if (typeof callback === 'function') callback();
             });
         }
-
-        // 載入系所資料
-        async function loadDepartmentInfo() {
-            try {
-                const response = await fetch(BASE_PATH + '/contact/api.php');
-                const result = await response.json();
-
-                if (result.success) {
-                    const data = result.data;
-                    document.getElementById('department-location').textContent = data.locat || '未提供';
-                    document.getElementById('department-office').textContent = data.office || '未提供';
-                    document.getElementById('department-phone').textContent = data.phone_extension || '未提供';
-                    document.getElementById('department-email').textContent = data.email || '未提供';
-                } else {
-                    throw new Error(result.message);
-                }
-            } catch (error) {
-                console.error('載入系所資料失敗:', error);
-                document.getElementById('department-location').textContent = '載入失敗';
-                document.getElementById('department-office').textContent = '載入失敗';
-                document.getElementById('department-phone').textContent = '載入失敗';
-                document.getElementById('department-email').textContent = '載入失敗';
-            }
-        }
-
+        // header/footer 載入
         includeHTML('header-include', 'header.html');
-        includeHTML('footer-include', 'footer.html');
-        loadDepartmentInfo();
-
-        // 動態設定 favicon
-        document.addEventListener('DOMContentLoaded', function () {
-            if (typeof BASE_PATH !== 'undefined') {
-                var favicon = document.getElementById('dynamic-favicon');
-                if (favicon) {
-                    favicon.href = BASE_PATH + '/pics/iecs_logo.png';
-                }
-            }
-        });
+        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
+        // 主區塊聯絡資訊
+        function loadMainContactInfo() {
+            fetch(BASE_PATH + '/api/department.php?id=D001')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const dept = data.data;
+                        document.getElementById('department-location').textContent = dept.locat || '無資料';
+                        document.getElementById('department-office').textContent = dept.office || '無資料';
+                        document.getElementById('department-phone').textContent = dept.phone_extension || '無資料';
+                        document.getElementById('department-email').textContent = dept.email || '無資料';
+                    } else {
+                        throw new Error(data.message || 'Failed to load department info');
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('department-location').textContent = '載入失敗';
+                    document.getElementById('department-office').textContent = '載入失敗';
+                    document.getElementById('department-phone').textContent = '載入失敗';
+                    document.getElementById('department-email').textContent = '載入失敗';
+                });
+        }
+        // footer 聯絡資訊
+        function loadDepartmentInfo() {
+            fetch(BASE_PATH + '/api/department.php?id=D001')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const dept = data.data;
+                        document.getElementById('footer-address').textContent = `地址：${dept.locat || '無資料'}`;
+                        document.getElementById('footer-office').textContent = `系辦：${dept.office || '無資料'}`;
+                        document.getElementById('footer-phone').textContent = `電話：${dept.phone_extension || '無資料'}`;
+                        document.getElementById('footer-email').textContent = `信箱：${dept.email || '無資料'}`;
+                    } else {
+                        throw new Error(data.message || 'Failed to load department info');
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('footer-address').textContent = '地址：載入失敗';
+                    document.getElementById('footer-office').textContent = '系辦：載入失敗';
+                    document.getElementById('footer-phone').textContent = '電話：載入失敗';
+                    document.getElementById('footer-email').textContent = '信箱：載入失敗';
+                });
+        }
+        // 載入主區塊聯絡資訊
+        loadMainContactInfo();
     </script>
     <!-- JavaScript 控制 active 狀態 -->
     <script>
