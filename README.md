@@ -15,7 +15,7 @@
 ├── get_col_example.html    # 欄位查詢範例頁面
 ├── get_all_example.html    # 完整查詢範例頁面
 ├── query_data_example.html # 排序查詢範例頁面
-├── home_page.html          # 主頁面
+├── home_page.php          # 主頁面
 ├── add_data/               # 新增資料相關 API
 │   └── main.php            # 新增資料處理程式
 ├── delete_data/            # 刪除資料相關 API
@@ -260,7 +260,7 @@
 
 ## HTML 頁面說明
 
-### 1. 主選單 (index.html)
+### 1. 主選單 (home_page.php)
 
 提供所有功能的入口，包括：
 - 新增資料
