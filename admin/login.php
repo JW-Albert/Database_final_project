@@ -19,10 +19,10 @@ try {
 
     if ($user) {
         // 登入成功，儲存登入資訊到 session
-        $_SESSION['user_id'] = $user['id'];   
+        $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
 
-        header("Location: ../index.html");
+        header("Location: ../home_page.html");
 
 
         exit();
