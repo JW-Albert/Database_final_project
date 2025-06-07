@@ -402,6 +402,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                     <i class="fas fa-save"></i>
                     儲存所有修改
                 </button>
+                
             </div>
         </div>
     </div>
@@ -550,10 +551,12 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             // Professor 表格不顯示新增按鈕
             if (table !== 'Professor') {
                 html += `
-                    <button class="button" onclick="addNewRow('${table}')" style="margin-bottom: 15px;">
-                        <i class="fas fa-plus"></i>
-                        新增一列資料
-                    </button>
+                    <div style="text-align:right";>
+                        <button class="button" onclick="addNewRow('${table}')" style="margin-bottom: 15px;">
+                            <i class="fas fa-plus"></i>
+                            新增一列資料
+                        </button>
+                    </div>
                     <div id="newRows_${table}"></div>
                 `;
             }
