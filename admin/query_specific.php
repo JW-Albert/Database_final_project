@@ -277,7 +277,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         }
 
         .result-table th {
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            background: #5a67d8;
             color: white;
             padding: 15px;
             text-align: left;
@@ -389,13 +389,15 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         <div class="main-card">
             <div class="form-section">
                 <div class="section-title">
-                    <i class="fas fa-table"></i>
-                    資料表設定
+                    <i class="fas fa-users-cog"></i>
+                    人員類型設定
                 </div>
                 <div class="table-input-group">
                     <div class="form-group">
-                        <label for="tableName">資料表名稱：</label>
-                        <input type="text" id="tableName" placeholder="請輸入資料表名稱" required>
+                        <label for="tableName">人員類型：</label>
+                        <select id="tableName" required>
+                            <option value="">請選擇人員類型</option>
+                        </select>
                     </div>
                     <button class="button" onclick="loadTableColumns()">
                         <i class="fas fa-download"></i>
@@ -431,14 +433,42 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         </div>
     </div>
 
+    <script src="js/tableNameMap.js"></script>
     <script>
         let tableColumns = [];
         let selectedColumns = new Set();
 
+        // 頁面載入時載入人員類型選項
+        window.onload = async function () {
+            try {
+                // 只允許這三個資料表
+                const allowedTables = ['Professor', 'Admin', 'Staff'];
+                const response = await fetch('get_table/main.php');
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    const select = document.getElementById('tableName');
+                    result.tables.forEach(table => {
+                        if (allowedTables.includes(table)) {
+                            const option = document.createElement('option');
+                            const label = tableNameMap[table] || table;
+                            option.value = table;
+                            option.textContent = `${label} (${table})`;
+                            select.appendChild(option);
+                        }
+                    });
+                } else {
+                    alert('人員類型載入失敗：' + result.message);
+                }
+            } catch (error) {
+                alert('發生錯誤：' + error.message);
+            }
+        }
+
         async function loadTableColumns() {
             const tableName = document.getElementById('tableName').value;
             if (!tableName) {
-                alert('請輸入資料表名稱');
+                alert('請選擇人員類型');
                 return;
             }
 
@@ -615,7 +645,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         async function submitQuery() {
             const tableName = document.getElementById('tableName').value;
             if (!tableName) {
-                alert('請輸入資料表名稱');
+                alert('請選擇人員類型');
                 return;
             }
 
