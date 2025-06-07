@@ -1,4 +1,9 @@
-/* Header 樣式 */
+body {
+    margin: 0;
+    padding: 0 150px;
+    font-family: Arial, sans-serif;
+}
+
 .header {
     display: flex;
     justify-content: space-between;
@@ -35,8 +40,7 @@
     padding: 16px 8px;
 }
 
-.nav-item:hover,
-.nav-item.active {
+.nav-item:hover {
     color: #2863a2;
     border-bottom: 2px solid #2863a2;
     padding-bottom: 14px;
@@ -48,8 +52,7 @@
     flex-direction: column;
 }
 
-.members-container:hover>.nav-item.members,
-.nav-item.members.active {
+.members-container:hover>.nav-item.members {
     color: #2863a2;
     border-bottom: 2px solid #2863a2;
     padding-bottom: 14px;
@@ -85,46 +88,52 @@
     display: flex;
 }
 
-/* Footer 樣式 */
-.site-footer {
-    background-color: #2863a2;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 30px 150px;
-    font-size: 14px;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-top: 40px;
-    box-sizing: border-box;
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
+.poster-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 40px auto;
+    position: relative;
 }
 
-.footer-left img {
-    height: 70px;
-    width: auto;
+.poster-container img {
+    width: 100%;
+    height: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: opacity 1s ease-in-out;
+    opacity: 1;
+    display: block;
 }
 
-.footer-right p {
-    margin: 2px 0;
-    line-height: 1.5;
+.fade-out {
+    opacity: 0;
 }
 
-members-container.active-parent>.dropdown {
-    display: flex;
+.arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 48px;
+    color: rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.3s;
+    user-select: none;
 }
 
-@media (max-width: 600px) {
-    .site-footer {
-        flex-direction: column;
-        padding: 20px 20px;
-        text-align: center;
-    }
-
-    .footer-right p {
-        white-space: normal;
-    }
+.arrow:hover {
+    color: #bdbdbd;
 }
+
+.arrow.left {
+    left: 0;
+    padding-left: 10px;
+}
+
+.arrow.right {
+    right: 0;
+    padding-right: 10px;
+}
+
+/* 已移除 footer 樣式，統一由 header-footer.css 控制 */

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>逢甲大學資訊系系所簡介</title>
+    <link rel="icon" href="/~D1210799/pics/iecs_logo.png" type="image/png" />
+    <script src="/~D1210799/js/config.js"></script>
+    <link rel="stylesheet" href="/~D1210799/members/chair/index.css">
+</head>
+
+<body>
+    <!-- Header 區域 -->
+    <div id="header-include"></div>
+
+    <!-- About 內容 -->
+    <main class="content">
+        <div class="profile-card">
+            <div class="profile-header">
+                <img id="profile-photo" src="" alt="" class="profile-photo" />
+                <div class="profile-info">
+                    <h1 id="profile-name" class="profile-name"></h1>
+                    <p><strong>信箱：</strong><a id="profile-email" href=""></a></p>
+                    <p><strong>分機：</strong><span id="profile-extension"></span></p>
+                </div>
+            </div>
+
+            <div id="courses-section" class="profile-section" style="display: none;">
+                <h2>課表</h2>
+                <ul id="courses-list"></ul>
+            </div>
+
+            <div id="education-section" class="profile-section" style="display: none;">
+                <h2>學歷</h2>
+                <ul id="education-list"></ul>
+            </div>
+
+            <div id="expertise-section" class="profile-section" style="display: none;">
+                <h2>專長</h2>
+                <ul id="expertise-list"></ul>
+            </div>
+
+            <div id="internal-section" class="profile-section" style="display: none;">
+                <h2>校內經歷</h2>
+                <ul id="internal-list"></ul>
+            </div>
+
+            <div id="external-section" class="profile-section" style="display: none;">
+                <h2>校外經歷</h2>
+                <ul id="external-list"></ul>
+            </div>
+
+            <div id="publications-section" class="profile-section" style="display: none;">
+                <h2>期刊論文</h2>
+                <ol id="publications-list"></ol>
+            </div>
+
+            <div id="conference-papers-section" class="profile-section" style="display: none;">
+                <h2>會議論文</h2>
+                <ol id="conference-papers-list"></ol>
+            </div>
+
+            <div id="book-reports-section" class="profile-section" style="display: none;">
+                <h2>專書及技術報告</h2>
+                <ol id="book-reports-list"></ol>
+            </div>
+
+            <div id="book-papers-section" class="profile-section" style="display: none;">
+                <h2>專書論文</h2>
+                <ol id="book-papers-list"></ol>
+            </div>
+
+            <div id="patents-section" class="profile-section" style="display: none;">
+                <h2>專利</h2>
+                <ol id="patents-list"></ol>
+            </div>
+
+            <div id="projects-section" class="profile-section" style="display: none;">
+                <h2>參與計畫</h2>
+                <ul id="projects-list"></ul>
+            </div>
+
+            <div id="internal-awards-section" class="profile-section" style="display: none;">
+                <h2>校內獎勵</h2>
+                <ul id="internal-awards-list"></ul>
+            </div>
+
+            <div id="external-awards-section" class="profile-section" style="display: none;">
+                <h2>校外獎勵</h2>
+                <ul id="external-awards-list"></ul>
+            </div>
+
+            <div id="lectures-section" class="profile-section" style="display: none;">
+                <h2>演講</h2>
+                <ul id="lectures-list"></ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer 區域 -->
+    <div id="footer-include"></div>
+
+    <!-- JavaScript 控制 active 狀態 -->
+    <script>
+        const membersLink = document.getElementById('members-link');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        navItems.forEach(item => {
+            if (item !== membersLink) {
+                item.addEventListener('mouseenter', () => {
+                    membersLink.classList.remove('active');
+                });
+                item.addEventListener('mouseleave', () => {
+                    membersLink.classList.add('active');
+                });
+            }
+        });
+    </script>
+    <script>
+        function fixBasePathForLinksAndImages(container) {
+            if (typeof BASE_PATH === 'undefined') return;
+            container.querySelectorAll('a').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href.startsWith('/') && !href.startsWith(BASE_PATH)) {
+                    link.setAttribute('href', BASE_PATH + href);
+                }
+            });
+            container.querySelectorAll('img').forEach(img => {
+                const src = img.getAttribute('src');
+                if (src && src.startsWith('/') && !src.startsWith(BASE_PATH)) {
+                    img.setAttribute('src', BASE_PATH + src);
+                }
+            });
+        }
+        function includeHTML(id, file, callback) {
+            if (typeof BASE_PATH === 'undefined') return;
+            fetch(BASE_PATH + '/' + file).then(res => res.text()).then(html => {
+                const container = document.getElementById(id);
+                container.innerHTML = html;
+                fixBasePathForLinksAndImages(container);
+                if (typeof callback === 'function') callback();
+            });
+        }
+        includeHTML('header-include', 'header.html');
+        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
+    </script>
+    <script>
+        // 動態補上 BASE_PATH + '/members/xxx' 給 sidebar 連結
+        (function () {
+            if (typeof BASE_PATH === 'undefined') return;
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                const page = link.getAttribute('data-href');
+                link.setAttribute('href', BASE_PATH + '/members/' + page);
+            });
+        })();
+    </script>
+
+    <script>
+        // 從 URL 獲取教授編號
+        const urlParams = new URLSearchParams(window.location.search);
+        const professorId = urlParams.get('professor_id');
+
+        if (!professorId) {
+            alert('未指定教授編號');
+            window.location.href = '/members/faculties/';
+            throw new Error('未指定教授編號');
+        }
+
+        // 獲取教授資料
+        fetch(`api.php?professor_id=${professorId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    throw new Error(data.message);
+                }
+
+                const {
+                    professor, courses, education, expertise,
+                    internal_experience, external_experience,
+                    journal_publications, conference_papers,
+                    book_reports, book_papers, patents,
+                    nsc_projects, industry_projects,
+                    internal_awards, external_awards, lectures
+                } = data.data;
+
+                // 更新頁面標題
+                document.title = `${professor.name} - 逢甲大學資訊系系所簡介`;
+
+                // 更新基本資料
+                document.getElementById('profile-photo').src = `${BASE_PATH}/members/pics/${professor.photo}`;
+                document.getElementById('profile-photo').alt = `${professor.name}照片`;
+                document.getElementById('profile-name').textContent = `${professor.name} 教授`;
+                document.getElementById('profile-email').href = `mailto:${professor.email}`;
+                document.getElementById('profile-email').textContent = professor.email;
+                document.getElementById('profile-extension').textContent = professor.extension;
+
+                // 更新課程資料
+                if (courses.length > 0) {
+                    const coursesList = document.getElementById('courses-list');
+                    const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
+                    courses.forEach(course => {
+                        const li = document.createElement('li');
+                        li.textContent = `${course.course_name}（星期${weekdays[course.weekday - 1]} ${course.period_start}-${course.period_end}節）`;
+                        coursesList.appendChild(li);
+                    });
+                    document.getElementById('courses-section').style.display = 'block';
+                }
+
+                // 更新學歷資料
+                if (education.length > 0) {
+                    const educationList = document.getElementById('education-list');
+                    education.forEach(edu => {
+                        const li = document.createElement('li');
+                        li.textContent = `${edu.school_name} ${edu.degree}`;
+                        educationList.appendChild(li);
+                    });
+                    document.getElementById('education-section').style.display = 'block';
+                }
+
+                // 更新專長資料
+                if (expertise.length > 0) {
+                    const expertiseList = document.getElementById('expertise-list');
+                    expertise.forEach(exp => {
+                        const li = document.createElement('li');
+                        li.textContent = exp.name_cn;
+                        expertiseList.appendChild(li);
+                    });
+                    document.getElementById('expertise-section').style.display = 'block';
+                }
+
+                // 更新校內經歷
+                if (internal_experience.length > 0) {
+                    const internalList = document.getElementById('internal-list');
+                    internal_experience.forEach(exp => {
+                        const li = document.createElement('li');
+                        li.textContent = `${exp.organization_name} ${exp.position}`;
+                        if (exp.date) {
+                            li.textContent += `（${exp.date}）`;
+                        }
+                        internalList.appendChild(li);
+                    });
+                    document.getElementById('internal-section').style.display = 'block';
+                }
+
+                // 更新校外經歷
+                if (external_experience.length > 0) {
+                    const externalList = document.getElementById('external-list');
+                    external_experience.forEach(exp => {
+                        const li = document.createElement('li');
+                        li.textContent = `${exp.organization_name} ${exp.position}`;
+                        if (exp.date) {
+                            li.textContent += `（${exp.date}）`;
+                        }
+                        externalList.appendChild(li);
+                    });
+                    document.getElementById('external-section').style.display = 'block';
+                }
+
+                // 更新期刊論文
+                if (journal_publications.length > 0) {
+                    const publicationsList = document.getElementById('publications-list');
+                    journal_publications.forEach(pub => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `${pub.author} (${pub.publication_date}). ${pub.paper_title}. <em>${pub.journal_name}</em>${pub.page_info ? `, ${pub.page_info}` : ''}.`;
+                        publicationsList.appendChild(li);
+                    });
+                    document.getElementById('publications-section').style.display = 'block';
+                }
+
+                // 更新會議論文
+                if (conference_papers.length > 0) {
+                    const papersList = document.getElementById('conference-papers-list');
+                    conference_papers.forEach(paper => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `${paper.author} (${paper.publication_date}). ${paper.paper_title}. <em>${paper.conference_name}</em>, ${paper.page_info}.`;
+                        papersList.appendChild(li);
+                    });
+                    document.getElementById('conference-papers-section').style.display = 'block';
+                }
+
+                // 更新專書及技術報告
+                if (book_reports.length > 0) {
+                    const reportsList = document.getElementById('book-reports-list');
+                    book_reports.forEach(report => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `${report.author} (${report.publication_date}). ${report.book_title}. ${report.publisher}${report.publication_location ? `, ${report.publication_location}` : ''}.`;
+                        reportsList.appendChild(li);
+                    });
+                    document.getElementById('book-reports-section').style.display = 'block';
+                }
+
+                // 更新專書論文
+                if (book_papers.length > 0) {
+                    const papersList = document.getElementById('book-papers-list');
+                    book_papers.forEach(paper => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `${paper.author} (${paper.date}). ${paper.title}. <em>${paper.journal_name}</em>. ${paper.publisher}.`;
+                        papersList.appendChild(li);
+                    });
+                    document.getElementById('book-papers-section').style.display = 'block';
+                }
+
+                // 更新專利
+                if (patents.length > 0) {
+                    const patentsList = document.getElementById('patents-list');
+                    patents.forEach(patent => {
+                        const li = document.createElement('li');
+                        li.textContent = `${patent.name}（${patent.category}，${patent.date}）`;
+                        if (patent.patent_number) {
+                            li.textContent += `，專利編號：${patent.patent_number}`;
+                        }
+                        patentsList.appendChild(li);
+                    });
+                    document.getElementById('patents-section').style.display = 'block';
+                }
+
+                // 更新計畫資料
+                if (nsc_projects.length > 0 || industry_projects.length > 0) {
+                    const projectsList = document.getElementById('projects-list');
+                    nsc_projects.forEach(project => {
+                        const li = document.createElement('li');
+                        li.textContent = `${project.department}計畫：${project.topic}（${project.period}）`;
+                        projectsList.appendChild(li);
+                    });
+                    industry_projects.forEach(project => {
+                        const li = document.createElement('li');
+                        li.textContent = `${project.topic}（${project.period}）`;
+                        projectsList.appendChild(li);
+                    });
+                    document.getElementById('projects-section').style.display = 'block';
+                }
+
+                // 更新校內獎勵
+                if (internal_awards.length > 0) {
+                    const awardsList = document.getElementById('internal-awards-list');
+                    internal_awards.forEach(award => {
+                        const li = document.createElement('li');
+                        li.textContent = `${award.award_name}（${award.organization}，${award.award_date}）`;
+                        if (award.topic) {
+                            li.textContent += `，主題：${award.topic}`;
+                        }
+                        awardsList.appendChild(li);
+                    });
+                    document.getElementById('internal-awards-section').style.display = 'block';
+                }
+
+                // 更新校外獎勵
+                if (external_awards.length > 0) {
+                    const awardsList = document.getElementById('external-awards-list');
+                    external_awards.forEach(award => {
+                        const li = document.createElement('li');
+                        li.textContent = `${award.award_name}（${award.organization}，${award.award_date}）`;
+                        if (award.topic) {
+                            li.textContent += `，主題：${award.topic}`;
+                        }
+                        awardsList.appendChild(li);
+                    });
+                    document.getElementById('external-awards-section').style.display = 'block';
+                }
+
+                // 更新演講
+                if (lectures.length > 0) {
+                    const lecturesList = document.getElementById('lectures-list');
+                    lectures.forEach(lecture => {
+                        const li = document.createElement('li');
+                        li.textContent = `${lecture.topic}（${lecture.location}，${lecture.date}）`;
+                        lecturesList.appendChild(li);
+                    });
+                    document.getElementById('lectures-section').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message);
+            });
+    </script>
+    <script>
+        function loadDepartmentInfo() {
+            fetch(BASE_PATH + '/api/department.php?id=D001')
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const dept = data.data;
+                        document.getElementById('footer-address').textContent = `地址：${dept.locat || '無資料'}`;
+                        document.getElementById('footer-office').textContent = `系辦：${dept.office || '無資料'}`;
+                        document.getElementById('footer-phone').textContent = `電話：${dept.phone_extension || '無資料'}`;
+                        document.getElementById('footer-email').textContent = `信箱：${dept.email || '無資料'}`;
+                    } else {
+                        throw new Error(data.message || 'Failed to load department info');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading department info:', error);
+                    document.getElementById('footer-address').textContent = '地址：載入失敗';
+                    document.getElementById('footer-office').textContent = '系辦：載入失敗';
+                    document.getElementById('footer-phone').textContent = '電話：載入失敗';
+                    document.getElementById('footer-email').textContent = '信箱：載入失敗';
+                });
+        }
+        function includeHTML(id, file, callback) {
+            if (typeof BASE_PATH === 'undefined') return;
+            fetch(BASE_PATH + '/' + file).then(res => res.text()).then(html => {
+                const container = document.getElementById(id);
+                container.innerHTML = html;
+                fixBasePathForLinksAndImages(container);
+                if (typeof callback === 'function') callback();
+            });
+        }
+        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
+    </script>
+</body>
+
+</html>

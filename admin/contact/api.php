@@ -12,10 +12,6 @@ try {
     $department = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($department) {
-        foreach ($department as $key => $value) {
-            $department[$key] = str_replace(["\r", "\n"], ' ', $value);
-        }
-        
         echo json_encode([
             'success' => true,
             'data' => $department

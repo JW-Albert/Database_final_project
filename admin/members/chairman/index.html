@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>系主任</title>
+    <link rel="icon" href="/~D1210799/pics/iecs_logo.png" type="image/png" />
+    <script src="/~D1210799/js/config.js"></script>
+    <link rel="stylesheet" href="/~D1210799/members/chairman/index.css">
+    <link rel="stylesheet" href="/~D1210799/header-footer.css">
+</head>
+
+<body>
+    <div id="header-include"></div>
+    <main class="content">
+        <!-- 左側選單 -->
+        <nav class="sidebar">
+            <h2>系所成員</h2>
+            <a class="sidebar-link" id="current" data-href="chairman">系主任</a>
+            <a class="sidebar-link" data-href="honorary">榮譽特聘教授</a>
+            <a class="sidebar-link" data-href="chair">講座教授</a>
+            <a class="sidebar-link" data-href="distinguished_chair">特約教授</a>
+            <a class="sidebar-link" data-href="distinguished">特聘教授</a>
+            <a class="sidebar-link" data-href="full_time">專任教授</a>
+            <a class="sidebar-link" data-href="part_time">兼任教授</a>
+            <a class="sidebar-link" data-href="staff">行政人員</a>
+            <a class="sidebar-link" data-href="retired">退休教授</a>
+        </nav>
+        <!-- 右側成員卡片區 -->
+        <section class="card-list" id="head-card-list">
+            <!-- 卡片將由 JS 動態產生 -->
+        </section>
+    </main>
+    <div id="footer-include"></div>
+    <script>
+        function fixBasePathForLinksAndImages(container) {
+            if (typeof BASE_PATH === 'undefined') return;
+            container.querySelectorAll('a').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href.startsWith('/') && !href.startsWith(BASE_PATH)) {
+                    link.setAttribute('href', BASE_PATH + href);
+                }
+            });
+            container.querySelectorAll('img').forEach(img => {
+                const src = img.getAttribute('src');
+                if (src && src.startsWith('/') && !src.startsWith(BASE_PATH)) {
+                    img.setAttribute('src', BASE_PATH + src);
+                }
+            });
+        }
+        function includeHTML(id, file) {
+            if (typeof BASE_PATH === 'undefined') return;
+            fetch(BASE_PATH + '/' + file).then(res => res.text()).then(html => {
+                const container = document.getElementById(id);
+                container.innerHTML = html;
+                fixBasePathForLinksAndImages(container);
+            });
+        }
+        includeHTML('header-include', 'header.html');
+        includeHTML('footer-include', 'footer.html');
+    </script>
+    <script>
+        const membersLink = document.getElementById('members-link');
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            if (item !== membersLink) {
+                item.addEventListener('mouseenter', () => {
+                    membersLink.classList.remove('active');
+                });
+                item.addEventListener('mouseleave', () => {
+                    membersLink.classList.add('active');
+                });
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.querySelector('.sidebar');
+            const currentLink = document.getElementById('current');
+            const sidebarLinks = sidebar.querySelectorAll('a');
+            // 初始時給系主任加上 active
+            currentLink.classList.add('active');
+            sidebarLinks.forEach(link => {
+                if (link !== currentLink) {
+                    // 其他連結 hover 時移除系主任 active
+                    link.addEventListener('mouseenter', () => {
+                        currentLink.classList.remove('active');
+                    });
+                    // 其他連結離開時，還原系主任 active
+                    link.addEventListener('mouseleave', () => {
+                        currentLink.classList.add('active');
+                    });
+                }
+            });
+        });
+    </script>
+    <script>
+        // 動態補上 BASE_PATH + '/members/xxx' 給 sidebar 連結
+        (function () {
+            if (typeof BASE_PATH === 'undefined') return;
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                const page = link.getAttribute('data-href');
+                link.setAttribute('href', BASE_PATH + '/members/' + page);
+            });
+        })();
+    </script>
+    <script>
+        async function loadHeads() {
+            const list = document.getElementById('head-card-list');
+            list.innerHTML = '載入中...';
+            try {
+                const res = await fetch(BASE_PATH + '/members/chairman/api.php');
+                const data = await res.json();
+                if (!data.success) throw new Error(data.message);
+                let html = '';
+                if (data.heads.length > 0) {
+                    // 現任系主任
+                    const current = data.heads[0];
+                    html += `<h2 style="width:100%;margin-bottom:16px;">現任系主任</h2>`;
+                    html += `
+                <a class="card" href="#" title="${current.name}">
+                    <img src="pics/${current.photo || 'default.png'}" alt="${current.name}" />
+                    <div class="card-content">
+                        <h3>${current.name}<span class="term">　第${current.term}屆</span></h3>
+                        ${current.type ? `<p>${current.type}</p>` : ''}
+                        ${current.extension ? `<p>分機：${current.extension}</p>` : ''}
+                        ${current.email ? `<p>信箱：${current.email}</p>` : ''}
+                    </div>
+                </a>`;
+                    // 歷屆系主任
+                    if (data.heads.length > 1) {
+                        html += `<h2 style="width:100%;margin-bottom:16px;">歷屆系主任</h2>`;
+                        for (let i = 1; i < data.heads.length; ++i) {
+                            const h = data.heads[i];
+                            html += `
+                        <a class="card" href="#" title="${h.name}">
+                            <img src="pics/${h.photo || 'default.png'}" alt="${h.name}" />
+                            <div class="card-content">
+                                <h3>${h.name}<span class="term">　第${h.term}屆</span></h3>
+                                ${h.type ? `<p>${h.type}</p>` : ''}
+                                ${h.extension ? `<p>分機：${h.extension}</p>` : ''}
+                                ${h.email ? `<p>信箱：${h.email}</p>` : ''}
+                            </div>
+                        </a>`;
+                        }
+                    }
+                } else {
+                    html = '查無資料';
+                }
+                list.innerHTML = html;
+            } catch (e) {
+                list.innerHTML = '載入失敗：' + e.message;
+            }
+        }
+        loadHeads();
+    </script>
+    <script>
+        function loadDepartmentInfo() {
+            fetch(BASE_PATH + '/api/department.php?id=D001')
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const dept = data.data;
+                        document.getElementById('footer-address').textContent = `地址：${dept.locat || '無資料'}`;
+                        document.getElementById('footer-office').textContent = `系辦：${dept.office || '無資料'}`;
+                        document.getElementById('footer-phone').textContent = `電話：${dept.phone_extension || '無資料'}`;
+                        document.getElementById('footer-email').textContent = `信箱：${dept.email || '無資料'}`;
+                    } else {
+                        throw new Error(data.message || 'Failed to load department info');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading department info:', error);
+                    document.getElementById('footer-address').textContent = '地址：載入失敗';
+                    document.getElementById('footer-office').textContent = '系辦：載入失敗';
+                    document.getElementById('footer-phone').textContent = '電話：載入失敗';
+                    document.getElementById('footer-email').textContent = '信箱：載入失敗';
+                });
+        }
+        function includeHTML(id, file, callback) {
+            if (typeof BASE_PATH === 'undefined') return;
+            fetch(BASE_PATH + '/' + file).then(res => res.text()).then(html => {
+                const container = document.getElementById(id);
+                container.innerHTML = html;
+                fixBasePathForLinksAndImages(container);
+                if (typeof callback === 'function') callback();
+            });
+        }
+        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
+    </script>
+</body>
+
+</html>

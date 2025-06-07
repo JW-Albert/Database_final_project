@@ -36,33 +36,6 @@
     </div>
     <div id="footer-include"></div>
     <script>
-        function fixBasePathForLinksAndImages(container) {
-            if (typeof BASE_PATH === 'undefined') return;
-            container.querySelectorAll('a').forEach(link => {
-                const href = link.getAttribute('href');
-                if (href && href.startsWith('/') && !href.startsWith(BASE_PATH)) {
-                    link.setAttribute('href', BASE_PATH + href);
-                }
-            });
-            container.querySelectorAll('img').forEach(img => {
-                const src = img.getAttribute('src');
-                if (src && src.startsWith('/') && !src.startsWith(BASE_PATH)) {
-                    img.setAttribute('src', BASE_PATH + src);
-                }
-            });
-        }
-        function includeHTML(id, file, callback) {
-            if (typeof BASE_PATH === 'undefined') return;
-            fetch(BASE_PATH + '/' + file).then(res => res.text()).then(html => {
-                const container = document.getElementById(id);
-                container.innerHTML = html;
-                fixBasePathForLinksAndImages(container);
-                if (typeof callback === 'function') callback();
-            });
-        }
-        // header/footer 載入
-        includeHTML('header-include', 'header.html');
-        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
         // 主區塊聯絡資訊
         function loadMainContactInfo() {
             fetch(BASE_PATH + '/api/department.php?id=D001')
@@ -89,7 +62,46 @@
         loadMainContactInfo();
     </script>
     <script>
-        // footer 聯絡資訊
+        function fixBasePathForLinksAndImages(container) {
+            if (typeof BASE_PATH === 'undefined') return;
+            // 修正 a 標籤
+            container.querySelectorAll('a').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href.startsWith('/') && !href.startsWith(BASE_PATH)) {
+                    link.setAttribute('href', BASE_PATH + href);
+                }
+            });
+            // 修正 img 標籤
+            container.querySelectorAll('img').forEach(img => {
+                const src = img.getAttribute('src');
+                if (src && src.startsWith('/') && !src.startsWith(BASE_PATH)) {
+                    img.setAttribute('src', BASE_PATH + src);
+                }
+            });
+        }
+        function includeHTML(id, file, callback) {
+            if (typeof BASE_PATH === 'undefined') return;
+            fetch(BASE_PATH + '/' + file).then(res => res.text()).then(html => {
+                const container = document.getElementById(id);
+                container.innerHTML = html;
+                fixBasePathForLinksAndImages(container);
+                if (typeof callback === 'function') callback();
+            });
+        }
+        includeHTML('header-include', 'header.html');
+        includeHTML('footer-include', 'footer.html');
+        // 動態設定 favicon
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof BASE_PATH !== 'undefined') {
+                var favicon = document.getElementById('dynamic-favicon');
+                if (favicon) {
+                    favicon.href = BASE_PATH + '/pics/iecs_logo.png';
+                }
+            }
+        });
+    </script>
+
+    <script>
         function loadDepartmentInfo() {
             fetch(BASE_PATH + '/api/department.php?id=D001')
                 .then(response => {
@@ -99,10 +111,11 @@
                 .then(data => {
                     if (data.success) {
                         const dept = data.data;
-                        document.getElementById('footer-address').textContent = `地址：${dept.locat || '無資料'}`;
-                        document.getElementById('footer-office').textContent = `系辦：${dept.office || '無資料'}`;
-                        document.getElementById('footer-phone').textContent = `電話：${dept.phone_extension || '無資料'}`;
-                        document.getElementById('footer-email').textContent = `信箱：${dept.email || '無資料'}`;
+                        console.log('dept data:', dept); // 確認資料內容
+                        document.getElementById('footer-address').textContent = `地址：${(dept.locat || '無資料').trim()}`;
+                        document.getElementById('footer-office').textContent = `系辦：${(dept.office || '無資料').trim()}`;
+                        document.getElementById('footer-phone').textContent = `電話：${(dept.phone_extension || '無資料').trim()}`;
+                        document.getElementById('footer-email').textContent = `信箱：${(dept.email || '無資料').trim()}`;
                     } else {
                         throw new Error(data.message || 'Failed to load department info');
                     }

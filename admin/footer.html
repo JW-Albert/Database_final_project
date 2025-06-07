@@ -21,11 +21,6 @@
                 })
                 .then(data => {
                     if (data.success) {
-                        console.log('收到的資料', data);
-                        console.log('地址原始資料:', JSON.stringify(data.locat));
-                        console.log('系辦原始資料:', JSON.stringify(data.office));
-                        console.log('電話原始資料:', JSON.stringify(data.phone_extension));
-                        console.log('信箱原始資料:', JSON.stringify(data.email));
                         const dept = data.data;
                         document.getElementById('footer-address').textContent = `地址：${dept.locat || '無資料'}`;
                         document.getElementById('footer-office').textContent = `系辦：${dept.office || '無資料'}`;
