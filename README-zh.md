@@ -5,22 +5,90 @@
 ## 專案結構
 
 ```
-public_html/
+.
+├── about/
+│   ├── api.php
+│   ├── index.css
+│   ├── index.html
+│   └── pics/
+│       ├── 1.jpg
+│       ├── 2.jpg
+│       └── 3.jpg
+├── admin/
+├── api/
+│   └── department.php
+├── contact/
+│   ├── api.php
+│   ├── index.css
+│   └── index.html
+├── database.md
+├── database_tables.md
+├── footer.html
+├── header-footer.css
+├── header.html
+├── index.css
+├── index.html
 ├── js/
-│   └── config.js         # BASE_PATH 設定檔
+│   └── config.js
 ├── members/
-│   ├── chairman/         # 系主任資訊
-│   ├── chair/           # 講座教授
-│   ├── distinguished/    # 特聘教授
-│   ├── distinguished_chair/  # 特約教授
-│   ├── faculties/       # 教師詳細資料
-│   ├── full_time/       # 專任教授
-│   ├── honorary/        # 榮譽特聘教授
-│   ├── part_time/       # 兼任教授
-│   ├── retired/         # 退休教授
-│   └── staff/           # 行政人員
-├── pics/                # 圖片資源
-└── index.html          # 首頁
+│   ├── api.php
+│   ├── chair/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   ├── chairman/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   ├── distinguished/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   ├── distinguished_chair/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   ├── faculties/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   ├── full_time/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   ├── honorary/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   ├── index.css
+│   ├── index.html
+│   ├── part_time/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   ├── pics/
+│   │   ├── default.png
+│   │   └── P0001.jpg
+│   ├── retired/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   └── staff/
+│       ├── api.php
+│       ├── index.css
+│       └── index.html
+├── php/
+│   └── config.php
+├── pics/
+│   ├── fcu_logo.svg
+│   ├── iecs_logo.png
+│   └── posters/
+│       ├── 1.jpg
+│       ├── 2.jpg
+│       └── 3.jpg
+├── README.md
+├── README-zh.md
+└── taskAsssignment.md
 ```
 
 ## 重要設定

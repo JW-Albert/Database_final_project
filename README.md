@@ -5,22 +5,90 @@ This is the official website for the Department of Computer Science and Informat
 ## Project Structure
 
 ```
-public_html/
+.
+├── about/
+│   ├── api.php
+│   ├── index.css
+│   ├── index.html
+│   └── pics/
+│       ├── 1.jpg
+│       ├── 2.jpg
+│       └── 3.jpg
+├── admin/
+├── api/
+│   └── department.php
+├── contact/
+│   ├── api.php
+│   ├── index.css
+│   └── index.html
+├── database.md
+├── database_tables.md
+├── footer.html
+├── header-footer.css
+├── header.html
+├── index.css
+├── index.html
 ├── js/
-│   └── config.js         # Configuration file for BASE_PATH
+│   └── config.js
 ├── members/
-│   ├── chairman/         # Department chair information
-│   ├── chair/           # Chair professors
-│   ├── distinguished/    # Distinguished professors
-│   ├── distinguished_chair/  # Distinguished chair professors
-│   ├── faculties/       # Faculty member details
-│   ├── full_time/       # Full-time professors
-│   ├── honorary/        # Honorary professors
-│   ├── part_time/       # Part-time professors
-│   ├── retired/         # Retired professors
-│   └── staff/           # Administrative staff
-├── pics/                # Images and photos
-└── index.html          # Main page
+│   ├── api.php
+│   ├── chair/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   ├── chairman/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   ├── distinguished/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   ├── distinguished_chair/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   ├── faculties/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   ├── full_time/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   ├── honorary/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   ├── index.css
+│   ├── index.html
+│   ├── part_time/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   ├── pics/
+│   │   ├── default.png
+│   │   └── P0001.jpg
+│   ├── retired/
+│   │   ├── api.php
+│   │   ├── index.css
+│   │   └── index.html
+│   └── staff/
+│       ├── api.php
+│       ├── index.css
+│       └── index.html
+├── php/
+│   └── config.php
+├── pics/
+│   ├── fcu_logo.svg
+│   ├── iecs_logo.png
+│   └── posters/
+│       ├── 1.jpg
+│       ├── 2.jpg
+│       └── 3.jpg
+├── README.md
+├── README-zh.md
+└── taskAsssignment.md
 ```
 
 ## Important Configuration
