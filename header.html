@@ -22,3 +22,21 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const currentPath = window.location.pathname;
+  
+  const navItems = document.querySelectorAll('.nav-item, .dropdown a');
+  
+  navItems.forEach(a => {
+    if (a.getAttribute('href') === currentPath) {
+      a.classList.add('active');
+      // 如果是dropdown裡的，主選單系所成員也 active
+      if (a.closest('.dropdown')) {
+        document.querySelector('.nav-item.members').classList.add('active');
+      }
+    }
+  });
+});
+</script>
