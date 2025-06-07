@@ -155,8 +155,15 @@ main.content {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
     text-decoration: none;
     color: #333;
+}
+
+.card p {
+    margin: 0.25em 0;
+    /* 適當縮減上下間距 */
+    line-height: 1.2;
 }
 
 .card:hover {
@@ -182,7 +189,7 @@ main.content {
 }
 
 .card-content {
-    padding: 14px 12px;
+    padding-bottom: 0;
     flex-grow: 1;
 }
 
