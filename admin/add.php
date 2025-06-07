@@ -489,7 +489,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             });
 
             try {
-                const response = await fetch('/~D1249429/add_data/main.php', {
+                const response = await fetch('add_data/main.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

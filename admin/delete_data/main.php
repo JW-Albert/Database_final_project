@@ -39,7 +39,7 @@ if ($method === 'POST') {
 
     try {
         // 先檢查資料表結構
-        $initUrl = "http://localhost/get_ele/main.php?table=" . urlencode($tableName);
+        $initUrl = "get_ele/main.php?table=" . urlencode($tableName);
         $initResponse = file_get_contents($initUrl);
         $initData = json_decode($initResponse, true);
 

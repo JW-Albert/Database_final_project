@@ -40,7 +40,7 @@ if ($method === 'POST') {
 
     try {
         // 檢查資料表結構
-        $initUrl = "http://{$_SERVER['HTTP_HOST']}/~D1249429/get_ele/main.php?table=" . urlencode($tableName);
+        $initUrl = "get_ele/main.php?table=" . urlencode($tableName);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $initUrl);

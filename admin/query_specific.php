@@ -443,7 +443,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             }
 
             try {
-                const response = await fetch(`http://localhost/get_ele/main.php?table=${encodeURIComponent(tableName)}`);
+                const response = await fetch(`get_ele/main.php?table=${encodeURIComponent(tableName)}`);
                 const data = await response.json();
 
                 if (data.status === 'success') {
@@ -637,7 +637,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             });
 
             try {
-                const response = await fetch('http://localhost/query_data/main.php', {
+                const response = await fetch('query_data/main.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
