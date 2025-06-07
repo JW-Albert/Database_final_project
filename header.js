@@ -1,27 +1,23 @@
 document.addEventListener('DOMContentLoaded', () => {
   const currentPath = window.location.pathname;
 
+  // 所有選單連結（包含 dropdown 裡的）
   const navItems = document.querySelectorAll('.nav-item, .dropdown a');
 
   navItems.forEach(a => {
-    if (a.getAttribute('href') === currentPath) {
+    const href = a.getAttribute('href');
+
+    // 判斷目前的網址是否以這個 href 開頭（包含子路徑）
+    if (href && currentPath.startsWith(href)) {
       a.classList.add('active');
-
-      // 如果點到 dropdown 裡的項目，也要讓主項目（系所成員）亮起來
-      if (a.closest('.dropdown')) {
-        const memberMainItem = document.querySelector('.nav-item.members');
-        if (memberMainItem) {
-          memberMainItem.classList.add('active');
-        }
-      }
-    }
-
-    // 額外處理：如果路徑是 /members 或其子頁面，也讓主選單亮起
-    if (currentPath.startsWith('/members')) {
-      const memberMainItem = document.querySelector('.nav-item.members');
-      if (memberMainItem) {
-        memberMainItem.classList.add('active');
-      }
     }
   });
+
+  // 額外處理：如果在 /members 或其子頁面，標記「系所成員」為 active
+  if (currentPath.startsWith('/members')) {
+    const memberMainItem = document.querySelector('.nav-item.members');
+    if (memberMainItem) {
+      memberMainItem.classList.add('active');
+    }
+  }
 });

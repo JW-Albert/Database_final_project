@@ -114,25 +114,7 @@
     white-space: nowrap;
 }
 
-/* 如果是 active-parent 狀態，但滑鼠不在 .members-container 上，取消 hover 樣式 */
-/* 先移除 members-container:hover 的顏色改變，改用 members-container.active-parent */
-.members-container.active-parent:not(:hover)>.nav-item.members {
-    color: #2863a2;
-    border-bottom: 2px solid #2863a2;
-    padding-bottom: 14px;
-}
-
-/* 覆蓋 members-container:hover 的狀態 */
-/* 這裡把滑鼠移動到其他選項時 members 不 hover 狀態取消 */
-.members-container.active-parent:hover>.nav-item.members {
-    color: #2863a2;
-    border-bottom: 2px solid #2863a2;
-    padding-bottom: 14px;
-}
-
-/* 下拉選單顯示保持 */
-.members-container:hover>.dropdown,
-.members-container.active-parent>.dropdown {
+members-container.active-parent>.dropdown {
     display: flex;
 }
 
