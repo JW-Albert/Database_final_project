@@ -57,6 +57,24 @@
             }
         });
     </script>
+    <link rel="stylesheet" href="/~D1210799/header-footer.css">
+    <div id="header-include"></div>
+    <script>
+        function includeHTML(id, file) {
+            fetch(file)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById(id).innerHTML = data;
+
+                    // header 載入完才載入 JS 處理 active 狀態
+                    const script = document.createElement("script");
+                    script.src = "/~D1210799/header.js";
+                    document.body.appendChild(script);
+                });
+        }
+        includeHTML('header-include', '/~D1210799/header.html');
+    </script>
+
     <script>
         // 將所有連結與圖片路徑自動加上 BASE_PATH
         document.addEventListener('DOMContentLoaded', function () {

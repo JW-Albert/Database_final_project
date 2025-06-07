@@ -22,31 +22,3 @@
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const currentPath = window.location.pathname;
-  const navItems = document.querySelectorAll('.nav-item, .dropdown a');
-  const membersNav = document.querySelector('.nav-item.members');
-
-  navItems.forEach(a => {
-    if (a.getAttribute('href') === currentPath) {
-      a.classList.add('active');
-      // dropdown 裡面選項 active，members 也 active
-      if (a.closest('.dropdown')) {
-        membersNav.classList.add('active');
-        // 標記 members-container 本身，用來控制 hover 效果關閉
-        membersNav.closest('.members-container').classList.add('active-parent');
-      }
-      // 如果是 members 頁面（/members 或 /members/），同樣標記
-      if (a.classList.contains('members')) {
-        membersNav.classList.add('active');
-        membersNav.closest('.members-container').classList.add('active-parent');
-      }
-    }
-  });
-
-  // 當滑鼠移出 members-container，且有 active-parent 表示是目前頁面維持 active，
-  // 我們用 CSS 控制是否要維持 hover 效果
-});
-</script>
