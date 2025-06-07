@@ -5,7 +5,6 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/../db_config/main.php';
 
 
-
 session_start(); // 啟用 session
 
 

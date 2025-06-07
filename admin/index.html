@@ -2,140 +2,260 @@
 <html lang="zh-TW">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>逢甲大學資訊工程學系</title>
-  <link id="dynamic-favicon" rel="icon" type="image/png">
-  <link rel="stylesheet" href="/~D1210799/header-footer.css">
-  <link rel="stylesheet" href="/~D1210799/index.css">
-  <script src="/~D1210799/js/config.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理員登入 - 資料庫管理系統</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .login-header {
+            margin-bottom: 30px;
+        }
+
+        .login-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-icon i {
+            font-size: 2rem;
+            color: white;
+        }
+
+        .login-title {
+            color: #2c3e50;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 16px 12px 45px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        .button {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .error {
+            background: rgba(231, 76, 60, 0.1);
+            border: 2px solid rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .error i {
+            font-size: 1rem;
+        }
+
+        .back-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+
+        .back-link a:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            .login-title {
+                font-size: 1.5rem;
+            }
+            
+            .login-icon {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .login-icon i {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <div id="header-include"></div>
-  <!-- 圖片輪播區 -->
-  <div class="poster-container">
-    <button class="arrow left" onclick="prevImage()">&#10094;</button>
-    <img id="poster" src="/${BASE_PATH}/pics/posters/1.jpg" alt="系所介紹海報" />
-    <button class="arrow right" onclick="nextImage()">&#10095;</button>
-  </div>
-  <div id="footer-include"></div>
-  <script>
-    function fixBasePathForLinksAndImages(container) {
-      if (typeof BASE_PATH === 'undefined') return;
-      // 修正 a 標籤
-      container.querySelectorAll('a').forEach(link => {
-        const href = link.getAttribute('href');
-        if (href && href.startsWith('/') && !href.startsWith(BASE_PATH)) {
-          link.setAttribute('href', BASE_PATH + href);
+    <div class="login-container">
+        <div class="login-header">
+            <div class="login-icon">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <h1 class="login-title">管理員登入</h1>
+            <p class="login-subtitle">請輸入您的帳號以存取系統</p>
+        </div>
+
+        <!-- 顯示錯誤訊息（透過 URL 參數） -->
+        <div class="error" id="errorMessage" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="errorText"></span>
+        </div>
+
+        <form method="POST" action="admin/login.php">
+            <div class="form-group">
+                <label for="username">使用者名稱</label>
+                <div class="input-container">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="username" name="username" placeholder="請輸入使用者名稱" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">密碼</label>
+                <div class="input-container">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" name="password" placeholder="請輸入密碼" required>
+                </div>
+            </div>
+
+            <button type="submit" class="button">
+                <i class="fas fa-sign-in-alt"></i>
+                登入系統
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // 檢查並顯示錯誤訊息
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("error")) {
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = decodeURIComponent(params.get("error"));
+            errorMessage.style.display = 'flex';
         }
-      });
-      // 修正 img 標籤
-      container.querySelectorAll('img').forEach(img => {
-        const src = img.getAttribute('src');
-        if (src && src.startsWith('/') && !src.startsWith(BASE_PATH)) {
-          img.setAttribute('src', BASE_PATH + src);
-        }
-      });
-    }
-    function includeHTML(id, file, callback) {
-      if (typeof BASE_PATH === 'undefined') return;
-      fetch(BASE_PATH + '/' + file).then(res => res.text()).then(html => {
-        const container = document.getElementById(id);
-        container.innerHTML = html;
-        fixBasePathForLinksAndImages(container);
-        if (typeof callback === 'function') callback();
-      });
-    }
-    includeHTML('header-include', 'header.html');
-    includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
-    // 動態設定 favicon
-    document.addEventListener('DOMContentLoaded', function () {
-      if (typeof BASE_PATH !== 'undefined') {
-        var favicon = document.getElementById('dynamic-favicon');
-        if (favicon) {
-          favicon.href = BASE_PATH + '/pics/iecs_logo.png';
-        }
-      }
-    });
-    // 更新所有連結的函數
-    function updateLinks() {
-      // 更新所有圖片路徑
-      document.querySelectorAll('img').forEach(img => {
-        const src = img.getAttribute('src');
-        if (src && src.startsWith('/') && !src.startsWith(BASE_PATH)) {
-          img.src = `${BASE_PATH}${src}`;
-        }
-      });
-      // 更新所有連結
-      document.querySelectorAll('a').forEach(link => {
-        const href = link.getAttribute('href');
-        if (href && href.startsWith('/') && !href.startsWith(BASE_PATH)) {
-          link.href = `${BASE_PATH}${href}`;
-        }
-      });
-    }
-    // 頁面載入時執行
-    window.addEventListener('load', updateLinks);
-    const images = [
-      "/pics/posters/1.jpg",
-      "/pics/posters/2.jpg",
-      "/pics/posters/3.jpg"
-    ];
-    let index = 0;
-    const poster = document.getElementById("poster");
-    let interval = setInterval(nextImage, 2000);
-    function showImage(newIndex) {
-      poster.classList.add("fade-out");
-      setTimeout(() => {
-        index = (newIndex + images.length) % images.length;
-        poster.src = `${BASE_PATH}${images[index]}`;
-        poster.classList.remove("fade-out");
-      }, 500);
-    }
-    function nextImage() {
-      showImage(index + 1);
-      resetInterval();
-    }
-    function prevImage() {
-      showImage(index - 1);
-      resetInterval();
-    }
-    function resetInterval() {
-      clearInterval(interval);
-      interval = setInterval(nextImage, 2000);
-    }
-    // 初始化第一張圖片的路徑
-    window.addEventListener('load', () => {
-      poster.src = `${BASE_PATH}${images[0]}`;
-    });
-    // 載入 footer.html 後自動載入聯絡資訊
-    function loadDepartmentInfo() {
-      fetch(BASE_PATH + '/api/department.php?id=D001')
-        .then(response => {
-          if (!response.ok) throw new Error('Network response was not ok');
-          return response.json();
-        })
-        .then(data => {
-          if (data.success) {
-            const dept = data.data;
-            document.getElementById('footer-address').textContent = `地址：${dept.locat || '無資料'}`;
-            document.getElementById('footer-office').textContent = `系辦：${dept.office || '無資料'}`;
-            document.getElementById('footer-phone').textContent = `電話：${dept.phone_extension || '無資料'}`;
-            document.getElementById('footer-email').textContent = `信箱：${dept.email || '無資料'}`;
-          } else {
-            throw new Error(data.message || 'Failed to load department info');
-          }
-        })
-        .catch(error => {
-          console.error('Error loading department info:', error);
-          document.getElementById('footer-address').textContent = '地址：載入失敗';
-          document.getElementById('footer-office').textContent = '系辦：載入失敗';
-          document.getElementById('footer-phone').textContent = '電話：載入失敗';
-          document.getElementById('footer-email').textContent = '信箱：載入失敗';
+
+        // 表單提交時添加載入效果
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const button = document.querySelector('.button');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 登入中...';
+            button.disabled = true;
         });
-    }
-  </script>
+    </script>
 </body>
 
 </html>
