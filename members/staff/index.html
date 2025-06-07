@@ -114,6 +114,9 @@
         })();
     </script>
     <script>
+        function cleanText(text) {
+            return text.replace(/\n{2,}/g, '\n').trim();
+        }
         async function loadMembers() {
             const list = document.getElementById('member-card-list');
             list.innerHTML = '載入中...';
@@ -129,10 +132,10 @@
                         <img src="pics/${staff.photo || 'default.jpg'}" alt="${staff.name}" />
                         <div class="card-content">
                             <h3>${staff.name}</h3>
-                            ${staff.position ? `<p>${staff.position}</p>` : ''}
-                            ${staff.extension ? `<p>分機：${staff.extension}</p>` : ''}
-                            ${staff.task_name ? `<p>業務：${staff.task_name}</p>` : ''}
-                            ${staff.email ? `<p>信箱：${staff.email}</p>` : ''}
+                            ${staff.position ? `<p>${cleanText(staff.position)}</p>` : ''}
+                            ${staff.extension ? `<p>分機：${cleanText(staff.extension)}</p>` : ''}
+                            ${staff.task_name ? `<p>業務：${cleanText(staff.task_name)}</p>` : ''}
+                            ${staff.email ? `<p>信箱：${cleanText(staff.email)}</p>` : ''}
                         </div>
                     </a>`;
                 });
