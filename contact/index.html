@@ -85,6 +85,8 @@
                     document.getElementById('department-email').textContent = '載入失敗';
                 });
         }
+        // 載入主區塊聯絡資訊
+        loadMainContactInfo();
         // footer 聯絡資訊
         function loadDepartmentInfo() {
             fetch(BASE_PATH + '/api/department.php?id=D001')
@@ -144,8 +146,7 @@
                 });
         }
         */
-        // 載入主區塊聯絡資訊
-        loadMainContactInfo();
+        
     </script>
 </body>
 
