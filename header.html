@@ -22,25 +22,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const currentPath = window.location.pathname;
-
-        // 所有 nav item（包含 dropdown 裡的）
-        const navItems = document.querySelectorAll('.nav-item, .dropdown a');
-
-        navItems.forEach(a => {
-            const href = a.getAttribute('href');
-            if (href && currentPath.startsWith(href)) {
-                a.classList.add('active');
-
-                // 如果是在 members 子頁，標記「系所成員」為 active
-                if (href.startsWith('/members')) {
-                    const membersTab = document.querySelector('.nav-item.members');
-                    if (membersTab) membersTab.classList.add('active');
-                }
-            }
-        });
-    });
-</script>
