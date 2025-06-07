@@ -480,13 +480,22 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             const fields = document.querySelectorAll('.field-group');
 
             fields.forEach(field => {
-                const column = field.querySelector('.column-select').value;
-                const value = field.querySelector('input').value;
+                // 修正：直接從 input 的 name 屬性取得欄位名稱
+                const input = field.querySelector('input');
+                const column = input.name;
+                const value = input.value;
+                
                 if (column) {
-                    data[column] = value === '' ? null : value;
+                    // 特別處理 retire 欄位
+                    if (column === 'retire') {
+                        data[column] = value === '' || value === null ? 0 : value;
+                    } else {
+                        data[column] = value === '' ? null : value;
+                    }
                 }
-
             });
+
+            console.log("要送出的資料：", data);
 
             try {
                 const response = await fetch('add_data/main.php', {
@@ -502,6 +511,8 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 });
 
                 const result = await response.json();
+                console.log("伺服器回應：", result);
+                
                 if (result.status === 'success') {
                     alert('資料新增成功！');
                     // 清空表單
@@ -513,6 +524,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                     alert('新增失敗：' + result.message);
                 }
             } catch (error) {
+                console.error("錯誤詳情：", error);
                 alert('發生錯誤：' + error.message);
             }
         }

@@ -39,45 +39,23 @@ if ($method === 'POST') {
     }
 
     try {
-        // 檢查資料表結構
-        $initUrl = "get_ele/main.php?table=" . urlencode($tableName);
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $initUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, false);
-
-        $response = curl_exec($ch);
-        file_put_contents('curl_log.txt', $response);
-        $decoded = json_decode($response, true);
-        curl_close($ch);
-
-        if ($response === false) {
+        // 直接查詢資料庫驗證資料表結構
+        $stmt = $pdo->prepare("SHOW COLUMNS FROM `$tableName`");
+        $stmt->execute();
+        $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        if (empty($columns)) {
             echo json_encode([
                 'status' => 'error',
-                'message' => 'CURL failed: ' . curl_error($ch)
+                'message' => 'Table does not exist'
             ]);
             exit;
         }
-
-        if ($decoded === null) {
-            echo json_encode([
-                'status' => 'error',
-                'message' => '回傳不是 JSON：' . $response
-            ]);
-            exit;
-        }
-
-        if (!isset($decoded['status']) || $decoded['status'] !== 'success') {
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Failed to validate table structure: ' . ($decoded['message'] ?? 'unknown')
-            ]);
-            exit;
-        }
-
+        
+        // 取得有效的欄位名稱
+        $validColumns = array_column($columns, 'Field');
+        
         // 驗證欄位是否存在
-        $validColumns = array_column($decoded['data']['columns'], 'name');
         foreach ($insertData as $column => $value) {
             if (!in_array($column, $validColumns)) {
                 echo json_encode([
