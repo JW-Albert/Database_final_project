@@ -323,6 +323,10 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             font-size: 1em;
             background: #fafbfc;
         }
+        .table-scroll-x {
+            width: 100%;
+            overflow-x: auto;
+        }
 
         @media (max-width: 768px) {
             .header {
@@ -440,6 +444,18 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             const res = await fetch('get_professor_all_data/get_professor_all_data.php?id=' + encodeURIComponent(id));
             const data = await res.json();
 
+            // 預先取得所有欄位註解
+            window.tableMeta = {};
+            for (const table in data) {
+                const metaRes = await fetch(`get_professor_all_data/get_table_structure.php?table=${table}`);
+                const metaData = await metaRes.json();
+
+                window.tableMeta[table] = {};
+                metaData.forEach(field => {
+                    window.tableMeta[table][field.Field] = field.Comment || field.Field;
+                });
+            }
+
             // 顯示主表
             document.getElementById('professorData').innerHTML = renderTable('Professor', data.Professor);
 
@@ -542,7 +558,8 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 `;
             }
             
-            return html;
+            // 讓表格可橫向捲動
+            return `<div class="table-scroll-x">${html}</div>`;
         }
 
         // 新增一列空資料
