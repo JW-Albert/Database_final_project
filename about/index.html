@@ -87,8 +87,6 @@
                         img.src = BASE_PATH + '/' + src;
                     }
                 }
-                img.style.width = '200px';
-                img.style.height = 'auto';
             });
         });
     </script>
@@ -117,6 +115,11 @@
                 </div>
               `;
                         container.appendChild(block);
+                    });
+                    // 等所有圖片都加進去後，設定寬度：
+                    container.querySelectorAll('img').forEach(img => {
+                        img.style.width = '200px';
+                        img.style.height = 'auto';
                     });
                 });
         });
