@@ -115,6 +115,7 @@
     </script>
     <script>
         function cleanText(text) {
+            if (typeof text !== 'string') return '';  // 不是字串就回傳空字串
             return text.replace(/\n{2,}/g, '\n').trim();
         }
         async function loadMembers() {
