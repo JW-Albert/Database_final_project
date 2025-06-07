@@ -95,6 +95,7 @@ body {
 }
 main.content {
     display: flex;
+    flex: 1;
     gap: 40px;
     margin: 40px 0;
     min-height: 500px;
