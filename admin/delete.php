@@ -367,7 +367,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 return;
             }
             if (!confirm('確定要刪除該教授在所有資料表的所有資料嗎？此操作無法復原！')) return;
-            const res = await fetch('delete_professor_all_data.php', {
+            const res = await fetch('./delete_professor_all_data/delete_professor_all_data.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ professor_id: id })

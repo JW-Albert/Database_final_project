@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['logged_in'])) { http_response_code(403); exit; }
-require_once 'db_config/main.php';
+require_once '../db_config/main.php';
 
 $data = json_decode(file_get_contents('php://input'), true);
 $id = $data['professor_id'] ?? '';
