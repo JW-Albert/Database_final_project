@@ -95,11 +95,12 @@ body {
 }
 
 main.content {
-    padding-bottom: 120px;
     display: flex;
-    flex: 1;
+    flex: 1 0 auto;
     gap: 40px;
     margin: 40px 0;
+    min-height: 500px;
+    padding-bottom: 120px;
 }
 
 /* 左側選單 */
@@ -148,7 +149,7 @@ main.content {
 .card {
     cursor: pointer;
     width: calc((100% / 3) - 16px);
-    /* 一排三張 */
+    /* 一排三張，留間隙 */
     background-color: white;
     border-radius: 6px;
     box-shadow: 0 3px 8px rgb(0 0 0 / 0.15);
@@ -156,16 +157,8 @@ main.content {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
     text-decoration: none;
     color: #333;
-    min-height: 260px;
-}
-
-.card p {
-    margin: 0.25em 0;
-    /* 適當縮減上下間距 */
-    line-height: 1.2;
 }
 
 .card:hover {
@@ -181,7 +174,7 @@ main.content {
 
 .card:hover .card-content p {
     color: #d0e4ff;
-    /* 副標文字變淺藍色 */
+    /* 副標文字變淺藍色（可選） */
 }
 
 .card img {
@@ -191,7 +184,7 @@ main.content {
 }
 
 .card-content {
-    padding-bottom: 0;
+    padding: 14px 12px;
     flex-grow: 1;
 }
 
@@ -234,7 +227,6 @@ main.content {
 
     .card {
         width: calc(50% - 12px);
-
     }
 }
 
