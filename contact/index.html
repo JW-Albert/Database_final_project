@@ -8,7 +8,7 @@
     <link id="dynamic-favicon" rel="icon" type="image/png">
     <link rel="stylesheet" href="/~D1210799/header-footer.css">
     <script src="/~D1210799/js/config.js"></script>
-    <link rel="stylesheet" href="/~D1210799/about/index.css">
+    <link rel="stylesheet" href="/~D1210799/contact/index.css">
 </head>
 
 <body>
@@ -60,8 +60,9 @@
                 if (typeof callback === 'function') callback();
             });
         }
+        // header/footer 載入
         includeHTML('header-include', 'header.html');
-        includeHTML('footer-include', 'footer.html');
+        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
         // 主區塊聯絡資訊
         function loadMainContactInfo() {
             fetch(BASE_PATH + '/api/department.php?id=D001')
@@ -85,9 +86,8 @@
                 });
         }
         // 載入主區塊聯絡資訊
-        loadMainContactInfo();      
-    </script>
-    <script>
+        loadMainContactInfo();
+        // footer 聯絡資訊
         function loadDepartmentInfo() {
             fetch(BASE_PATH + '/api/department.php?id=D001')
                 .then(response => {
@@ -122,7 +122,7 @@
                 if (typeof callback === 'function') callback();
             });
         }
-        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
+        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);        
     </script>
 </body>
 
