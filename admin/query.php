@@ -114,7 +114,6 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             font-size: 0.95rem;
         }
 
-        input[type="text"],
         select {
             width: 100%;
             padding: 12px 16px;
@@ -125,7 +124,6 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             transition: all 0.3s ease;
         }
 
-        input[type="text"]:focus,
         select:focus {
             outline: none;
             border-color: #667eea;
@@ -155,96 +153,12 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
         }
 
-        .button.secondary {
-            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
-        }
-
-        .button.secondary:hover {
-            box-shadow: 0 8px 20px rgba(149, 165, 166, 0.3);
-        }
-
-        .button.danger {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-        }
-
-        .button.danger:hover {
-            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
-        }
-
         .button.success {
             background: linear-gradient(135deg, #2ecc71, #27ae60);
         }
 
         .button.success:hover {
             box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
-        }
-
-        .field-group {
-            background: rgba(102, 126, 234, 0.05);
-            border: 2px solid rgba(102, 126, 234, 0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .field-group:hover {
-            border-color: rgba(102, 126, 234, 0.2);
-        }
-
-        .condition-row {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr auto;
-            gap: 15px;
-            align-items: end;
-            margin-bottom: 15px;
-        }
-
-        .column-info {
-            font-size: 0.85rem;
-            color: #7f8c8d;
-            margin-top: 8px;
-            padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 8px;
-        }
-
-        .required {
-            color: #e74c3c;
-            font-weight: 600;
-        }
-
-        .fields-container {
-            max-height: 500px;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .fields-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .fields-container::-webkit-scrollbar-track {
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 3px;
-        }
-
-        .fields-container::-webkit-scrollbar-thumb {
-            background: rgba(102, 126, 234, 0.3);
-            border-radius: 3px;
-        }
-
-        .fields-container::-webkit-scrollbar-thumb:hover {
-            background: rgba(102, 126, 234, 0.5);
-        }
-
-        .actions {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: center;
-            padding-top: 20px;
-            border-top: 2px solid rgba(102, 126, 234, 0.1);
         }
 
         .table-input-group {
@@ -269,7 +183,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         }
 
         .result-table th {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: #5a67d8;
             color: white;
             padding: 15px;
             text-align: left;
@@ -323,16 +237,6 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 flex-direction: column;
             }
             
-            .condition-row {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            
-            .actions {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
             .button {
                 justify-content: center;
                 margin-right: 0;
@@ -359,45 +263,26 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             </a>
             <div class="header-content">
                 <h1><i class="fas fa-search"></i> 查詢資料</h1>
-                <p>快速搜尋和瀏覽所有數據記錄</p>
+                <p>瀏覽所有數據記錄</p>
             </div>
         </div>
 
         <div class="main-card">
             <div class="form-section">
                 <div class="section-title">
-                    <i class="fas fa-table"></i>
-                    資料表設定
+                    <i class="fas fa-users-cog"></i>
+                    人員類型設定
                 </div>
                 <div class="table-input-group">
                     <div class="form-group">
-                        <label for="tableName">資料表名稱：</label>
-                        <input type="text" id="tableName" placeholder="請輸入資料表名稱" required>
+                        <label for="tableName">人員類型：</label>
+                        <select id="tableName" required>
+                            <option value="">請選擇人員類型</option>
+                        </select>
                     </div>
-                    <button class="button" onclick="loadTableColumns()">
-                        <i class="fas fa-download"></i>
-                        載入欄位
-                    </button>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-filter"></i>
-                    查詢條件設定
-                </div>
-                <div id="fieldsContainer" class="fields-container">
-                    <!-- 動態條件欄位將在這裡生成 -->
-                </div>
-                
-                <div class="actions">
-                    <button class="button secondary" onclick="addField()">
-                        <i class="fas fa-plus"></i>
-                        新增條件
-                    </button>
-                    <button class="button success" onclick="submitQuery()">
-                        <i class="fas fa-search"></i>
-                        執行查詢
+                    <button class="button success" onclick="loadAllData()">
+                        <i class="fas fa-eye"></i>
+                        顯示所有資料
                     </button>
                 </div>
             </div>
@@ -408,132 +293,31 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         </div>
     </div>
 
+    <script src="js/tableNameMap.js"></script>
     <script>
-        let tableColumns = [];
-        let selectedColumns = new Set();
-
-        async function loadTableColumns() {
-            const tableName = document.getElementById('tableName').value;
-            if (!tableName) {
-                alert('請輸入資料表名稱');
-                return;
-            }
-
+        window.onload = async function () {
             try {
-                const response = await fetch(`get_ele/main.php?table=${encodeURIComponent(tableName)}`);
-                const data = await response.json();
+                // 只允許這三個資料表
+                const allowedTables = ['Professor', 'Admin', 'Staff'];
+                const response = await fetch('get_table/main.php');
+                const result = await response.json();
 
-                if (data.status === 'success') {
-                    tableColumns = data.data.columns;
-                    selectedColumns.clear();
-                    document.getElementById('fieldsContainer').innerHTML = '';
-                    addField(); // 自動新增第一個條件
+                if (result.status === 'success') {
+                    const select = document.getElementById('tableName');
+                    result.tables.forEach(table => {
+                        if (allowedTables.includes(table)) {
+                            const option = document.createElement('option');
+                            const label = tableNameMap[table] || table;
+                            option.value = table;
+                            option.textContent = `${label} (${table})`;
+                            select.appendChild(option);
+                        }
+                    });
                 } else {
-                    alert('載入欄位失敗：' + data.message);
+                    alert('資料表載入失敗：' + result.message);
                 }
             } catch (error) {
-                alert('載入欄位時發生錯誤：' + error.message);
-            }
-        }
-
-        function updateAllColumnSelectors() {
-            const selects = document.querySelectorAll('.column-select');
-            const selectedValues = Array.from(selects).map(select => select.value);
-
-            selects.forEach(select => {
-                const currentValue = select.value;
-                select.innerHTML = '<option value="">請選擇欄位</option>';
-
-                tableColumns.forEach(column => {
-                    const option = document.createElement('option');
-                    option.value = column.name;
-                    option.textContent = column.name;
-
-                    if (selectedValues.includes(column.name) && column.name !== currentValue) {
-                        option.disabled = true;
-                    }
-
-                    if (column.name === currentValue) {
-                        option.selected = true;
-                    }
-
-                    select.appendChild(option);
-                });
-            });
-        }
-
-        function addField() {
-            const container = document.getElementById('fieldsContainer');
-            const fieldGroup = document.createElement('div');
-            fieldGroup.className = 'field-group';
-
-            const conditionRow = document.createElement('div');
-            conditionRow.className = 'condition-row';
-
-            const columnSelect = document.createElement('select');
-            columnSelect.className = 'column-select';
-            columnSelect.onchange = function () {
-                updateAllColumnSelectors();
-                updateColumnInfo(this);
-            };
-
-            const operatorSelect = document.createElement('select');
-            operatorSelect.innerHTML = `
-                <option value="=">=</option>
-                <option value="!=">!=</option>
-                <option value=">">></option>
-                <option value="<"><</option>
-                <option value=">=">>=</option>
-                <option value="<="><=</option>
-                <option value="LIKE">LIKE</option>
-            `;
-
-            const valueInput = document.createElement('input');
-            valueInput.type = 'text';
-            valueInput.placeholder = '請輸入值';
-
-            const removeButton = document.createElement('button');
-            removeButton.innerHTML = '<i class="fas fa-trash"></i> 移除';
-            removeButton.className = 'button danger';
-            removeButton.onclick = function () {
-                container.removeChild(fieldGroup);
-                updateAllColumnSelectors();
-            };
-
-            const columnInfo = document.createElement('div');
-            columnInfo.className = 'column-info';
-
-            conditionRow.appendChild(columnSelect);
-            conditionRow.appendChild(operatorSelect);
-            conditionRow.appendChild(valueInput);
-            conditionRow.appendChild(removeButton);
-
-            fieldGroup.appendChild(conditionRow);
-            fieldGroup.appendChild(columnInfo);
-            container.appendChild(fieldGroup);
-
-            updateAllColumnSelectors();
-        }
-
-        function updateColumnInfo(select) {
-            const columnName = select.value;
-            const columnInfo = select.parentElement.parentElement.querySelector('.column-info');
-            const column = tableColumns.find(col => col.name === columnName);
-
-            if (column) {
-                let info = [];
-                if (column.null === 'NO') {
-                    info.push('<span class="required">必填</span>');
-                }
-                if (column.default !== null) {
-                    info.push(`預設值: ${column.default}`);
-                }
-                if (column.extra) {
-                    info.push(`額外: ${column.extra}`);
-                }
-                columnInfo.innerHTML = info.join(' | ');
-            } else {
-                columnInfo.innerHTML = '';
+                alert('發生錯誤：' + error.message);
             }
         }
 
@@ -542,7 +326,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 return `
                     <div class="no-results">
                         <i class="fas fa-search"></i>
-                        <div>沒有符合條件的資料</div>
+                        <div>沒有資料</div>
                     </div>
                 `;
             }
@@ -577,29 +361,12 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             return table;
         }
 
-        async function submitQuery() {
+        async function loadAllData() {
             const tableName = document.getElementById('tableName').value;
             if (!tableName) {
-                alert('請輸入資料表名稱');
+                alert('請選擇人員類型');
                 return;
             }
-
-            const conditions = [];
-            const fields = document.querySelectorAll('.field-group');
-
-            fields.forEach(field => {
-                const conditionRow = field.querySelector('.condition-row');
-                const column = conditionRow.querySelector('.column-select').value;
-                const operator = conditionRow.querySelector('select:nth-child(2)').value;
-                const value = conditionRow.querySelector('input').value;
-                if (column) {
-                    conditions.push({
-                        column: column,
-                        operator: operator,
-                        value: value
-                    });
-                }
-            });
 
             try {
                 const response = await fetch('query_data/main.php', {
@@ -609,7 +376,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                     },
                     body: JSON.stringify({
                         table: tableName,
-                        conditions: conditions
+                        conditions: [] // 空的條件陣列，表示查詢所有資料
                     })
                 });
 
@@ -623,7 +390,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                         resultContainer.innerHTML = createTable([]);
                     }
                 } else {
-                    alert('查詢失敗：' + result.message);
+                    alert('載入資料失敗：' + result.message);
                 }
             } catch (error) {
                 alert('發生錯誤：' + error.message);

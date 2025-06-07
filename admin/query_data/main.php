@@ -3,89 +3,79 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
 header('Content-Type: application/json; charset=utf-8');
 
+// 包含資料庫連線設定
+require_once '../db_config/main.php';
+
 // 取得POST資料
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 
 // 檢查必要參數
-if (!isset($data['data']) || !is_array($data['data'])) {
+if (!isset($data['table']) || empty($data['table'])) {
     echo json_encode([
         'status' => 'error',
-        'message' => '缺少資料參數或資料格式不正確'
+        'message' => '缺少資料表參數'
     ]);
     exit;
 }
 
-// 檢查排序參數
-if (!isset($data['sort_column']) || !isset($data['sort_order'])) {
+$tableName = $data['table'];
+$conditions = isset($data['conditions']) ? $data['conditions'] : [];
+
+// 驗證資料表名稱（安全性檢查）
+$allowedTables = ['Professor', 'Admin', 'Staff'];
+if (!in_array($tableName, $allowedTables)) {
     echo json_encode([
         'status' => 'error',
-        'message' => '缺少排序參數'
-    ]);
-    exit;
-}
-
-$dataArray = $data['data'];
-$sortColumn = $data['sort_column'];
-$sortOrder = strtoupper($data['sort_order']); // 轉換為大寫
-
-// 驗證排序方向
-if ($sortOrder !== 'ASC' && $sortOrder !== 'DESC') {
-    echo json_encode([
-        'status' => 'error',
-        'message' => '排序方向必須是 ASC 或 DESC'
-    ]);
-    exit;
-}
-
-// 驗證排序欄位是否存在於資料中
-if (!empty($dataArray) && !isset($dataArray[0][$sortColumn])) {
-    echo json_encode([
-        'status' => 'error',
-        'message' => '指定的排序欄位不存在於資料中'
+        'message' => '不允許查詢此資料表'
     ]);
     exit;
 }
 
 try {
-    // 使用 usort 進行排序
-    usort($dataArray, function($a, $b) use ($sortColumn, $sortOrder) {
-        $valueA = $a[$sortColumn];
-        $valueB = $b[$sortColumn];
-
-        // 處理 NULL 值
-        if ($valueA === null && $valueB === null) return 0;
-        if ($valueA === null) return ($sortOrder === 'ASC') ? -1 : 1;
-        if ($valueB === null) return ($sortOrder === 'ASC') ? 1 : -1;
-
-        // 處理數字
-        if (is_numeric($valueA) && is_numeric($valueB)) {
-            return ($sortOrder === 'ASC') ? 
-                $valueA <=> $valueB : 
-                $valueB <=> $valueA;
+    // 建立基本查詢
+    $sql = "SELECT * FROM `$tableName`";
+    $params = [];
+    
+    // 如果有查詢條件，建構WHERE子句
+    if (!empty($conditions)) {
+        $whereClause = [];
+        foreach ($conditions as $condition) {
+            if (isset($condition['column']) && isset($condition['operator']) && isset($condition['value'])) {
+                $whereClause[] = "`{$condition['column']}` {$condition['operator']} ?";
+                $params[] = $condition['value'];
+            }
         }
-
-        // 處理字串
-        return ($sortOrder === 'ASC') ? 
-            strcmp($valueA, $valueB) : 
-            strcmp($valueB, $valueA);
-    });
-
-    // 回傳排序後的結果
+        
+        if (!empty($whereClause)) {
+            $sql .= " WHERE " . implode(" AND ", $whereClause);
+        }
+    }
+    
+    // 準備並執行查詢
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
     echo json_encode([
         'status' => 'success',
-        'data' => $dataArray,
-        'sort_info' => [
-            'column' => $sortColumn,
-            'order' => $sortOrder,
-            'total_rows' => count($dataArray)
+        'data' => $result,
+        'query_info' => [
+            'table' => $tableName,
+            'total_rows' => count($result),
+            'conditions_count' => count($conditions)
         ]
     ]);
 
+} catch (PDOException $e) {
+    echo json_encode([
+        'status' => 'error',
+        'message' => '資料庫查詢錯誤：' . $e->getMessage()
+    ]);
 } catch (Exception $e) {
     echo json_encode([
         'status' => 'error',
-        'message' => '排序過程發生錯誤：' . $e->getMessage()
+        'message' => '查詢過程發生錯誤：' . $e->getMessage()
     ]);
 }
-?> 
+?>
