@@ -18,19 +18,19 @@
         <div class="contact-info">
             <div class="info-item">
                 <h3>地址</h3>
-                <p id="contact-department-location">載入中...</p>
+                <p id="department-location">載入中...</p>
             </div>
             <div class="info-item">
                 <h3>系辦公室</h3>
-                <p id="contact-department-office">載入中...</p>
+                <p id="department-office">載入中...</p>
             </div>
             <div class="info-item">
                 <h3>電話</h3>
-                <p id="contact-department-phone">載入中...</p>
+                <p id="department-phone">載入中...</p>
             </div>
             <div class="info-item">
                 <h3>電子郵件</h3>
-                <p id="contact-department-email">載入中...</p>
+                <p id="department-email">載入中...</p>
             </div>
         </div>
     </div>
@@ -60,10 +60,9 @@
                 if (typeof callback === 'function') callback();
             });
         }
+        // header/footer 載入
         includeHTML('header-include', 'header.html');
-        includeHTML('footer-include', 'footer.html');
-    </script>
-    <script>
+        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
         // 主區塊聯絡資訊
         function loadMainContactInfo() {
             fetch(BASE_PATH + '/api/department.php?id=D001')
@@ -88,9 +87,7 @@
         }
         // 載入主區塊聯絡資訊
         loadMainContactInfo();
-
-    </script>
-    <script>
+        // footer 聯絡資訊
         function loadDepartmentInfo() {
             fetch(BASE_PATH + '/api/department.php?id=D001')
                 .then(response => {
@@ -125,7 +122,7 @@
                 if (typeof callback === 'function') callback();
             });
         }
-        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
+        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);        
     </script>
 </body>
 
