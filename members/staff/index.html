@@ -4,17 +4,15 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>行政人員</title>
+    <title>系所成員</title>
     <link rel="icon" href="/~D1210799/pics/iecs_logo.png" type="image/png" />
     <script src="/~D1210799/js/config.js"></script>
-    <link rel="stylesheet" href="/~D1210799/members/chair/index.css">
+    <link rel="stylesheet" href="/~D1210799/members/index.css">
     <link rel="stylesheet" href="/~D1210799/header-footer.css">
 </head>
 
 <body>
     <div id="header-include"></div>
-
-    <!-- 中間內容 -->
     <main class="content">
         <!-- 左側選單 -->
         <nav class="sidebar">
@@ -26,55 +24,15 @@
             <a class="sidebar-link" data-href="distinguished">特聘教授</a>
             <a class="sidebar-link" data-href="full_time">專任教授</a>
             <a class="sidebar-link" data-href="part_time">兼任教授</a>
-            <a id="current" class="sidebar-link" data-href="staff">行政人員</a>
+            <a class="sidebar-link" data-href="staff">行政人員</a>
             <a class="sidebar-link" data-href="retired">退休教授</a>
         </nav>
-
-        <!-- 右側成員卡片區 -->
+        <!-- 右側成員卡片區，這裡示範放三排共九位成員卡 -->
         <section class="card-list" id="member-card-list">
-            <h2 style="width: 100%; margin-bottom: 16px;"></h2>
             <!-- 卡片將由 JS 動態產生 -->
         </section>
     </main>
     <div id="footer-include"></div>
-    <script>
-        const membersLink = document.getElementById('members-link');
-        const navItems = document.querySelectorAll('.nav-item');
-
-        navItems.forEach(item => {
-            if (item !== membersLink) {
-                item.addEventListener('mouseenter', () => {
-                    membersLink.classList.remove('active');
-                });
-                item.addEventListener('mouseleave', () => {
-                    membersLink.classList.add('active');
-                });
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const sidebar = document.querySelector('.sidebar');
-            const currentLink = document.getElementById('current');
-            const sidebarLinks = sidebar.querySelectorAll('a');
-
-            // 初始時給講座教授加上 active
-            currentLink.classList.add('active');
-
-            sidebarLinks.forEach(link => {
-                if (link !== currentLink) {
-                    // 其他連結 hover 時移除講座教授 active
-                    link.addEventListener('mouseenter', () => {
-                        currentLink.classList.remove('active');
-                    });
-
-                    // 其他連結離開時，還原講座教授 active
-                    link.addEventListener('mouseleave', () => {
-                        currentLink.classList.add('active');
-                    });
-                }
-            });
-        });
-    </script>
     <script>
         function fixBasePathForLinksAndImages(container) {
             if (typeof BASE_PATH === 'undefined') return;
@@ -91,38 +49,42 @@
                 }
             });
         }
-        function includeHTML(id, file, callback) {
+        function includeHTML(id, file) {
             if (typeof BASE_PATH === 'undefined') return;
             fetch(BASE_PATH + '/' + file).then(res => res.text()).then(html => {
                 const container = document.getElementById(id);
                 container.innerHTML = html;
                 fixBasePathForLinksAndImages(container);
-                if (typeof callback === 'function') callback();
             });
         }
         includeHTML('header-include', 'header.html');
-        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
+        includeHTML('footer-include', 'footer.html');
     </script>
     <script>
-        // 動態補上 BASE_PATH + '/members/xxx' 給 sidebar 連結
-        (function () {
-            if (typeof BASE_PATH === 'undefined') return;
-            document.querySelectorAll('.sidebar-link').forEach(link => {
-                const page = link.getAttribute('data-href');
-                link.setAttribute('href', BASE_PATH + '/members/' + page);
-            });
-        })();
+        const membersLink = document.getElementById('members-link');
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            if (item !== membersLink) {
+                item.addEventListener('mouseenter', () => {
+                    membersLink.classList.remove('active');
+                });
+                item.addEventListener('mouseleave', () => {
+                    membersLink.classList.add('active');
+                });
+            }
+        });
     </script>
     <script>
         function cleanText(text) {
             if (typeof text !== 'string') return '';  // 不是字串就回傳空字串
             return text.replace(/\n{2,}/g, '\n').trim();
         }
+
         async function loadMembers() {
             const list = document.getElementById('member-card-list');
             list.innerHTML = '載入中...';
             try {
-                const res = await fetch(BASE_PATH + '/members/staff/api.php');
+                const res = await fetch(BASE_PATH + '/members/api.php');
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message);
                 let html = '';
@@ -130,10 +92,10 @@
                 data.staff.forEach(staff => {
                     html += `
                     <a class="card" href="#" title="${staff.name}">
-                        <img src="pics/${staff.photo || 'default.jpg'}" alt="${staff.name}" />
+                        <img src="members/pics/${staff.photo || 'default.jpg'}" alt="${staff.name}" />
                         <div class="card-content">
                             <h3>${staff.name}</h3>
-                            ${staff.position ? `<p>${cleanText(staff.position)}</p>` : ''}
+                            ${staff.position ? `<p>${staff.position}</p>` : ''}
                             ${staff.extension ? `<p>分機：${cleanText(staff.extension)}</p>` : ''}
                             ${staff.task_name ? `<p>業務：${cleanText(staff.task_name)}</p>` : ''}
                             ${staff.email ? `<p>信箱：${cleanText(staff.email)}</p>` : ''}
@@ -146,34 +108,16 @@
             }
         }
         loadMembers();
-        function adjustMainHeight() {
-            const header = document.getElementById('header-include');
-            const footer = document.getElementById('footer-include');
-            const main = document.querySelector('main.content');
-
-            if (!header || !footer || !main) return;
-
-            // 取得 header 和 footer 實際高度（包含 padding、border）
-            const headerHeight = header.offsetHeight;
-            const footerHeight = footer.offsetHeight;
-
-            // 視窗高度
-            const windowHeight = window.innerHeight;
-
-            // 設定 main 區塊 min-height = 視窗高度 - header - footer
-            const mainMinHeight = windowHeight - headerHeight - footerHeight;
-
-            if (mainMinHeight > 0) {
-                main.style.minHeight = mainMinHeight + 'px';
-            }
-        }
-
-        // 載入完成後調整一次
-        window.addEventListener('load', adjustMainHeight);
-
-        // 視窗尺寸改變時重新調整
-        window.addEventListener('resize', adjustMainHeight);
-
+    </script>
+    <script>
+        // 動態補上 BASE_PATH + '/members/xxx' 給 sidebar 連結
+        (function () {
+            if (typeof BASE_PATH === 'undefined') return;
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                const page = link.getAttribute('data-href');
+                link.setAttribute('href', BASE_PATH + '/members/' + page);
+            });
+        })();
     </script>
     <script>
         function loadDepartmentInfo() {
@@ -211,9 +155,7 @@
             });
         }
         includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
-
     </script>
-
 </body>
 
 </html>
