@@ -101,9 +101,15 @@ body {
     line-height: 1.6;
 }
 
+.image-content {
+    width: 300px;
+    /* 所有圖片區塊同寬 */
+}
+
 .image-content img {
-  width: 300px; /* 固定寬度，可依需要調整 */
-  height: auto; /* 高度自動，保持比例 */
+    width: 100%;
+    height: auto;
+    object-fit: cover;
 }
 
 /* 已移除 footer 樣式，統一由 header-footer.css 控制 */
