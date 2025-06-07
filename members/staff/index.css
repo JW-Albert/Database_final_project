@@ -99,9 +99,6 @@ main.content {
     flex: 1;
     gap: 40px;
     margin: 40px 0;
-    min-height: calc(100vh - header高度 - footer高度);
-    padding-bottom: 20px;
-    /* 確保 footer 有間距 */
 }
 
 /* 左側選單 */

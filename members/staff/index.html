@@ -146,6 +146,34 @@
             }
         }
         loadMembers();
+        function adjustMainHeight() {
+            const header = document.getElementById('header-include');
+            const footer = document.getElementById('footer-include');
+            const main = document.querySelector('main.content');
+
+            if (!header || !footer || !main) return;
+
+            // 取得 header 和 footer 實際高度（包含 padding、border）
+            const headerHeight = header.offsetHeight;
+            const footerHeight = footer.offsetHeight;
+
+            // 視窗高度
+            const windowHeight = window.innerHeight;
+
+            // 設定 main 區塊 min-height = 視窗高度 - header - footer
+            const mainMinHeight = windowHeight - headerHeight - footerHeight;
+
+            if (mainMinHeight > 0) {
+                main.style.minHeight = mainMinHeight + 'px';
+            }
+        }
+
+        // 載入完成後調整一次
+        window.addEventListener('load', adjustMainHeight);
+
+        // 視窗尺寸改變時重新調整
+        window.addEventListener('resize', adjustMainHeight);
+
     </script>
     <script>
         function loadDepartmentInfo() {
