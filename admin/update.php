@@ -402,6 +402,24 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         </div>
     </div>
     <script>
+        // 定義中文表格名稱
+        const tableNameMap = {
+            'Professor': '教授',
+            'Course': '課程',
+            'DepartmentHead': '系主任',
+            'Education': '學歷',
+            'Expertise': '專長',
+            'ExternalAward': '校外獲獎',
+            'ExternalExperience': '校外經歷',
+            'IndustryProject': '產學合作',
+            'InternalAward': '校內獲獎',
+            'InternalExperience': '校內經歷',
+            'JournalPublication': '發表期刊',
+            'Lecture': '演講',
+            'NSCProject': '國科會計畫',
+            'Patent': '專利'
+        };
+
         // 取得所有教授
         async function loadProfessors() {
             const res = await fetch('get_professor_all_data/get_professors.php');
@@ -429,7 +447,8 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             let html = '';
             for (const table in data) {
                 if (table !== 'Professor') {
-                    html += `<h3>${table}</h3>` + renderTable(table, data[table]);
+                    const displayName = tableNameMap[table] ? `${tableNameMap[table]} ${table}` : table;
+                    html += `<h3>${displayName}</h3>` + renderTable(table, data[table]);
                 }
             }
             document.getElementById('relatedTables').innerHTML = html;
@@ -465,10 +484,12 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 return `
                     <div style="color:#888;margin-bottom:16px;">
                         此表格目前無資料
-                        <button class="button" onclick="addNewRow('${table}')" style="margin-left: 10px;">
-                            <i class="fas fa-plus"></i>
-                            新增資料
-                        </button>
+                        <div style="text-align:right;">
+                            <button class="button" onclick="addNewRow('${table}')" style="margin-left: 10px;">
+                                <i class="fas fa-plus"></i>
+                                新增資料
+                            </button>
+                        </div>
                     </div>
                     <div id="newRows_${table}"></div>
                 `;
@@ -477,7 +498,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             // 取得欄位 comment 對應表
             const tableMeta = window.tableMeta || {};
             let html = `<table class="data-table"><thead><tr>`;
-            Object.keys(rows[0]).forEach(col => {
+            // 過濾掉 password 欄位
+            const columns = Object.keys(rows[0]).filter(col => col !== 'password');
+            columns.forEach(col => {
                 const comment = (tableMeta[table] && tableMeta[table][col]) ? tableMeta[table][col] : col;
                 html += `<th>${comment}${col === primaryKey ? ' (主鍵)' : ''}</th>`;
             });
@@ -490,13 +513,14 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             html += `</tr></thead><tbody>`;
             
             rows.forEach((row, idx) => {
-                html += '<tr>';
-                Object.entries(row).forEach(([col, val]) => {
-                    const isPrimaryKey = col === primaryKey;
-                    const inputClass = isPrimaryKey ? 'primary-key-field' : '';
-                    const title = isPrimaryKey ? 'title="主鍵欄位，不能修改"' : '';
-                    html += `<td><input class="${inputClass}" ${title} data-table="${table}" data-row="${idx}" data-col="${col}" value="${val ?? ''}" ${isPrimaryKey ? 'style="background-color: #fff3cd; border-color: #ffc107;"' : ''}></td>`;
-                });
+            html += '<tr>';
+            columns.forEach(col => {
+                const val = row[col];
+                const isPrimaryKey = col === primaryKey;
+                const inputClass = isPrimaryKey ? 'primary-key-field' : '';
+                const title = isPrimaryKey ? 'title="主鍵欄位，不能修改"' : '';
+                html += `<td><input class="${inputClass}" ${title} data-table="${table}" data-row="${idx}" data-col="${col}" value="${val ?? ''}" ${isPrimaryKey ? 'style="background-color: #fff3cd; border-color: #ffc107;"' : ''}></td>`;
+            });
                 
                 // Professor 表格不顯示刪除按鈕
                 if (table !== 'Professor') {
@@ -559,7 +583,14 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                     const isPrimaryKey = field.Field === primaryKey;
                     const isRequired = field.Null === 'NO' && !field.Extra.includes('auto_increment');
                     const placeholder = isPrimaryKey && field.Extra.includes('auto_increment') ? '自動產生' : '';
-                    const disabled = isPrimaryKey && field.Extra.includes('auto_increment') ? 'disabled' : '';
+                    let disabled = isPrimaryKey && field.Extra.includes('auto_increment') ? 'disabled' : '';
+
+                    // 如果是 professor_id 欄位，且不是 Professor 主表，則自動填入並不可更改
+                    let value = '';
+                    if (field.Field === 'professor_id') {
+                        value = document.getElementById('professorSelect').value;
+                        disabled = 'disabled';
+                    }
                     
                     html += `
                         <div>
@@ -573,6 +604,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                                 data-row="new_${newRowIndex}" 
                                 data-col="${field.Field}" 
                                 placeholder="${placeholder}"
+                                value="${value}"
                                 ${disabled}
                                 style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; ${isPrimaryKey ? 'background-color: #f8f9fa;' : ''}"
                             >
