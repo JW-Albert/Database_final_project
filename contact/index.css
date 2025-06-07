@@ -141,7 +141,6 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 30px 150px;
     font-size: 14px;
     flex-wrap: wrap;
     gap: 20px;
