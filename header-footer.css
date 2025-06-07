@@ -109,12 +109,6 @@
 }
 
 .footer-right p {
-    margin: 2px 0;
-    white-space: normal !important;
-    line-height: 1.5 !important;
-}
-
-.footer-right p {
     margin: 0 !important;
     padding: 0 !important;
     line-height: 1.5 !important;
