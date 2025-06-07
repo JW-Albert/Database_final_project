@@ -60,7 +60,6 @@
                 if (typeof callback === 'function') callback();
             });
         }
-        // header/footer 載入
         includeHTML('header-include', 'header.html');
         includeHTML('footer-include', 'footer.html');
         // 主區塊聯絡資訊
@@ -87,7 +86,8 @@
         }
         // 載入主區塊聯絡資訊
         loadMainContactInfo();
-        // footer 聯絡資訊
+    </script>
+    <script>
         function loadDepartmentInfo() {
             fetch(BASE_PATH + '/api/department.php?id=D001')
                 .then(response => {
@@ -122,7 +122,7 @@
                 if (typeof callback === 'function') callback();
             });
         }
-        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);        
+        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
     </script>
 </body>
 
