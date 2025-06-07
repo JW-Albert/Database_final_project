@@ -437,46 +437,302 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 
         // 渲染可編輯表格
         function renderTable(table, rows) {
-            if (!rows || rows.length === 0) return '<div style="color:#888;margin-bottom:16px;">無資料</div>';
+            // 主鍵定義
+            const primaryKeys = {
+                'Professor': 'professor_id',
+                'Course': 'id',
+                'DepartmentHead': 'id',
+                'Education': 'id',
+                'Expertise': 'expertise_id',
+                'ExternalAward': 'id',
+                'ExternalExperience': 'id',
+                'IndustryProject': 'id',
+                'InternalAward': 'id',
+                'InternalExperience': 'id',
+                'JournalPublication': 'id',
+                'Lecture': 'id',
+                'NSCProject': 'id',
+                'Patent': 'id'
+            };
+            
+            const primaryKey = primaryKeys[table];
+            
+            // 如果沒有資料，顯示不同的訊息
+            if (!rows || rows.length === 0) {
+                if (table === 'Professor') {
+                    return `<div style="color:#888;margin-bottom:16px;">教授基本資料不存在</div>`;
+                }
+                return `
+                    <div style="color:#888;margin-bottom:16px;">
+                        此表格目前無資料
+                        <button class="button" onclick="addNewRow('${table}')" style="margin-left: 10px;">
+                            <i class="fas fa-plus"></i>
+                            新增資料
+                        </button>
+                    </div>
+                    <div id="newRows_${table}"></div>
+                `;
+            }
+            
             // 取得欄位 comment 對應表
             const tableMeta = window.tableMeta || {};
             let html = `<table class="data-table"><thead><tr>`;
             Object.keys(rows[0]).forEach(col => {
                 const comment = (tableMeta[table] && tableMeta[table][col]) ? tableMeta[table][col] : col;
-                html += `<th>${comment}</th>`;
+                html += `<th>${comment}${col === primaryKey ? ' (主鍵)' : ''}</th>`;
             });
-            html += '</tr></thead><tbody>';
+            
+            // Professor 表格不顯示操作欄
+            if (table !== 'Professor') {
+                html += `<th>操作</th>`;
+            }
+            
+            html += `</tr></thead><tbody>`;
+            
             rows.forEach((row, idx) => {
                 html += '<tr>';
                 Object.entries(row).forEach(([col, val]) => {
-                    html += `<td><input data-table="${table}" data-row="${idx}" data-col="${col}" value="${val ?? ''}"></td>`;
+                    const isPrimaryKey = col === primaryKey;
+                    const inputClass = isPrimaryKey ? 'primary-key-field' : '';
+                    const title = isPrimaryKey ? 'title="主鍵欄位，不能修改"' : '';
+                    html += `<td><input class="${inputClass}" ${title} data-table="${table}" data-row="${idx}" data-col="${col}" value="${val ?? ''}" ${isPrimaryKey ? 'style="background-color: #fff3cd; border-color: #ffc107;"' : ''}></td>`;
                 });
+                
+                // Professor 表格不顯示刪除按鈕
+                if (table !== 'Professor') {
+                    html += `<td><button class="button danger" onclick="deleteRow('${table}', ${idx})" style="padding: 4px 8px; font-size: 0.8rem;"><i class="fas fa-trash"></i></button></td>`;
+                }
+                
                 html += '</tr>';
             });
             html += '</tbody></table>';
+            
+            // Professor 表格不顯示新增按鈕
+            if (table !== 'Professor') {
+                html += `
+                    <button class="button" onclick="addNewRow('${table}')" style="margin-bottom: 15px;">
+                        <i class="fas fa-plus"></i>
+                        新增一列資料
+                    </button>
+                    <div id="newRows_${table}"></div>
+                `;
+            }
+            
             return html;
+        }
+
+        // 新增一列空資料
+        async function addNewRow(table) {
+            // 首先取得該表格的欄位結構
+            try {
+                const res = await fetch(`get_professor_all_data/get_table_structure.php?table=${table}`);
+                const structure = await res.json();
+                
+                const container = document.getElementById(`newRows_${table}`);
+                const newRowIndex = container.children.length;
+                
+                // 主鍵定義
+                const primaryKeys = {
+                    'Professor': 'professor_id',
+                    'Course': 'id',
+                    'DepartmentHead': 'id',
+                    'Education': 'id',
+                    'Expertise': 'expertise_id',
+                    'ExternalAward': 'id',
+                    'ExternalExperience': 'id',
+                    'IndustryProject': 'id',
+                    'InternalAward': 'id',
+                    'InternalExperience': 'id',
+                    'JournalPublication': 'id',
+                    'Lecture': 'id',
+                    'NSCProject': 'id',
+                    'Patent': 'id'
+                };
+                
+                const primaryKey = primaryKeys[table];
+                
+                let html = `<div class="new-row" style="border: 2px dashed #667eea; padding: 15px; margin-bottom: 10px; border-radius: 8px; background: rgba(102, 126, 234, 0.05);">`;
+                html += `<h4 style="margin-bottom: 10px; color: #667eea;"><i class="fas fa-plus-circle"></i> 新增資料列</h4>`;
+                html += `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">`;
+                
+                structure.forEach(field => {
+                    const isPrimaryKey = field.Field === primaryKey;
+                    const isRequired = field.Null === 'NO' && !field.Extra.includes('auto_increment');
+                    const placeholder = isPrimaryKey && field.Extra.includes('auto_increment') ? '自動產生' : '';
+                    const disabled = isPrimaryKey && field.Extra.includes('auto_increment') ? 'disabled' : '';
+                    
+                    html += `
+                        <div>
+                            <label style="font-size: 0.9rem; color: #2c3e50; margin-bottom: 4px; display: block;">
+                                ${field.Comment || field.Field}
+                                ${isRequired ? '<span style="color: #e74c3c;">*</span>' : ''}
+                                ${isPrimaryKey ? ' (主鍵)' : ''}
+                            </label>
+                            <input 
+                                data-table="${table}" 
+                                data-row="new_${newRowIndex}" 
+                                data-col="${field.Field}" 
+                                placeholder="${placeholder}"
+                                ${disabled}
+                                style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; ${isPrimaryKey ? 'background-color: #f8f9fa;' : ''}"
+                            >
+                            <div style="font-size: 0.75rem; color: #666; margin-top: 2px;">
+                                ${field.Type} ${field.Null === 'NO' ? '(必填)' : '(可空)'}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+                html += `<button class="button danger" onclick="removeNewRow(this)" style="margin-top: 10px; padding: 6px 12px; font-size: 0.9rem;">`;
+                html += `<i class="fas fa-times"></i> 移除此列</button>`;
+                html += `</div>`;
+                
+                container.insertAdjacentHTML('beforeend', html);
+            } catch (error) {
+                alert('取得表格結構失敗：' + error.message);
+            }
+        }
+
+        // 移除新增的行
+        function removeNewRow(button) {
+            button.closest('.new-row').remove();
+        }
+
+        // 標記要刪除的行
+        function deleteRow(table, rowIndex) {
+            if (confirm('確定要刪除這筆資料嗎？')) {
+                const row = document.querySelector(`input[data-table="${table}"][data-row="${rowIndex}"]`).closest('tr');
+                row.style.backgroundColor = '#ffe6e6';
+                row.style.textDecoration = 'line-through';
+                row.setAttribute('data-delete', 'true');
+                
+                // 添加恢復按鈕
+                const lastCell = row.lastElementChild;
+                lastCell.innerHTML = `
+                    <button class="button success" onclick="restoreRow('${table}', ${rowIndex})" style="padding: 4px 8px; font-size: 0.8rem;">
+                        <i class="fas fa-undo"></i> 恢復
+                    </button>
+                `;
+            }
+        }
+
+        // 恢復被標記刪除的行
+        function restoreRow(table, rowIndex) {
+            const row = document.querySelector(`input[data-table="${table}"][data-row="${rowIndex}"]`).closest('tr');
+            row.style.backgroundColor = '';
+            row.style.textDecoration = '';
+            row.removeAttribute('data-delete');
+            
+            // 恢復刪除按鈕
+            const lastCell = row.lastElementChild;
+            lastCell.innerHTML = `
+                <button class="button danger" onclick="deleteRow('${table}', ${rowIndex})" style="padding: 4px 8px; font-size: 0.8rem;">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
         }
 
         // 收集所有欄位並送出
         async function submitAllUpdates() {
             const inputs = document.querySelectorAll('input[data-table]');
             const updates = {};
+            const inserts = {};
+            const deletes = {};
+            
+            // 主鍵定義
+            const primaryKeys = {
+                'Professor': 'professor_id',
+                'Course': 'id',
+                'DepartmentHead': 'id',
+                'Education': 'id',
+                'Expertise': 'expertise_id',
+                'ExternalAward': 'id',
+                'ExternalExperience': 'id',
+                'IndustryProject': 'id',
+                'InternalAward': 'id',
+                'InternalExperience': 'id',
+                'JournalPublication': 'id',
+                'Lecture': 'id',
+                'NSCProject': 'id',
+                'Patent': 'id'
+            };
+            
+            // 檢查是否有修改主鍵
+            const modifiedPrimaryKeys = [];
+            
             inputs.forEach(input => {
                 const table = input.dataset.table;
                 const row = input.dataset.row;
                 const col = input.dataset.col;
+                const primaryKey = primaryKeys[table];
+                
+                // 處理新增資料
+                if (row.startsWith('new_')) {
+                    inserts[table] = inserts[table] || [];
+                    const newRowIndex = row.replace('new_', '');
+                    inserts[table][newRowIndex] = inserts[table][newRowIndex] || {};
+                    inserts[table][newRowIndex][col] = input.value;
+                    return;
+                }
+                
+                // 檢查主鍵修改
+                if (col === primaryKey && input.defaultValue !== input.value) {
+                    modifiedPrimaryKeys.push(`${table}.${col}`);
+                }
+                
                 updates[table] = updates[table] || [];
                 updates[table][row] = updates[table][row] || {};
                 updates[table][row][col] = input.value;
             });
-            // POST 給後端
-            const res = await fetch('update_professor_all_data/update_professor_all_data.php', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(updates)
+            
+            // 收集要刪除的資料
+            const deleteRows = document.querySelectorAll('tr[data-delete="true"]');
+            deleteRows.forEach(row => {
+                const firstInput = row.querySelector('input[data-table]');
+                if (firstInput) {
+                    const table = firstInput.dataset.table;
+                    const rowIndex = firstInput.dataset.row;
+                    const primaryKey = primaryKeys[table];
+                    
+                    // 找到主鍵值
+                    const pkInput = row.querySelector(`input[data-col="${primaryKey}"]`);
+                    if (pkInput && pkInput.value) {
+                        deletes[table] = deletes[table] || [];
+                        deletes[table].push(pkInput.value);
+                    }
+                }
             });
-            const result = await res.json();
-            alert(result.message);
+            
+            // 如果有修改主鍵，顯示錯誤訊息
+            if (modifiedPrimaryKeys.length > 0) {
+                alert('錯誤：不允許修改主鍵欄位！\n被修改的主鍵：\n' + modifiedPrimaryKeys.join('\n'));
+                return;
+            }
+            
+            // POST 給後端
+            try {
+                const res = await fetch('update_professor_all_data/update_professor_all_data.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        updates: updates,
+                        inserts: inserts,
+                        deletes: deletes
+                    })
+                });
+                const result = await res.json();
+                
+                if (result.status === 'error') {
+                    alert('錯誤：' + result.message);
+                } else {
+                    alert(result.message);
+                    // 重新載入資料
+                    loadProfessorData();
+                }
+            } catch (error) {
+                alert('發生錯誤：' + error.message);
+            }
         }
 
         // 頁面載入時先載入教授選項

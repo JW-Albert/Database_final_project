@@ -90,7 +90,105 @@ try {
 
     $pdo->beginTransaction();
     
-    foreach ($data as $table => $rows) {
+    $updates = $data['updates'] ?? [];
+    $inserts = $data['inserts'] ?? [];
+    $deletes = $data['deletes'] ?? [];
+    
+    // 檢查 Professor 表格是否嘗試新增多筆資料
+    if (isset($inserts['Professor']) && count($inserts['Professor']) > 0) {
+        // 檢查 Professor 表格是否已經有資料
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM Professor");
+        $stmt->execute();
+        $count = $stmt->fetchColumn();
+        
+        if ($count > 0) {
+            throw new Exception("Professor 表格只能存在一筆資料，無法新增更多資料！");
+        }
+        
+        if (count($inserts['Professor']) > 1) {
+            throw new Exception("Professor 表格只能新增一筆資料！");
+        }
+    }
+    
+    // 檢查 Professor 表格是否嘗試刪除資料
+    if (isset($deletes['Professor']) && count($deletes['Professor']) > 0) {
+        throw new Exception("不允許刪除 Professor 表格的資料！");
+    }
+    
+    // 先檢查是否有嘗試修改主鍵 (僅檢查更新操作)
+    foreach ($updates as $table => $rows) {
+        $pk = $tablePrimaryKeys[$table] ?? null;
+        if (!$pk) {
+            continue;
+        }
+        
+        foreach ($rows as $row) {
+            if (!isset($row[$pk]) || empty($row[$pk])) {
+                continue;
+            }
+            
+            // 查詢原始資料來比較主鍵是否被修改
+            $stmt = $pdo->prepare("SELECT * FROM `$table` WHERE `$pk` = ?");
+            $stmt->execute([$row[$pk]]);
+            $originalRow = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($originalRow && isset($originalRow[$pk]) && $originalRow[$pk] != $row[$pk]) {
+                throw new Exception("不允許修改主鍵！資料表：$table，主鍵欄位：$pk");
+            }
+        }
+    }
+    
+    // 處理刪除 (跳過 Professor 表格)
+    foreach ($deletes as $table => $ids) {
+        if ($table === 'Professor') continue; // 已在上面檢查過
+        
+        $pk = $tablePrimaryKeys[$table] ?? null;
+        if (!$pk) continue;
+        
+        foreach ($ids as $id) {
+            if (empty($id)) continue;
+            $stmt = $pdo->prepare("DELETE FROM `$table` WHERE `$pk` = ?");
+            if (!$stmt->execute([$id])) {
+                $errorInfo = $stmt->errorInfo();
+                throw new Exception("刪除失敗 ($table): " . $errorInfo[2]);
+            }
+        }
+    }
+    
+    // 處理新增
+    foreach ($inserts as $table => $rows) {
+        $pk = $tablePrimaryKeys[$table] ?? null;
+        if (!$pk) continue;
+        
+        foreach ($rows as $row) {
+            if (empty($row)) continue;
+            
+            $columns = [];
+            $values = [];
+            $params = [];
+            
+            foreach ($row as $col => $val) {
+                // 跳過自動增長的主鍵和空值主鍵
+                if ($col === $pk && (empty($val) || $val === '')) continue;
+                
+                $columns[] = "`$col`";
+                $values[] = "?";
+                $params[] = processValue($table, $col, $val);
+            }
+            
+            if (!empty($columns)) {
+                $sql = "INSERT INTO `$table` (" . implode(',', $columns) . ") VALUES (" . implode(',', $values) . ")";
+                $stmt = $pdo->prepare($sql);
+                if (!$stmt->execute($params)) {
+                    $errorInfo = $stmt->errorInfo();
+                    throw new Exception("新增失敗 ($table): " . $errorInfo[2]);
+                }
+            }
+        }
+    }
+    
+    // 處理更新
+    foreach ($updates as $table => $rows) {
         $pk = $tablePrimaryKeys[$table] ?? null;
         if (!$pk) {
             error_log("未知資料表: $table");
@@ -106,7 +204,7 @@ try {
             $set = [];
             $params = [];
             foreach ($row as $col => $val) {
-                if ($col !== $pk) {
+                if ($col !== $pk) { // 排除主鍵欄位不進行更新
                     $processedValue = processValue($table, $col, $val);
                     $set[] = "`$col` = ?";
                     $params[] = $processedValue;
@@ -121,13 +219,13 @@ try {
             $stmt = $pdo->prepare($sql);
             if (!$stmt->execute($params)) {
                 $errorInfo = $stmt->errorInfo();
-                throw new Exception("SQL 執行失敗 ($table): " . $errorInfo[2]);
+                throw new Exception("更新失敗 ($table): " . $errorInfo[2]);
             }
         }
     }
     
     $pdo->commit();
-    echo json_encode(['status' => 'success', 'message' => '所有資料已更新']);
+    echo json_encode(['status' => 'success', 'message' => '所有資料已更新完成']);
 
 } catch (Exception $e) {
     if (isset($pdo)) {
