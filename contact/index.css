@@ -135,6 +135,30 @@ body {
     line-height: 1.6;
 }
 
+
+.site-footer {
+    background-color: #2863a2;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 150px;
+    font-size: 14px;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 40px;
+    box-sizing: border-box;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+}
+
+.footer-right p {
+    margin: 2px 0;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
 @media (max-width: 600px) {
     .site-footer {
         flex-direction: column;
