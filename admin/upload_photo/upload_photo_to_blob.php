@@ -6,7 +6,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit();
 }
 
-require_once __DIR__ . '/../db_config/main.php'; // 根據你實際的資料庫設定路徑調整
+$uploadDir = __DIR__ . '/../../pics/'; // pics 資料夾路徑
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -25,20 +25,24 @@ if (!$professorId) {
     exit();
 }
 
-// 讀取圖片內容並轉為 binary
-$imageData = file_get_contents($_FILES['photo']['tmp_name']);
+// 取得副檔名
+$ext = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
+$allowedExts = ['jpg', 'jpeg', 'png', 'gif'];
+if (!in_array($ext, $allowedExts)) {
+    echo json_encode(['status' => 'error', 'message' => '只允許 JPG, PNG, GIF 檔案']);
+    exit();
+}
 
-try {
-    $stmt = $pdo->prepare("UPDATE Professor SET photo = :photo WHERE professor_id = :id");
-    $stmt->bindParam(':photo', $imageData, PDO::PARAM_LOB);
-    $stmt->bindParam(':id', $professorId);
-    $stmt->execute();
+// 檔案儲存路徑
+$savePath = $uploadDir . $professorId . '.' . $ext;
 
+// 搬移檔案
+if (move_uploaded_file($_FILES['photo']['tmp_name'], $savePath)) {
     echo json_encode([
         'status' => 'success',
-        'message' => '照片已儲存在資料庫中'
+        'message' => '照片已儲存到 pics 資料夾'
     ]);
-} catch (PDOException $e) {
-    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+} else {
+    echo json_encode(['status' => 'error', 'message' => '檔案儲存失敗']);
 }
 ?>

@@ -336,7 +336,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                     </div>
                     <div class="form-group">
                         <label for="professor_id">教授編號：</label>
-                        <input type="text" id="professor_id" name="professor_id" required placeholder="請輸入教授編號">
+                        <select id="professor_id" name="professor_id" required>
+                            <option value="">請選擇教授</option>
+                        </select>
                     </div>
                 </div>
 
@@ -388,6 +390,26 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         const progressFill = document.getElementById('progressFill');
         const uploadStatus = document.getElementById('uploadStatus');
         const professorIdInput = document.getElementById('professor_id');
+
+        // 載入教授名單
+        async function loadProfessors() {
+            const res = await fetch('get_professor_all_data/get_professors.php');
+            const data = await res.json();
+            const select = document.getElementById('professor_id');
+            select.innerHTML = '<option value="">請選擇教授</option>';
+            data.forEach(prof => {
+                const opt = document.createElement('option');
+                opt.value = prof.professor_id;
+                opt.textContent = `${prof.name} (${prof.professor_id})`;
+                select.appendChild(opt);
+            });
+            updateUploadButton();
+        }
+
+        // 頁面載入時自動載入
+        window.onload = function() {
+            loadProfessors();
+        }
 
         // 拖拽上傳功能
         uploadArea.addEventListener('dragover', (e) => {
