@@ -8,7 +8,7 @@
     <link id="dynamic-favicon" rel="icon" type="image/png">
     <link rel="stylesheet" href="/~D1210799/header-footer.css">
     <script src="/~D1210799/js/config.js"></script>
-    <link rel="stylesheet" href="/~D1210799/contact/index.css">
+    <link rel="stylesheet" href="/~D1210799/about/index.css">
 </head>
 
 <body>
@@ -60,9 +60,8 @@
                 if (typeof callback === 'function') callback();
             });
         }
-        // header/footer 載入
         includeHTML('header-include', 'header.html');
-        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
+        includeHTML('footer-include', 'footer.html');
         // 主區塊聯絡資訊
         function loadMainContactInfo() {
             fetch(BASE_PATH + '/api/department.php?id=D001')
@@ -86,8 +85,9 @@
                 });
         }
         // 載入主區塊聯絡資訊
-        loadMainContactInfo();
-        // footer 聯絡資訊
+        loadMainContactInfo();      
+    </script>
+    <script>
         function loadDepartmentInfo() {
             fetch(BASE_PATH + '/api/department.php?id=D001')
                 .then(response => {
@@ -123,30 +123,6 @@
             });
         }
         includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
-        /*
-        function loadDepartmentInfo() {
-            fetch(BASE_PATH + '/api/department.php?id=D001')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        const dept = data.data;
-                        document.getElementById('footer-address').textContent = `地址：${dept.locat || '無資料'}`;
-                        document.getElementById('footer-office').textContent = `系辦：${dept.office || '無資料'}`;
-                        document.getElementById('footer-phone').textContent = `電話：${dept.phone_extension || '無資料'}`;
-                        document.getElementById('footer-email').textContent = `信箱：${dept.email || '無資料'}`;
-                    } else {
-                        throw new Error(data.message || 'Failed to load department info');
-                    }
-                })
-                .catch(error => {
-                    document.getElementById('footer-address').textContent = '地址：載入失敗';
-                    document.getElementById('footer-office').textContent = '系辦：載入失敗';
-                    document.getElementById('footer-phone').textContent = '電話：載入失敗';
-                    document.getElementById('footer-email').textContent = '信箱：載入失敗';
-                });
-        }
-        */
-        
     </script>
 </body>
 
