@@ -71,23 +71,22 @@
                 .then(data => {
                     if (data.success) {
                         const dept = data.data;
-                        document.getElementById('contact-department-location').textContent = dept.locat || '無資料';
-                        document.getElementById('contact-department-office').textContent = dept.office || '無資料';
-                        document.getElementById('contact-department-phone').textContent = dept.phone_extension || '無資料';
-                        document.getElementById('contact-department-email').textContent = dept.email || '無資料';
+                        document.getElementById('department-location').textContent = dept.locat || '無資料';
+                        document.getElementById('department-office').textContent = dept.office || '無資料';
+                        document.getElementById('department-phone').textContent = dept.phone_extension || '無資料';
+                        document.getElementById('department-email').textContent = dept.email || '無資料';
                     } else {
                         throw new Error(data.message || 'Failed to load department info');
                     }
                 })
                 .catch(error => {
-                    document.getElementById('contact-department-location').textContent = '載入失敗';
-                    document.getElementById('contact-department-office').textContent = '載入失敗';
-                    document.getElementById('contact-department-phone').textContent = '載入失敗';
-                    document.getElementById('contact-department-email').textContent = '載入失敗';
+                    document.getElementById('department-location').textContent = '載入失敗';
+                    document.getElementById('department-office').textContent = '載入失敗';
+                    document.getElementById('department-phone').textContent = '載入失敗';
+                    document.getElementById('department-email').textContent = '載入失敗';
                 });
         }
-        // 載入主區塊聯絡資訊
-        loadMainContactInfo();
+        
     </script>
     <script>
         function loadDepartmentInfo() {
