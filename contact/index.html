@@ -89,21 +89,6 @@
         loadMainContactInfo();
     </script>
     <script>
-        // 導覽列 active 狀態控制
-        const contactLink = document.getElementById('contact-link');
-        const navItems = document.querySelectorAll('.nav-item');
-        navItems.forEach(item => {
-            if (item !== contactLink) {
-                item.addEventListener('mouseenter', () => {
-                    contactLink.classList.remove('active');
-                });
-                item.addEventListener('mouseleave', () => {
-                    contactLink.classList.add('active');
-                });
-            }
-        });
-    </script>
-    <script>
         // footer 聯絡資訊
         function loadDepartmentInfo() {
             fetch(BASE_PATH + '/api/department.php?id=D001')
