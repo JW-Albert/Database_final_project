@@ -93,6 +93,7 @@ body {
 .members-container:hover>.dropdown {
     display: flex;
 }
+
 main.content {
     display: flex;
     flex: 1;
