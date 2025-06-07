@@ -157,4 +157,16 @@ body {
     line-height: 1.5;
     white-space: nowrap;
 }
+
+@media (max-width: 600px) {
+    .site-footer {
+        flex-direction: column;
+        padding: 20px 20px;
+        text-align: center;
+    }
+
+    .footer-right p {
+        white-space: normal;
+    }
+}
 /* 已移除 footer 樣式，統一由 header-footer.css 控制 */
