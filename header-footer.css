@@ -35,12 +35,7 @@
     padding: 16px 8px;
 }
 
-.nav-item:hover {
-    color: #2863a2;
-    border-bottom: 2px solid #2863a2;
-    padding-bottom: 14px;
-}
-
+.nav-item:hover,
 .nav-item.active {
     color: #2863a2;
     border-bottom: 2px solid #2863a2;
@@ -53,7 +48,8 @@
     flex-direction: column;
 }
 
-.members-container:hover>.nav-item.members {
+.members-container:hover>.nav-item.members,
+.nav-item.members.active {
     color: #2863a2;
     border-bottom: 2px solid #2863a2;
     padding-bottom: 14px;
