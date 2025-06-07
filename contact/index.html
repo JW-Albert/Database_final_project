@@ -15,7 +15,7 @@
     <div id="header-include"></div>
     <div class="content" id="contact-content">
         <h1>聯絡我們</h1>
-        <div class="contact-info">
+        <div class="main-contact-info">
             <div class="info-item">
                 <h3>地址</h3>
                 <p id="department-location">載入中...</p>
@@ -112,10 +112,10 @@
                     if (data.success) {
                         const dept = data.data;
                         console.log('dept data:', dept); // 確認資料內容
-                        document.getElementById('footer-address').textContent = `地址：${(dept.locat || '無資料').trim()}`;
-                        document.getElementById('footer-office').textContent = `系辦：${(dept.office || '無資料').trim()}`;
-                        document.getElementById('footer-phone').textContent = `電話：${(dept.phone_extension || '無資料').trim()}`;
-                        document.getElementById('footer-email').textContent = `信箱：${(dept.email || '無資料').trim()}`;
+                        document.getElementById('footer-address').textContent = `地址：${(dept.locat || '無資料')}`;
+                        document.getElementById('footer-office').textContent = `系辦：${(dept.office || '無資料')}`;
+                        document.getElementById('footer-phone').textContent = `電話：${(dept.phone_extension || '無資料')}`;
+                        document.getElementById('footer-email').textContent = `信箱：${(dept.email || '無資料')}`;
                     } else {
                         throw new Error(data.message || 'Failed to load department info');
                     }
