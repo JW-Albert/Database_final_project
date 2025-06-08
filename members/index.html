@@ -92,7 +92,9 @@
                 data.professors.forEach(prof => {
                     html += `
                     <a class="card" href="${BASE_PATH}/members/faculties/index.html?professor_id=${prof.professor_id}" title="${prof.name}">
-                        <img src="members/pics/${prof.photo || 'default.jpg'}" alt="${prof.name}" />
+                        <div class="card-img-wrapper">
+                            <img src="members/pics/${prof.photo || 'default.jpg'}" alt="${prof.name}" />
+                        </div>
                         <div class="card-content">
                             <h3>${prof.name}</h3>
                             ${prof.type ? `<p>${prof.type}</p>` : ''}
@@ -105,7 +107,9 @@
                 data.staff.forEach(staff => {
                     html += `
                     <a class="card" href="#" title="${staff.name}">
-                        <img src="members/pics/${staff.photo || 'default.jpg'}" alt="${staff.name}" />
+                        <div class="card-img-wrapper">
+                            <img src="members/pics/${staff.photo || 'default.jpg'}" alt="${staff.name}" />
+                        </div>
                         <div class="card-content">
                             <h3>${staff.name}</h3>
                             ${staff.position ? `<p>${staff.position}</p>` : ''}
