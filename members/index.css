@@ -192,7 +192,7 @@ main.content {
     line-height: 1.4;
     /* 約4行 */
     overflow: visible;
-    text-overflow: ellipsis;
+    text-overflow: unset;
 }
 
 .card:hover {
