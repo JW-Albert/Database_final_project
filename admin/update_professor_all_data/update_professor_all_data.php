@@ -31,22 +31,22 @@ try {
         throw new Exception("JSON 解析錯誤: " . json_last_error_msg());
     }
 
-    // 各表主鍵名稱
+    // 各表主鍵名稱 - 修正版本
     $tablePrimaryKeys = [
         'Professor' => 'professor_id',
-        'Course' => 'id',
-        'DepartmentHead' => 'id',
-        'Education' => 'id',
+        'Course' => 'course_id',
+        'DepartmentHead' => 'department_id',
+        'Education' => 'education_id',
         'Expertise' => 'expertise_id',
-        'ExternalAward' => 'id',
-        'ExternalExperience' => 'id',
-        'IndustryProject' => 'id',
-        'InternalAward' => 'id',
-        'InternalExperience' => 'id',
-        'JournalPublication' => 'id',
-        'Lecture' => 'id',
-        'NSCProject' => 'id',
-        'Patent' => 'id'
+        'ExternalAward' => 'award_id',
+        'ExternalExperience' => 'experience_id',
+        'IndustryProject' => 'project_id',
+        'InternalAward' => 'award_id',
+        'InternalExperience' => 'experience_id',
+        'JournalPublication' => 'publication_id',
+        'Lecture' => 'lecture_id',
+        'NSCProject' => 'project_id',
+        'Patent' => 'patent_id'
     ];
 
     // 資料類型處理函數

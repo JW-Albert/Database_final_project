@@ -328,6 +328,25 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             overflow-x: auto;
         }
 
+        .delete-warning {
+            background: rgba(231, 76, 60, 0.1);
+            border: 2px solid rgba(231, 76, 60, 0.3);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            color: #c0392b;
+        }
+        
+        .foreign-key-warning {
+            background: rgba(243, 156, 18, 0.1);
+            border: 2px solid rgba(243, 156, 18, 0.3);
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 6px;
+            color: #d68910;
+            font-size: 0.9rem;
+        }
+        
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -407,6 +426,16 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         </div>
     </div>
     <script>
+        // 定義外鍵關係
+        const foreignKeyRelations = {
+            'Professor': [
+                'Course', 'DepartmentHead', 'Education', 'Expertise', 
+                'ExternalAward', 'ExternalExperience', 'IndustryProject',
+                'InternalAward', 'InternalExperience', 'JournalPublication',
+                'Lecture', 'NSCProject', 'Patent'
+            ]
+        };
+        
         // 定義中文表格名稱
         const tableNameMap = {
             'Professor': '教授',
@@ -476,19 +505,19 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             // 主鍵定義
             const primaryKeys = {
                 'Professor': 'professor_id',
-                'Course': 'id',
-                'DepartmentHead': 'id',
-                'Education': 'id',
+                'Course': 'course_id',
+                'DepartmentHead': 'department_id',
+                'Education': 'education_id',
                 'Expertise': 'expertise_id',
-                'ExternalAward': 'id',
-                'ExternalExperience': 'id',
-                'IndustryProject': 'id',
-                'InternalAward': 'id',
-                'InternalExperience': 'id',
-                'JournalPublication': 'id',
-                'Lecture': 'id',
-                'NSCProject': 'id',
-                'Patent': 'id'
+                'ExternalAward': 'award_id',
+                'ExternalExperience': 'experience_id',
+                'IndustryProject': 'project_id',
+                'InternalAward': 'award_id',
+                'InternalExperience': 'experience_id',
+                'JournalPublication': 'publication_id',
+                'Lecture': 'lecture_id',
+                'NSCProject': 'project_id',
+                'Patent': 'patent_id'
             };
             
             const primaryKey = primaryKeys[table];
@@ -578,19 +607,19 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 // 主鍵定義
                 const primaryKeys = {
                     'Professor': 'professor_id',
-                    'Course': 'id',
-                    'DepartmentHead': 'id',
-                    'Education': 'id',
+                    'Course': 'course_id',
+                    'DepartmentHead': 'department_id',
+                    'Education': 'education_id',
                     'Expertise': 'expertise_id',
-                    'ExternalAward': 'id',
-                    'ExternalExperience': 'id',
-                    'IndustryProject': 'id',
-                    'InternalAward': 'id',
-                    'InternalExperience': 'id',
-                    'JournalPublication': 'id',
-                    'Lecture': 'id',
-                    'NSCProject': 'id',
-                    'Patent': 'id'
+                    'ExternalAward': 'award_id',
+                    'ExternalExperience': 'experience_id',
+                    'IndustryProject': 'project_id',
+                    'InternalAward': 'award_id',
+                    'InternalExperience': 'experience_id',
+                    'JournalPublication': 'publication_id',
+                    'Lecture': 'lecture_id',
+                    'NSCProject': 'project_id',
+                    'Patent': 'patent_id'
                 };
                 
                 const primaryKey = primaryKeys[table];
@@ -652,12 +681,76 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         }
 
         // 標記要刪除的行
-        function deleteRow(table, rowIndex) {
-            if (confirm('確定要刪除這筆資料嗎？')) {
-                const row = document.querySelector(`input[data-table="${table}"][data-row="${rowIndex}"]`).closest('tr');
+        async function deleteRow(table, rowIndex) {
+            // 主鍵定義
+            const primaryKeys = {
+                'Professor': 'professor_id',
+                'Course': 'course_id',
+                'DepartmentHead': 'department_id',
+                'Education': 'education_id',
+                'Expertise': 'expertise_id',
+                'ExternalAward': 'award_id',
+                'ExternalExperience': 'experience_id',
+                'IndustryProject': 'project_id',
+                'InternalAward': 'award_id',
+                'InternalExperience': 'experience_id',
+                'JournalPublication': 'publication_id',
+                'Lecture': 'lecture_id',
+                'NSCProject': 'project_id',
+                'Patent': 'patent_id'
+            };
+            
+            const primaryKey = primaryKeys[table];
+            const row = document.querySelector(`input[data-table="${table}"][data-row="${rowIndex}"]`).closest('tr');
+            const pkInput = row.querySelector(`input[data-col="${primaryKey}"]`);
+            
+            if (!pkInput || !pkInput.value) {
+                alert('無法找到主鍵值');
+                return;
+            }
+            
+            // 檢查外鍵約束
+            const constraint = await checkForeignKeyConstraints(table, pkInput.value);
+            
+            let confirmMessage = `確定要刪除這筆資料嗎？`;
+            
+            if (!constraint.canDelete) {
+                let warningMessage = `警告：此筆資料有外鍵約束，無法直接刪除！\n\n相關資料：\n`;
+                constraint.warnings.forEach(warning => {
+                    warningMessage += `• ${warning}\n`;
+                });
+                warningMessage += `\n請先刪除相關資料後再刪除此筆資料。`;
+                alert(warningMessage);
+                return;
+            }
+            
+            if (constraint.warnings.length > 0) {
+                confirmMessage += `\n\n注意：刪除此資料將同時刪除以下相關資料：\n`;
+                constraint.warnings.forEach(warning => {
+                    confirmMessage += `• ${warning}\n`;
+                });
+                confirmMessage += `\n是否確定要繼續？`;
+            }
+            
+            if (confirm(confirmMessage)) {
                 row.style.backgroundColor = '#ffe6e6';
                 row.style.textDecoration = 'line-through';
                 row.setAttribute('data-delete', 'true');
+                
+                // 如果有外鍵約束警告，顯示警告訊息
+                if (constraint.warnings.length > 0) {
+                    const warningDiv = document.createElement('div');
+                    warningDiv.className = 'delete-warning';
+                    warningDiv.innerHTML = `
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>刪除警告：</strong>此筆資料標記為刪除，儲存時將連同以下相關資料一起刪除：
+                        <ul style="margin: 5px 0 0 20px;">
+                            ${constraint.warnings.map(w => `<li>${w}</li>`).join('')}
+                        </ul>
+                    `;
+                    row.insertAdjacentElement('afterend', warningDiv);
+                    warningDiv.setAttribute('data-warning-for', `${table}_${rowIndex}`);
+                }
                 
                 // 添加恢復按鈕
                 const lastCell = row.lastElementChild;
@@ -676,6 +769,12 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             row.style.textDecoration = '';
             row.removeAttribute('data-delete');
             
+            // 移除警告訊息
+            const warningDiv = document.querySelector(`[data-warning-for="${table}_${rowIndex}"]`);
+            if (warningDiv) {
+                warningDiv.remove();
+            }
+            
             // 恢復刪除按鈕
             const lastCell = row.lastElementChild;
             lastCell.innerHTML = `
@@ -685,8 +784,54 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             `;
         }
 
+        // 檢查外鍵關係
+        async function checkForeignKeyConstraints(table, primaryKeyValue) {
+            if (!foreignKeyRelations[table]) {
+                return { canDelete: true, warnings: [] };
+            }
+            
+            const warnings = [];
+            let canDelete = true;
+            
+            try {
+                const res = await fetch('check_foreign_keys.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        table: table,
+                        primaryKey: primaryKeyValue,
+                        relatedTables: foreignKeyRelations[table]
+                    })
+                });
+                
+                const result = await res.json();
+                
+                if (result.hasReferences) {
+                    canDelete = false;
+                    result.references.forEach(ref => {
+                        const tableName = tableNameMap[ref.table] || ref.table;
+                        warnings.push(`${tableName}表中有 ${ref.count} 筆相關資料`);
+                    });
+                }
+                
+                return { canDelete, warnings };
+            } catch (error) {
+                console.error('檢查外鍵約束時發生錯誤:', error);
+                return { canDelete: false, warnings: ['無法檢查外鍵約束，為安全起見不允許刪除'] };
+            }
+        }
+
         // 收集所有欄位並送出
         async function submitAllUpdates() {
+            // 檢查是否有被標記刪除的資料
+            const deleteRows = document.querySelectorAll('tr[data-delete="true"]');
+            if (deleteRows.length > 0) {
+                const confirmDelete = confirm(`您即將刪除 ${deleteRows.length} 筆資料，此操作不可復原。是否確定要繼續？`);
+                if (!confirmDelete) {
+                    return;
+                }
+            }
+            
             const inputs = document.querySelectorAll('input[data-table]');
             const updates = {};
             const inserts = {};
@@ -695,19 +840,19 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             // 主鍵定義
             const primaryKeys = {
                 'Professor': 'professor_id',
-                'Course': 'id',
-                'DepartmentHead': 'id',
-                'Education': 'id',
+                'Course': 'course_id',
+                'DepartmentHead': 'department_id',
+                'Education': 'education_id',
                 'Expertise': 'expertise_id',
-                'ExternalAward': 'id',
-                'ExternalExperience': 'id',
-                'IndustryProject': 'id',
-                'InternalAward': 'id',
-                'InternalExperience': 'id',
-                'JournalPublication': 'id',
-                'Lecture': 'id',
-                'NSCProject': 'id',
-                'Patent': 'id'
+                'ExternalAward': 'award_id',
+                'ExternalExperience': 'experience_id',
+                'IndustryProject': 'project_id',
+                'InternalAward': 'award_id',
+                'InternalExperience': 'experience_id',
+                'JournalPublication': 'publication_id',
+                'Lecture': 'lecture_id',
+                'NSCProject': 'project_id',
+                'Patent': 'patent_id'
             };
             
             // 檢查是否有修改主鍵
@@ -739,7 +884,6 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             });
             
             // 收集要刪除的資料
-            const deleteRows = document.querySelectorAll('tr[data-delete="true"]');
             deleteRows.forEach(row => {
                 const firstInput = row.querySelector('input[data-table]');
                 if (firstInput) {
