@@ -63,6 +63,7 @@
     <script>
         const membersLink = document.getElementById('members-link');
         const navItems = document.querySelectorAll('.nav-item');
+
         navItems.forEach(item => {
             if (item !== membersLink) {
                 item.addEventListener('mouseenter', () => {
@@ -72,6 +73,29 @@
                     membersLink.classList.add('active');
                 });
             }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.querySelector('.sidebar');
+            const currentLink = document.getElementById('current');
+            const sidebarLinks = sidebar.querySelectorAll('a');
+
+            // 初始時給講座教授加上 active
+            currentLink.classList.add('active');
+
+            sidebarLinks.forEach(link => {
+                if (link !== currentLink) {
+                    // 其他連結 hover 時移除講座教授 active
+                    link.addEventListener('mouseenter', () => {
+                        currentLink.classList.remove('active');
+                    });
+
+                    // 其他連結離開時，還原講座教授 active
+                    link.addEventListener('mouseleave', () => {
+                        currentLink.classList.add('active');
+                    });
+                }
+            });
         });
     </script>
     <script>
