@@ -92,7 +92,7 @@
                 data.staff.forEach(staff => {
                     html += `
                     <a class="card" href="#" title="${staff.name}">
-                        <img src="members/pics/${staff.photo || 'default.jpg'}" alt="${staff.name}" />
+                        <img src="../pics/${staff.photo || 'default.png'}" alt="${staff.name}" />
                         <div class="card-content">
                             <h3>${staff.name}</h3>
                             ${staff.position ? `<p>${staff.position}</p>` : ''}

@@ -135,11 +135,6 @@ body {
     line-height: 1.6;
 }
 
-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-}
+
 
 /* 已移除 footer 樣式，統一由 header-footer.css 控制 */

@@ -126,7 +126,7 @@
                 data.professors.forEach(prof => {
                     html += `
                     <a class="card" href="${BASE_PATH}/members/faculties/index.html?professor_id=${prof.professor_id}" title="${prof.name}">
-                        <img src="pics/${prof.photo || 'default.jpg'}" alt="${prof.name}" />
+                        <img src="../pics/${prof.photo || 'default.png'}" alt="${prof.name}" />
                         <div class="card-content">
                             <h3>${prof.name}</h3>
                             ${prof.type ? `<p>${prof.type}</p>` : ''}

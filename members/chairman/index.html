@@ -118,7 +118,7 @@
                     html += `<h2 style="width:100%;margin-bottom:16px;">現任系主任</h2>`;
                     html += `
                 <a class="card" href="${BASE_PATH}/members/faculties/index.html?professor_id=${current.professor_id}" title="${current.name}">
-                    <img src="pics/${current.photo || 'default.png'}" alt="${current.name}" />
+                    <img src="../pics/${current.photo || 'default.png'}" alt="${current.name}" />
                     <div class="card-content">
                         <h3>${current.name}<span class="term">　第${current.term}屆</span></h3>
                         ${current.type ? `<p>${current.type}</p>` : ''}
@@ -133,7 +133,7 @@
                             const h = data.heads[i];
                             html += `
                         <a class="card" href="${BASE_PATH}/members/faculties/index.html?professor_id=${h.professor_id}" title="${h.name}">
-                            <img src="pics/${h.photo || 'default.png'}" alt="${h.name}" />
+                            <img src="../pics/${h.photo || 'default.png'}" alt="${h.name}" />
                             <div class="card-content">
                                 <h3>${h.name}<span class="term">　第${h.term}屆</span></h3>
                                 ${h.type ? `<p>${h.type}</p>` : ''}

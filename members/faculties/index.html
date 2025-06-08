@@ -194,8 +194,8 @@
                 document.title = `${professor.name} - 逢甲大學資訊系系所簡介`;
 
                 // 更新基本資料
-                document.getElementById('profile-photo').src = `${BASE_PATH}/members/pics/${professor.photo}`;
-                document.getElementById('profile-photo').alt = `${professor.photo}照片`;
+                document.getElementById('profile-photo').src = `${BASE_PATH}/members/pics/${professor.photo || 'default.png'}`;
+                document.getElementById('profile-photo').alt = `${professor.photo || 'default.png'}照片`;
                 document.getElementById('profile-name').textContent = `${professor.name} 教授`;
                 document.getElementById('profile-email').href = `mailto:${professor.email}`;
                 document.getElementById('profile-email').textContent = professor.email;
