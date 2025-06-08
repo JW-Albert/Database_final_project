@@ -157,6 +157,7 @@ main.content {
     flex-direction: column;
     text-decoration: none;
     color: #333;
+    height: auto;
 }
 
 .card-img-wrapper {
@@ -190,7 +191,7 @@ main.content {
     color: #555;
     line-height: 1.4;
     /* 約4行 */
-    overflow: hidden;
+    overflow: visible;
     text-overflow: ellipsis;
 }
 
