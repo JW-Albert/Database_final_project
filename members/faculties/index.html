@@ -7,7 +7,8 @@
     <title>逢甲大學資訊系系所簡介</title>
     <link rel="icon" href="/~D1210799/pics/iecs_logo.png" type="image/png" />
     <script src="/~D1210799/js/config.js"></script>
-    <link rel="stylesheet" href="/~D1210799/members/chair/index.css">
+    <link rel="stylesheet" href="/~D1210799/members/faculties/index.css">
+    <link rel="stylesheet" href="/~D1210799/header-footer.css">
 </head>
 
 <body>
@@ -24,6 +25,11 @@
                     <p><strong>信箱：</strong><a id="profile-email" href=""></a></p>
                     <p><strong>分機：</strong><span id="profile-extension"></span></p>
                 </div>
+            </div>
+
+            <div id="bio-section" class="profile-section" style="display: none;">
+                <h2>簡介</h2>
+                <p id="bio-content"></p>
             </div>
 
             <div id="courses-section" class="profile-section" style="display: none;">
@@ -143,7 +149,7 @@
             });
         }
         includeHTML('header-include', 'header.html');
-        includeHTML('footer-include', 'footer.html', loadDepartmentInfo);
+        includeHTML('footer-include', 'footer.html');
     </script>
     <script>
         // 動態補上 BASE_PATH + '/members/xxx' 給 sidebar 連結
@@ -189,11 +195,17 @@
 
                 // 更新基本資料
                 document.getElementById('profile-photo').src = `${BASE_PATH}/members/pics/${professor.photo}`;
-                document.getElementById('profile-photo').alt = `${professor.name}照片`;
+                document.getElementById('profile-photo').alt = `${professor.photo}照片`;
                 document.getElementById('profile-name').textContent = `${professor.name} 教授`;
                 document.getElementById('profile-email').href = `mailto:${professor.email}`;
                 document.getElementById('profile-email').textContent = professor.email;
                 document.getElementById('profile-extension').textContent = professor.extension;
+
+                // 更新簡介資料
+                if (professor.bio) {
+                    document.getElementById('bio-content').textContent = professor.bio;
+                    document.getElementById('bio-section').style.display = 'block';
+                }
 
                 // 更新課程資料
                 if (courses.length > 0) {
