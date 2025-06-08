@@ -6,7 +6,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit();
 }
 
-$uploadDir = __DIR__ . '/../../pics/'; // pics 資料夾路徑
+$uploadDir = __DIR__ . '/../../members/pics/'; // pics 資料夾路徑
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
