@@ -441,6 +441,21 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             valueInput.placeholder = '請輸入值';
             valueInput.name = preselectedColumn;
 
+            // 如果是 photo 欄位，自動填入 professor_id 的值
+            if (preselectedColumn === 'photo') {
+                // 嘗試從已存在的 professor_id 欄位取得值
+                const professorInput = document.querySelector('input[name="professor_id"]');
+                if (professorInput) {
+                    valueInput.value = professorInput.value ;
+                }
+                // 當 professor_id 欄位變動時，自動同步 photo 欄位
+                if (professorInput) {
+                    professorInput.addEventListener('input', function() {
+                        valueInput.value = professorInput.value + '.jpg';
+                    });
+                }
+            }
+
             const columnInfo = document.createElement('div');
             columnInfo.className = 'column-info';
 
