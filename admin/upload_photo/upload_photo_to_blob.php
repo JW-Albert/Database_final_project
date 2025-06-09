@@ -36,6 +36,11 @@ if (!in_array($ext, $allowedExts)) {
 // 檔案儲存路徑
 $savePath = $uploadDir . $professorId . '.' . $ext;
 
+// 如果已經有同名檔案，先刪除
+if (file_exists($savePath)) {
+    unlink($savePath);
+}
+
 // 搬移檔案
 if (move_uploaded_file($_FILES['photo']['tmp_name'], $savePath)) {
     echo json_encode([
