@@ -2,6 +2,15 @@
 
 This is the official website for the Department of Computer Science and Information Engineering at Feng Chia University.
 
+# Contributor
+Due to issues with the data structure, the backend initialization version couldn’t be directly merged into the main branch.
+The backend initialization version was contributed by Lance.
+ - Lance
+ - Andy
+ - Rei
+ - Albert
+ - 陳俊宇
+
 ## Project Structure
 
 ```
